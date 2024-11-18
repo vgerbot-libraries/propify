@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0b193183-951f-46a2-9dad-189c32a83953" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="AnnotationType" />
+        <option value="Class" />
+        <option value="Interface" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2oz3geW3YIKQX2Huvzgj0HB4sSR" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Maven.propify [install].executor": "Run",
+    "Maven.propify-processor [compile].executor": "Run",
+    "Maven.propify-runtime [clean].executor": "Run",
+    "Maven.propify-runtime [com.mysema.maven:apt-maven-plugin:1.1.3:add-test-sources].executor": "Run",
+    "Maven.propify-runtime [com.mysema.maven:apt-maven-plugin:1.1.3:process].executor": "Run",
+    "Maven.propify-runtime [com.mysema.maven:apt-maven-plugin:1.1.3:test-process].executor": "Run",
+    "Maven.propify-runtime [compile].executor": "Run",
+    "Maven.propify-runtime [install].executor": "Run",
+    "Maven.propify-runtime [org.apache.maven.plugins:maven-compiler-plugin:3.7.0:compile].executor": "Run",
+    "Maven.propify-runtime [org.apache.maven.plugins:maven-jar-plugin:3.4.1:jar].executor": "Run",
+    "Maven.propify-test [compile].executor": "Run",
+    "Maven.propify-test [install].executor": "Run",
+    "Maven.propify-test [org.apache.maven.plugins:maven-install-plugin:3.1.2:install].executor": "Run",
+    "Maven.propify-test [validate].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "com.codeium.enabled": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/jianxin_yang/Workspaces/Github/propify/propify-annotation/src/main/java",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.projectsettings.compiler.annotationProcessors"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/propify-annotation/src/main/java" />
+      <recent name="$PROJECT_DIR$/propify-runtime/src/main/resources" />
+      <recent name="$PROJECT_DIR$/propify-runtime/src/main/resources/META-INF/services" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/propify-runtime/src/main/resources/META-INF" />
+      <recent name="$PROJECT_DIR$/propify-test/src/main/resources/META-INF" />
+      <recent name="$PROJECT_DIR$/propify-test/src/main/resources" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.vgerbot.propify" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.test.Main" />
+      <module name="propify-test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.vgerbot.propify.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0b193183-951f-46a2-9dad-189c32a83953" name="Changes" comment="" />
+      <created>1731858696576</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731858696576</updated>
+    </task>
+    <servers />
+  </component>
+</project>
