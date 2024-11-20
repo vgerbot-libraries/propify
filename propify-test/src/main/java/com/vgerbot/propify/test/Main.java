@@ -1,8 +1,9 @@
 package com.vgerbot.propify.test;
 
+import com.vgerbot.propify.PropsGen;
+
 public class Main {
     public static void main(String[] args) throws Exception {
-//        new PropsGenerated().getProperty("");
-        System.out.println(int.class.isPrimitive());
+        System.out.println(new PropsGen().getA());
     }
 }

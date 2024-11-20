@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0b193183-951f-46a2-9dad-189c32a83953" name="Changes" comment="" />
+    <list default="true" id="66a6e504-a888-4c90-a058-f4a1c937cb4f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyCodeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyPropertiesParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/test/resources/PropifyPropertiesParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-test/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Props.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Props.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,64 +23,63 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="AnnotationType" />
         <option value="Class" />
-        <option value="Interface" />
       </list>
     </option>
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 7
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;y1j2x34&quot;
+  }
 }</component>
-  <component name="ProjectId" id="2oz3geW3YIKQX2Huvzgj0HB4sSR" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:vgerbot-libraries/propify.git&quot;,
+    &quot;accountId&quot;: &quot;6e14f343-d3b2-4c06-96d6-6c0d84ba3f11&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2p1u7Y7T76UcdKFAlfPzYLIWBIC" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.Main.executor": "Run",
+    "Application.Main.executor": "Debug",
+    "Application.PropifyCodeGenerator.executor": "Run",
+    "Application.Utils.executor": "Debug",
+    "Maven.propify [clean].executor": "Run",
+    "Maven.propify [compile].executor": "Run",
     "Maven.propify [install].executor": "Run",
-    "Maven.propify-processor [compile].executor": "Run",
-    "Maven.propify-runtime [clean].executor": "Run",
-    "Maven.propify-runtime [com.mysema.maven:apt-maven-plugin:1.1.3:add-test-sources].executor": "Run",
-    "Maven.propify-runtime [com.mysema.maven:apt-maven-plugin:1.1.3:process].executor": "Run",
-    "Maven.propify-runtime [com.mysema.maven:apt-maven-plugin:1.1.3:test-process].executor": "Run",
-    "Maven.propify-runtime [compile].executor": "Run",
-    "Maven.propify-runtime [install].executor": "Run",
-    "Maven.propify-runtime [org.apache.maven.plugins:maven-compiler-plugin:3.7.0:compile].executor": "Run",
-    "Maven.propify-runtime [org.apache.maven.plugins:maven-jar-plugin:3.4.1:jar].executor": "Run",
+    "Maven.propify [validate].executor": "Run",
     "Maven.propify-test [compile].executor": "Run",
-    "Maven.propify-test [install].executor": "Run",
-    "Maven.propify-test [org.apache.maven.plugins:maven-install-plugin:3.1.2:install].executor": "Run",
-    "Maven.propify-test [validate].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "com.codeium.enabled": "true",
+    "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/jianxin_yang/Workspaces/Github/propify/propify-annotation/src/main/java",
-    "project.structure.last.edited": "SDKs",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
     "settings.editor.selected.configurable": "reference.projectsettings.compiler.annotationProcessors"
   }
 }]]></component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/propify-annotation/src/main/java" />
-      <recent name="$PROJECT_DIR$/propify-runtime/src/main/resources" />
-      <recent name="$PROJECT_DIR$/propify-runtime/src/main/resources/META-INF/services" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/propify-runtime/src/main/resources/META-INF" />
-      <recent name="$PROJECT_DIR$/propify-test/src/main/resources/META-INF" />
-      <recent name="$PROJECT_DIR$/propify-test/src/main/resources" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.vgerbot.propify" />
+      <recent name="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify" />
+      <recent name="$PROJECT_DIR$/propify-processor/src/test/resources" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.PropifyCodeGenerator">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.test.Main" />
       <module name="propify-test" />
@@ -84,8 +93,46 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="PropifyCodeGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.PropifyCodeGenerator" />
+      <module name="propify-processor" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.vgerbot.propify.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Utils" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.Utils" />
+      <module name="propify-processor" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.vgerbot.propify.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.PropifyCodeGenerator" />
+        <item itemvalue="Application.Utils" />
         <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
@@ -93,12 +140,23 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="0b193183-951f-46a2-9dad-189c32a83953" name="Changes" comment="" />
-      <created>1731858696576</created>
+      <changelist id="66a6e504-a888-4c90-a058-f4a1c937cb4f" name="Changes" comment="" />
+      <created>1731945736099</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1731858696576</updated>
+      <updated>1731945736099</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar:///usr/lib/jvm/java-8-openjdk/jre/lib/rt.jar!/java/lang/IllegalArgumentException.class</url>
+          <line>14</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

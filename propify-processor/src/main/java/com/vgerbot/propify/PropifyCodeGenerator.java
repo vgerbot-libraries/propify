@@ -1,10 +1,12 @@
 package com.vgerbot.propify;
 
-import com.palantir.javapoet.*;
+import com.squareup.javapoet.*;
 
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
 
 class Tuple2<A, B> {
     public final A _1;
@@ -30,7 +32,7 @@ public class PropifyCodeGenerator {
             String className,
             PropifyProperties properties
     ) {
-        TypeSpec typeSpec = generateType(packageName, className, properties);
+        TypeSpec typeSpec = generateType(Arrays.asList(Modifier.PUBLIC, Modifier.FINAL), ClassName.get(packageName, className), properties);
         JavaFile javaFile = JavaFile.builder(packageName, typeSpec).build();
         StringBuilder sb = new StringBuilder();
         try {
@@ -41,22 +43,32 @@ public class PropifyCodeGenerator {
         return sb.toString();
     }
 
-    private TypeSpec generateType(String packageName, String className, PropifyProperties properties) {
+    private TypeSpec generateType(List<Modifier> modifiers, ClassName className, PropifyProperties properties) {
+
         TypeSpec.Builder builder = TypeSpec.classBuilder(className);
+        builder.modifiers.addAll(modifiers);
         properties.forEach((k, v) -> {
+            String fieldName = Utils.convertToFieldName(k);
             if (v instanceof PropifyProperties) {
-                String innerClassName = k;
-                TypeSpec typeSpec = generateType(packageName, innerClassName, (PropifyProperties) v);
-                typeSpec.modifiers().add(Modifier.PRIVATE);
-                typeSpec.modifiers().add(Modifier.STATIC);
+                ClassName innerClassName = className.nestedClass(Utils.convertToClassName(k));
+                TypeSpec typeSpec = generateType(
+                        Arrays.asList(
+                                Modifier.PRIVATE,
+                                Modifier.STATIC,
+                                Modifier.FINAL
+                        )
+                        , innerClassName, (PropifyProperties) v);
                 builder.addType(
                         typeSpec
                 );
-                Tuple2<FieldSpec, MethodSpec> tuple = generateProperty(k, v, ClassName.get(packageName, innerClassName));
+
+                Tuple2<FieldSpec, MethodSpec> tuple = generateProperty(fieldName, CodeBlock.builder()
+                        .addStatement("new $T()", innerClassName)
+                        .build(), innerClassName);
                 builder.addField(tuple._1);
                 builder.addMethod(tuple._2);
             } else {
-                Tuple2<FieldSpec, MethodSpec> tuple = generateProperty(k, v, null);
+                Tuple2<FieldSpec, MethodSpec> tuple = generateProperty(fieldName, CodeBlock.of("$L", Utils.toLiteralString(v)), TypeName.get(getType(v)));
                 builder.addField(tuple._1);
                 builder.addMethod(tuple._2);
             }
@@ -64,11 +76,8 @@ public class PropifyCodeGenerator {
         return builder.build();
     }
 
-    private Tuple2<FieldSpec, MethodSpec> generateProperty(String name, Object value, TypeName typeName) {
-        if (typeName == null) {
-            Type type = getType(value);
-            typeName = TypeName.get(type);
-        }
+    private Tuple2<FieldSpec, MethodSpec> generateProperty(String name, CodeBlock initializer, TypeName typeName) {
+
         FieldSpec field = FieldSpec
                 .builder(
                         typeName,
@@ -76,9 +85,15 @@ public class PropifyCodeGenerator {
                         Modifier.FINAL,
                         Modifier.PRIVATE
                 )
-                .initializer("$$", value)
+                .initializer(initializer)
                 .build();
-        MethodSpec method = MethodSpec.methodBuilder(getterName(name, typeName))
+        MethodSpec method = MethodSpec
+                .methodBuilder(getterName(name, typeName))
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .returns(typeName)
+                .addStatement(
+                        CodeBlock.of("return $L", name)
+                )
                 .build();
         return new Tuple2<>(field, method);
     }
@@ -90,6 +105,7 @@ public class PropifyCodeGenerator {
         }
         return "get" + suf;
     }
+
 
     private Type getType(Object value) {
         if (value == null) {
