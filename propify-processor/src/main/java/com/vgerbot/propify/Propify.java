@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 public @interface Propify {
     String location();
-    String mediaType() default "text/x-java-properties";
+    String mediaType() default "";
 }

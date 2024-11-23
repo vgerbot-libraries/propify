@@ -33,7 +33,10 @@ public class PropertiesParser implements PropifyConfigParser  {
 
     @Override
     public Boolean accept(String mediaType) {
-        return "text/x-java-properties".equals(mediaType.toLowerCase());
+        return "application/java-properties".equals(mediaType.toLowerCase()) ||
+               "application/x-java-properties".equals(mediaType.toLowerCase()) ||
+               "text/java-properties".equals(mediaType.toLowerCase()) ||
+               "text/x-java-properties".equals(mediaType.toLowerCase());
     }
 
 }

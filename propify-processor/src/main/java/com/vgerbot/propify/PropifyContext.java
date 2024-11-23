@@ -34,7 +34,7 @@ public class PropifyContext {
         this.processingEnvironment = processingEnvironment;
         String location = propifyAnnotation.location();
         String mediaType = propifyAnnotation.mediaType();
-        if (mediaType == "") {
+        if ("".equals(mediaType)) {
             mediaType = Utils.inferMediaType(location);
         }
         this.location = location;

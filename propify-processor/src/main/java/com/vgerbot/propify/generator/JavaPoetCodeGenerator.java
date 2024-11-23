@@ -79,6 +79,7 @@ public class JavaPoetCodeGenerator implements CodeGenerator {
             } else {
                 PropertySpec propertySpec = generateProperty(
                     fieldName,
+                    value instanceof String ? CodeBlock.of("$S", value) :
                     CodeBlock.of("$L", Utils.toLiteralString(value)),
                     TypeName.get(getType(value))
                 );
