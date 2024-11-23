@@ -2,6 +2,8 @@ package com.vgerbot.propify;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +15,20 @@ import java.util.regex.Pattern;
  */
 public class Utils {
     private static final Pattern NUMBER_PATTERN = Pattern.compile("([+-])?(\\d+)(\\.\\d+)?([BblLfFdD]?)");
+    
+    private static final Set<String> JAVA_KEYWORDS = new HashSet<String>() {{
+        add("abstract"); add("assert"); add("boolean"); add("break"); add("byte");
+        add("case"); add("catch"); add("char"); add("class"); add("const");
+        add("continue"); add("default"); add("do"); add("double"); add("else");
+        add("enum"); add("extends"); add("false"); add("final"); add("finally");
+        add("float"); add("for"); add("goto"); add("if"); add("implements");
+        add("import"); add("instanceof"); add("int"); add("interface"); add("long");
+        add("native"); add("new"); add("null"); add("package"); add("private");
+        add("protected"); add("public"); add("return"); add("short"); add("static");
+        add("strictfp"); add("super"); add("switch"); add("synchronized");
+        add("this"); add("throw"); add("throws"); add("transient"); add("true");
+        add("try"); add("void"); add("volatile"); add("while");
+    }};
 
     private Utils() {
         throw new RuntimeException("Cannot instantiate Utils class");
@@ -29,88 +45,76 @@ public class Utils {
      * @return the converted class name in valid Java class name format
      */
     public static String convertToClassName(String input) {
-        char[] chars = input.toCharArray();
-        StringBuilder className = new StringBuilder();
-        boolean shouldCapitalize = true;
+        if (input == null || input.isEmpty()) {
+            throw new IllegalArgumentException("Class name cannot be null or empty");
+        }
+        String sanitized = input.trim().replaceAll("[^\\p{L}\\p{N}_$]+", "-");
 
-        for (char c : chars) {
-            if (Character.isLetterOrDigit(c)) {
-                if (shouldCapitalize) {
-                    className.append(Character.toUpperCase(c));
-                    shouldCapitalize = false;
-                } else {
-                    className.append(c);
-                }
-            } else {
-                className.append('_');
-                shouldCapitalize = true;
+        if (!Character.isLetter(sanitized.charAt(0))) {
+            sanitized = "_" + sanitized;
+        }
+
+        String[] parts = sanitized.split("-");
+        StringBuilder camelCaseName = new StringBuilder();
+        for (int i = 0; i < parts.length; i++) {
+            if (!parts[i].isEmpty()) {
+                camelCaseName.append(Character.toUpperCase(parts[i].charAt(0)))
+                             .append(parts[i].substring(1));
             }
         }
 
-        if (Character.isDigit(className.charAt(0))) {
-            className.insert(0, '_');
+        String result = camelCaseName.toString();
+        if (JAVA_KEYWORDS.contains(result)) {
+            result += "_";
         }
 
-        return className.toString();
+        return result;
     }
-
 
     /**
      * Converts a given input string to a valid Java field name format.
-     * Non-letter and non-digit characters are replaced with underscores,
-     * and the first letter of each word is capitalized. If the resulting
-     * field name starts with a digit, an underscore is prefixed to the
-     * field name. Additionally, if the resulting field name is a reserved
-     * keyword in Java, an underscore is appended to the field name.
+     * Special characters are handled according to these rules:
+     * 1. Letters, digits, and dollar signs ($) are preserved
+     * 2. Consecutive special characters are collapsed into a single underscore
+     * 3. Leading digits are prefixed with an underscore
+     * 4. Unicode letters are preserved
+     * 5. Java keywords are suffixed with an underscore
+     * 6. Trailing underscores from special characters are removed
      *
      * @param input the input string to be converted
      * @return the converted field name in valid Java field name format
      * @throws IllegalArgumentException if the input string is empty
      */
     public static String convertToFieldName(String input) {
-        if (input.length() == 0) {
-            throw new IllegalArgumentException("Field name cannot be empty");
+        if (input == null || input.isEmpty()) {
+            throw new IllegalArgumentException("Field name cannot be null or empty");
         }
-        char[] chars = input.toCharArray();
-        StringBuilder fieldName = new StringBuilder();
-        boolean shouldCapitalize = false;
-        if (!(Character.isLetter(chars[0]) || chars[0] == '_')) {
-            fieldName.append('_');
+        String sanitized = input.trim().replaceAll("[^\\p{L}\\p{N}_$]+", "-");
+
+        if (!Character.isLetter(sanitized.charAt(0))) {
+            sanitized = "_" + sanitized;
         }
-        for (char c : chars) {
-            if (Character.isLetterOrDigit(c)) {
-                if (shouldCapitalize) {
-                    fieldName.append(Character.toUpperCase(c));
-                    shouldCapitalize = false;
-                } else {
-                    fieldName.append(c);
-                }
-            } else {
-                fieldName.append('_');
-                shouldCapitalize = true;
+
+        String[] parts = sanitized.split("-");
+        StringBuilder camelCaseName = new StringBuilder(parts[0]);
+        for (int i = 1; i < parts.length; i++) {
+            if (!parts[i].isEmpty()) {
+                camelCaseName.append(Character.toUpperCase(parts[i].charAt(0)))
+                             .append(parts[i].substring(1));
             }
         }
-        switch (fieldName.toString()) {
-            case "class":
-            case "public":
-            case "final":
-            case "static":
-            case "int":
-            case "long":
-            case "float":
-            case "byte":
-            case "double":
-            case "void":
-            case "boolean":
-            case "synchronized":
-            case "volatile":
-                fieldName.append('_');
-                break;
+
+        String result = camelCaseName.toString();
+        if (JAVA_KEYWORDS.contains(result)) {
+            result += "_";
         }
 
-        return fieldName.toString();
+        return result;
     }
 
+    public static void main(String[] args) {
+        System.out.println("!@#$%^&*()".replaceAll("[^\\p{L}\\p{N}_$]+", "-"));
+    }
     /**
      * Converts a given value to a Java literal string.
      * If the value is an instance of Long, Float, Double, or Byte,
@@ -121,7 +125,6 @@ public class Utils {
      * @param value the value to be converted
      * @return the converted string literal
      */
-
     public static String toLiteralString(Object value) {
         if (value instanceof Long) {
             return value + "L";  // long 类型的字面量
@@ -175,8 +178,10 @@ public class Utils {
      * @return the converted object in its corresponding Java type, or the original
      * object if no conversion is applicable
      */
-
     public static Object parseValue(Object value) {
+        if (value == null) {
+            return value;
+        }
         final String strValue = value + "";
         if (value.equals("true") || value.equals("false")) {
             return Boolean.valueOf(strValue);
@@ -184,10 +189,10 @@ public class Utils {
         Matcher matcher = NUMBER_PATTERN.matcher(strValue);
         if (matcher.matches()) {
             int gid = 1;
-            String signal = matcher.group(gid ++ );
-            String intPart = matcher.group(gid ++ );
-            String floatPart = matcher.group(gid ++ );
-            String suffix = matcher.group(gid ++ );
+            String signal = matcher.group(gid++);
+            String intPart = matcher.group(gid++);
+            String floatPart = matcher.group(gid++);
+            String suffix = matcher.group(gid++);
             int sig = "-".equals(signal) ? -1 : 1;
             switch (suffix.toLowerCase()) {
                 case "l":
@@ -203,7 +208,7 @@ public class Utils {
                         return Double.valueOf(strValue);
                     } else {
                         Long l = Long.valueOf(strValue);
-                        if(l > Integer.MAX_VALUE) {
+                        if (l > Integer.MAX_VALUE) {
                             return l;
                         } else {
                             return Integer.valueOf(strValue);
