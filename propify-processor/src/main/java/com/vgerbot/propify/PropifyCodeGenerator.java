@@ -53,7 +53,7 @@ public class PropifyCodeGenerator {
                 ClassName innerClassName = className.nestedClass(Utils.convertToClassName(k));
                 TypeSpec typeSpec = generateType(
                         Arrays.asList(
-                                Modifier.PRIVATE,
+                                Modifier.PUBLIC,
                                 Modifier.STATIC,
                                 Modifier.FINAL
                         )

@@ -5,15 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="66a6e504-a888-4c90-a058-f4a1c937cb4f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyConfigParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyConfigResource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyContext.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/parser/PropertiesParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/resource/ClassPropifyConfigResource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/resources/META-INF/gradle/incremental.annotation.processors" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/resources/META-INF/services/com.vgerbot.propify.PropifyConfigParser" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/resources/META-INF/services/com.vgerbot.propify.PropifyConfigResource" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-annotation/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-annotation/src/main/java/com/vgerbot/propify/Propify.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/Propify.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/propify-processor/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyCodeGenerator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyPropertiesParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/test/resources/PropifyPropertiesParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProperties.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/test/resources/PropifyPropertiesParser.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/propify-test/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Props.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Props.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-test/src/main/resources/messages.properties" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/src/main/resources/messages.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +37,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -55,16 +70,26 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.Main.executor": "Debug",
+    "Application.Main.executor": "Run",
+    "Application.PropertiesParser.executor": "Run",
     "Application.PropifyCodeGenerator.executor": "Run",
-    "Application.Utils.executor": "Debug",
+    "Application.Utils.executor": "Run",
+    "Application.Utils_ParseValueTest.executor": "Run",
+    "JUnit.UtilsParseValueTest.executor": "Run",
+    "JUnit.UtilsParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger.executor": "Run",
+    "JUnit.UtilsTest.executor": "Run",
+    "JUnit.Utils_ParseValueTest.executor": "Run",
+    "JUnit.Utils_ParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger.executor": "Run",
     "Maven.propify [clean].executor": "Run",
     "Maven.propify [compile].executor": "Run",
     "Maven.propify [install].executor": "Run",
     "Maven.propify [validate].executor": "Run",
     "Maven.propify-test [compile].executor": "Run",
+    "Maven.propify-test [install].executor": "Run",
+    "Remote JVM Debug.mvnDebug.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "com.codeium.enabled": "true",
+    "deletionFromPopupRequiresConfirmation": "false",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
     "project.structure.last.edited": "Project",
@@ -75,47 +100,15 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/propify-processor/src/main/resources/META-INF" />
       <recent name="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify" />
       <recent name="$PROJECT_DIR$/propify-processor/src/test/resources" />
     </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.vgerbot.propify" />
+    </key>
   </component>
-  <component name="RunManager" selected="Application.PropifyCodeGenerator">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.test.Main" />
-      <module name="propify-test" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.vgerbot.propify.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="PropifyCodeGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.PropifyCodeGenerator" />
-      <module name="propify-processor" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.vgerbot.propify.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="JUnit.Utils_ParseValueTest">
     <configuration name="Utils" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.Utils" />
       <module name="propify-processor" />
@@ -129,11 +122,93 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Utils_ParseValueTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.Utils_ParseValueTest" />
+      <module name="propify-processor" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.vgerbot.propify.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Utils_ConvertToFieldNameTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="propify-processor" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.vgerbot.propify.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.vgerbot.propify" />
+      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.Utils_ConvertToFieldNameTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Utils_ParseValueTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="propify-processor" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.vgerbot.propify.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.vgerbot.propify" />
+      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.Utils_ParseValueTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Utils_ParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="propify-processor" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.vgerbot.propify.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.vgerbot.propify" />
+      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.Utils_ParseValueTest" />
+      <option name="METHOD_NAME" value="testParseValue_NoSuffix_IntegerValue_ReturnsInteger" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="mvnDebug" type="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="8050" />
+      <option name="AUTO_RESTART" value="false" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="8050" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.Utils" />
+      <item itemvalue="Application.Utils_ParseValueTest" />
+      <item itemvalue="JUnit.Utils_ConvertToFieldNameTest" />
+      <item itemvalue="JUnit.Utils_ParseValueTest" />
+      <item itemvalue="JUnit.Utils_ParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger" />
+      <item itemvalue="Remote JVM Debug.mvnDebug" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.PropifyCodeGenerator" />
+        <item itemvalue="JUnit.Utils_ParseValueTest" />
+        <item itemvalue="Application.Utils_ParseValueTest" />
         <item itemvalue="Application.Utils" />
-        <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.Utils_ParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger" />
+        <item itemvalue="JUnit.Utils_ConvertToFieldNameTest" />
       </list>
     </recent_temporary>
   </component>

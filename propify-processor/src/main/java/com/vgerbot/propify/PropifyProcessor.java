@@ -1,11 +1,14 @@
 package com.vgerbot.propify;
 
+import com.squareup.javapoet.ClassName;
+
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,8 +35,6 @@ public class PropifyProcessor extends AbstractProcessor {
         super.init(processingEnvironment);
     }
 
-
-
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         
@@ -50,17 +51,18 @@ public class PropifyProcessor extends AbstractProcessor {
                 if (propifyAnnotation == null) {
                     continue;
                 }
-                PropifyProperties properties = new PropifyProperties();
-                properties.put("a", 1);
-                properties.put("b", 2L);
-                properties.put("c", true);
-                PropifyProperties sub = new PropifyProperties();
-                sub.put("a", "string");
-                properties.put("sub", sub);
-                String packageName = "com.vgerbot.propify";
-                String generatedClassName = "PropsGen";
+                PropifyContext context = new PropifyContext(propifyAnnotation, processingEnv);
+                PropifyConfigParser parser = context.getParser();
+                PropifyProperties properties;
+                try(InputStream stream = context.loadResource()) {
+                    properties = parser.parse(stream);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                String packageName = processingEnv.getElementUtils().getPackageOf(typeElement).getQualifiedName().toString();
+                String generatedClassName = typeElement.getSimpleName() + "Propify";
+
                 String code = PropifyCodeGenerator.getInstance().generateCode(packageName, generatedClassName, properties);
-                System.out.println(code);
 
                 try {
                     JavaFileObject file = processingEnv.getFiler()
