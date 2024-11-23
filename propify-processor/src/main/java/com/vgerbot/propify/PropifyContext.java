@@ -27,12 +27,10 @@ public class PropifyContext {
         throw new IllegalStateException("No suitable configuration parser found for the specified media type: '" + mediaType + "'");
     }
 
-    private Propify propifyAnnotation;
     private String location;
     private String mediaType;
     private ProcessingEnvironment processingEnvironment;
     public PropifyContext(Propify propifyAnnotation, ProcessingEnvironment processingEnvironment) {
-        this.propifyAnnotation = propifyAnnotation;
         this.processingEnvironment = processingEnvironment;
         String location = propifyAnnotation.location();
         String mediaType = propifyAnnotation.mediaType();

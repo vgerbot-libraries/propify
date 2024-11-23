@@ -5,25 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="66a6e504-a888-4c90-a058-f4a1c937cb4f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyConfigParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyConfigResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyContext.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/parser/PropertiesParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/resource/ClassPropifyConfigResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/resources/META-INF/gradle/incremental.annotation.processors" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/resources/META-INF/services/com.vgerbot.propify.PropifyConfigParser" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/propify-processor/src/main/resources/META-INF/services/com.vgerbot.propify.PropifyConfigResource" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-annotation/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-annotation/src/main/java/com/vgerbot/propify/Propify.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/Propify.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-processor/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyCodeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyContext.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProperties.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-processor/src/test/resources/PropifyPropertiesParser.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/propify-test/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Props.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Props.java" afterDir="false" />
