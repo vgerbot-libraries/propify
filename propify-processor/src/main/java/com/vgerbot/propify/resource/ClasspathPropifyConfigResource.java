@@ -9,7 +9,7 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ClassPropifyConfigResource implements PropifyConfigResource {
+public class ClasspathPropifyConfigResource implements PropifyConfigResource {
     @Override
     public Boolean accept(String location) {
         if (location.startsWith("classpath:")) {

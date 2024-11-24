@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ServiceLoader;
 
-public class PropifyContext {
+public final class PropifyContext {
     static ServiceLoader<PropifyConfigParser> configParserServiceLoader = ServiceLoader.load(PropifyConfigParser.class, PropifyProcessor.class.getClassLoader());
     static ServiceLoader<PropifyConfigResource> resourceServiceLoader = ServiceLoader.load(PropifyConfigResource.class, PropifyProcessor.class.getClassLoader());
 
@@ -27,9 +27,10 @@ public class PropifyContext {
         throw new IllegalStateException("No suitable configuration parser found for the specified media type: '" + mediaType + "'");
     }
 
-    private String location;
-    private String mediaType;
-    private ProcessingEnvironment processingEnvironment;
+    private final String location;
+    private final String mediaType;
+    private final String generatedClassName;
+    private final ProcessingEnvironment processingEnvironment;
     public PropifyContext(Propify propifyAnnotation, ProcessingEnvironment processingEnvironment) {
         this.processingEnvironment = processingEnvironment;
         String location = propifyAnnotation.location();
@@ -39,6 +40,7 @@ public class PropifyContext {
         }
         this.location = location;
         this.mediaType = mediaType;
+        this.generatedClassName = propifyAnnotation.generatedClassName().trim();
     }
 
     public ProcessingEnvironment getProcessingEnvironment() {
@@ -50,4 +52,12 @@ public class PropifyContext {
     public PropifyConfigParser getParser() {
         return getParser(this.mediaType);
     }
+    public String getClassName(String originClassName) {
+        if(this.generatedClassName.equals("")) {
+            return originClassName + "Propify";
+        } else {
+            return this.generatedClassName.replaceAll("\\$\\$", originClassName);
+        }
+    }
+
 }

@@ -31,7 +31,7 @@ public class PropifyProcessor extends AbstractProcessor {
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        Set<String> set = new HashSet<>();
+        final Set<String> set = new HashSet<>();
         set.add(Propify.class.getCanonicalName());
         return set;
     }
@@ -42,11 +42,11 @@ public class PropifyProcessor extends AbstractProcessor {
     }
 
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        for (TypeElement annotation : annotations) {
-            Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(annotation);
+    public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+        for (final TypeElement annotation : annotations) {
+            final Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(annotation);
             
-            for (Element element : annotatedElements) {
+            for (final Element element : annotatedElements) {
                 try {
                     processElement(element);
                 } catch (Exception e) {
@@ -63,12 +63,12 @@ public class PropifyProcessor extends AbstractProcessor {
         return true;
     }
 
-    private void processElement(Element element) throws IOException {
+    private void processElement(final Element element) throws IOException {
         if (!(element instanceof TypeElement)) {
             return;
         }
 
-        TypeElement typeElement = (TypeElement) element;
+        final TypeElement typeElement = (TypeElement) element;
         Propify propifyAnnotation = typeElement.getAnnotation(Propify.class);
 
         if (propifyAnnotation == null) {
@@ -76,8 +76,8 @@ public class PropifyProcessor extends AbstractProcessor {
         }
 
         // Create context and validate configuration
-        PropifyContext context = new PropifyContext(propifyAnnotation, processingEnv);
-        PropifyConfigParser parser = context.getParser();
+        final PropifyContext context = new PropifyContext(propifyAnnotation, processingEnv);
+        final PropifyConfigParser parser = context.getParser();
         
         if (parser == null) {
             messager.printMessage(
@@ -89,7 +89,7 @@ public class PropifyProcessor extends AbstractProcessor {
         }
 
         // Load and parse properties
-        PropifyProperties properties;
+        final PropifyProperties properties;
         try (InputStream stream = context.loadResource()) {
             if (stream == null) {
                 messager.printMessage(
@@ -103,17 +103,17 @@ public class PropifyProcessor extends AbstractProcessor {
         }
 
         // Generate code
-        String packageName = processingEnv.getElementUtils()
+        final String packageName = processingEnv.getElementUtils()
             .getPackageOf(typeElement)
             .getQualifiedName()
             .toString();
-        String generatedClassName = typeElement.getSimpleName() + "Propify";
+        final String generatedClassName = context.getClassName(typeElement.getSimpleName().toString());
 
-        String code = JavaPoetCodeGenerator.getInstance()
+        final String code = JavaPoetCodeGenerator.getInstance()
             .generateCode(packageName, generatedClassName, properties);
 
         // Write generated file
-        JavaFileObject file = processingEnv.getFiler()
+        final JavaFileObject file = processingEnv.getFiler()
             .createSourceFile(packageName + "." + generatedClassName);
             
         try (Writer writer = file.openWriter()) {
@@ -128,7 +128,7 @@ public class PropifyProcessor extends AbstractProcessor {
     }
 
     private String getStackTrace(Exception e) {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         for (StackTraceElement element : e.getStackTrace()) {
             sb.append("\tat ").append(element.toString()).append("\n");
         }

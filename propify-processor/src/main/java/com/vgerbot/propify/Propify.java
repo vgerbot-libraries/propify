@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface Propify {
     String location();
     String mediaType() default "";
+    String generatedClassName() default "$$Propify";
 }
