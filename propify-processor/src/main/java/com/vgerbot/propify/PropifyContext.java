@@ -1,63 +1,90 @@
 package com.vgerbot.propify;
 
+import com.vgerbot.propify.service.ServiceLoaderWrapper;
+
 import javax.annotation.processing.ProcessingEnvironment;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ServiceLoader;
 
 public final class PropifyContext {
-    static ServiceLoader<PropifyConfigParser> configParserServiceLoader = ServiceLoader.load(PropifyConfigParser.class, PropifyProcessor.class.getClassLoader());
-    static ServiceLoader<PropifyConfigResource> resourceServiceLoader = ServiceLoader.load(PropifyConfigResource.class, PropifyProcessor.class.getClassLoader());
-
-    private static InputStream loadResource(ProcessingEnvironment processingEnvironment, String location) throws IOException {
-        for (PropifyConfigResource configLoader : resourceServiceLoader) {
-            Boolean accept = configLoader.accept(location);
-            if(accept) {
-                return configLoader.load(processingEnvironment, location);
-            }
-        }
-        throw new IllegalStateException("No suitable configuration loader found for the specified location: " + location);
-    }
-    private static PropifyConfigParser getParser(String mediaType) {
-        for (PropifyConfigParser parser : configParserServiceLoader) {
-            if (parser.accept(mediaType)) {
-                return parser;
-            }
-        }
-        throw new IllegalStateException("No suitable configuration parser found for the specified media type: '" + mediaType + "'");
-    }
-
+    private final ServiceLoaderWrapper<PropifyConfigParser> configParserServiceLoader;
+    private final ServiceLoaderWrapper<PropifyConfigResource> resourceServiceLoader;
     private final String location;
     private final String mediaType;
     private final String generatedClassName;
     private final ProcessingEnvironment processingEnvironment;
+
     public PropifyContext(Propify propifyAnnotation, ProcessingEnvironment processingEnvironment) {
-        this.processingEnvironment = processingEnvironment;
-        String location = propifyAnnotation.location();
-        String mediaType = propifyAnnotation.mediaType();
-        if ("".equals(mediaType)) {
-            mediaType = Utils.inferMediaType(location);
+        this(propifyAnnotation, processingEnvironment,
+             ServiceLoaderWrapper.forClass(PropifyConfigParser.class, PropifyProcessor.class.getClassLoader()),
+             ServiceLoaderWrapper.forClass(PropifyConfigResource.class, PropifyProcessor.class.getClassLoader()));
+    }
+
+    // Constructor for testing
+    PropifyContext(Propify propifyAnnotation, ProcessingEnvironment processingEnvironment,
+                  ServiceLoaderWrapper<PropifyConfigParser> configParserServiceLoader,
+                  ServiceLoaderWrapper<PropifyConfigResource> resourceServiceLoader) {
+        if (propifyAnnotation == null) {
+            throw new IllegalArgumentException("Propify annotation cannot be null");
         }
-        this.location = location;
-        this.mediaType = mediaType;
-        this.generatedClassName = propifyAnnotation.generatedClassName().trim();
+        if (processingEnvironment == null) {
+            throw new IllegalArgumentException("ProcessingEnvironment cannot be null");
+        }
+        
+        this.processingEnvironment = processingEnvironment;
+        this.configParserServiceLoader = configParserServiceLoader;
+        this.resourceServiceLoader = resourceServiceLoader;
+
+        String location = propifyAnnotation.location();
+        if (location == null || location.trim().isEmpty()) {
+            throw new IllegalArgumentException("Location cannot be null or empty");
+        }
+        this.location = location.trim();
+
+        String mediaType = propifyAnnotation.mediaType();
+        if (mediaType == null || mediaType.trim().isEmpty()) {
+            mediaType = Utils.inferMediaType(this.location);
+        }
+        this.mediaType = mediaType.trim();
+
+        String generatedClassName = propifyAnnotation.generatedClassName();
+        if(generatedClassName == null || generatedClassName.trim().isEmpty()) {
+            generatedClassName = "$$Propify";
+        }
+        this.generatedClassName = generatedClassName.trim();
     }
 
     public ProcessingEnvironment getProcessingEnvironment() {
         return processingEnvironment;
     }
+
     public InputStream loadResource() throws IOException {
-        return loadResource(this.processingEnvironment, this.location);
+        for (PropifyConfigResource configLoader : resourceServiceLoader) {
+            if (configLoader.accept(location)) {
+                return configLoader.load(processingEnvironment, location);
+            }
+        }
+        throw new IOException("Could not find resource: " + location);
     }
-    public PropifyConfigParser getParser() {
-        return getParser(this.mediaType);
+
+    public PropifyConfigParser getParser() throws IOException {
+        for (PropifyConfigParser parser : configParserServiceLoader) {
+            if (parser.accept(mediaType)) {
+                return parser;
+            }
+        }
+        throw new IOException("No parser found for media type: " + mediaType);
     }
+
     public String getClassName(String originClassName) {
-        if(this.generatedClassName.equals("")) {
+        if (originClassName == null || originClassName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Origin class name cannot be null or empty");
+        }
+
+        if (this.generatedClassName.isEmpty()) {
             return originClassName + "Propify";
         } else {
             return this.generatedClassName.replaceAll("\\$\\$", originClassName);
         }
     }
-
 }

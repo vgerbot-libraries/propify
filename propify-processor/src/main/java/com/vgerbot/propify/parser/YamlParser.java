@@ -1,5 +1,6 @@
 package com.vgerbot.propify.parser;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.vgerbot.propify.PropifyConfigParser;
@@ -7,6 +8,7 @@ import com.vgerbot.propify.PropifyProperties;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 public class YamlParser implements PropifyConfigParser {
@@ -18,7 +20,23 @@ public class YamlParser implements PropifyConfigParser {
 
     @Override
     public PropifyProperties parse(InputStream stream) throws IOException {
-        Map<String, Object> yamlMap = yamlMapper.readValue(stream, Map.class);
+        if (stream == null) {
+            throw new IOException("Input stream cannot be null");
+        }
+
+        Map<String, Object> yamlMap;
+        try {
+            yamlMap = yamlMapper.readValue(stream, Map.class);
+            if (yamlMap == null) {
+                return new PropifyProperties();
+            }
+        } catch (JsonProcessingException e) {
+            if (e.getMessage() != null && e.getMessage().contains("No content")) {
+                return new PropifyProperties();
+            }
+            throw new IOException("Invalid YAML format: " + e.getMessage(), e);
+        }
+
         PropifyProperties properties = new PropifyProperties();
         convertMapToProperties(yamlMap, properties);
         return properties;
@@ -26,20 +44,34 @@ public class YamlParser implements PropifyConfigParser {
 
     @Override
     public Boolean accept(String mediaType) {
-        return "application/yaml".equals(mediaType.toLowerCase()) || 
-               "application/x-yaml".equals(mediaType.toLowerCase()) ||
-               "text/yaml".equals(mediaType.toLowerCase()) ||
-               "text/x-yaml".equals(mediaType.toLowerCase());
+        if (mediaType == null) {
+            return false;
+        }
+        String type = mediaType.toLowerCase();
+        return "application/yaml".equals(type) || 
+               "application/x-yaml".equals(type) ||
+               "text/yaml".equals(type) ||
+               "text/x-yaml".equals(type);
     }
 
+    @SuppressWarnings("unchecked")
     private void convertMapToProperties(Map<String, Object> map, PropifyProperties properties) {
+        if (map == null) {
+            return;
+        }
+
         map.forEach((key, value) -> {
+            if (key == null) {
+                return;
+            }
+
             if (value instanceof Map) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> nestedMap = (Map<String, Object>) value;
                 PropifyProperties nestedProps = new PropifyProperties();
-                convertMapToProperties(nestedMap, nestedProps);
+                convertMapToProperties((Map<String, Object>) value, nestedProps);
                 properties.put(key, nestedProps);
+            } else if (value instanceof List) {
+                // Preserve lists as-is
+                properties.put(key, value);
             } else {
                 properties.put(key, value);
             }

@@ -14,10 +14,6 @@ import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Annotation processor for the @Propify annotation.
- * Generates type-safe property access classes from property files.
- */
 @SupportedAnnotationTypes("com.vgerbot.propify.Propify")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PropifyProcessor extends AbstractProcessor {
@@ -47,67 +43,56 @@ public class PropifyProcessor extends AbstractProcessor {
             final Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(annotation);
             
             for (final Element element : annotatedElements) {
+                if (!(element instanceof TypeElement)) {
+                    continue;
+                }
+                
                 try {
-                    processElement(element);
+                    processElement((TypeElement) element);
                 } catch (Exception e) {
-                    // Report error with element and stack trace
-                    messager.printMessage(
-                        Diagnostic.Kind.ERROR,
-                        "Failed to process @Propify annotation: " + e.getMessage() + "\n" + 
-                        getStackTrace(e),
-                        element
-                    );
+                    String message = e.getMessage();
+                    if (message != null) {
+                        if (message.contains("No parser found for media type")) {
+                            messager.printMessage(Diagnostic.Kind.ERROR, 
+                                "No parser found for media type", element);
+                        } else if (message.contains("Could not find resource")) {
+                            messager.printMessage(Diagnostic.Kind.ERROR, 
+                                "Could not find resource", element);
+                        } else {
+                            messager.printMessage(Diagnostic.Kind.ERROR, 
+                                "Failed to process @Propify annotation: " + message, element);
+                        }
+                    } else {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
         return true;
     }
 
-    private void processElement(final Element element) throws IOException {
-        if (!(element instanceof TypeElement)) {
-            return;
-        }
-
-        final TypeElement typeElement = (TypeElement) element;
-        Propify propifyAnnotation = typeElement.getAnnotation(Propify.class);
-
+    private void processElement(final TypeElement element) throws IOException {
+        Propify propifyAnnotation = element.getAnnotation(Propify.class);
         if (propifyAnnotation == null) {
             return;
         }
 
-        // Create context and validate configuration
+        // Create context and load configuration
         final PropifyContext context = new PropifyContext(propifyAnnotation, processingEnv);
-        final PropifyConfigParser parser = context.getParser();
         
-        if (parser == null) {
-            messager.printMessage(
-                Diagnostic.Kind.ERROR,
-                "No parser found for media type: " + propifyAnnotation.mediaType(),
-                element
-            );
-            return;
-        }
-
         // Load and parse properties
-        final PropifyProperties properties;
+        PropifyProperties properties;
         try (InputStream stream = context.loadResource()) {
-            if (stream == null) {
-                messager.printMessage(
-                    Diagnostic.Kind.ERROR,
-                    "Could not find resource: " + propifyAnnotation.location(),
-                    element
-                );
-                return;
-            }
+            PropifyConfigParser parser = context.getParser();
             properties = parser.parse(stream);
         }
 
         // Generate code
         final String packageName = processingEnv.getElementUtils()
-            .getPackageOf(typeElement)
+            .getPackageOf(element)
             .getQualifiedName()
             .toString();
-        final String generatedClassName = context.getClassName(typeElement.getSimpleName().toString());
+        final String generatedClassName = context.getClassName(element.getSimpleName().toString());
 
         final String code = JavaPoetCodeGenerator.getInstance()
             .generateCode(packageName, generatedClassName, properties);
@@ -122,16 +107,8 @@ public class PropifyProcessor extends AbstractProcessor {
 
         messager.printMessage(
             Diagnostic.Kind.NOTE,
-            "Successfully generated " + generatedClassName + " for " + propifyAnnotation.location(),
+            "Generated " + generatedClassName + " from " + propifyAnnotation.location(),
             element
         );
-    }
-
-    private String getStackTrace(Exception e) {
-        final StringBuilder sb = new StringBuilder();
-        for (StackTraceElement element : e.getStackTrace()) {
-            sb.append("\tat ").append(element.toString()).append("\n");
-        }
-        return sb.toString();
     }
 }

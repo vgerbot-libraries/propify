@@ -155,7 +155,7 @@ public class Utils {
                 return "application/json";
             case "yml":
             case "yaml":
-                return "application/x-yaml";
+                return "application/yaml";
             default:
                 return null;
         }

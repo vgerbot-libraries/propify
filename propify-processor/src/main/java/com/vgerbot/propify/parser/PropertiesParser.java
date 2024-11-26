@@ -5,38 +5,61 @@ import com.vgerbot.propify.PropifyProperties;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-public class PropertiesParser implements PropifyConfigParser  {
+public class PropertiesParser implements PropifyConfigParser {
     @Override
     public PropifyProperties parse(InputStream stream) throws IOException {
+        if (stream == null) {
+            throw new IOException("Input stream cannot be null");
+        }
+
         Properties properties = new Properties();
-        properties.load(stream);
+        try (InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
+            properties.load(reader);
+        } catch (IllegalArgumentException e) {
+            throw new IOException("Invalid properties format: " + e.getMessage(), e);
+        }
+
         PropifyProperties propifyProperties = new PropifyProperties();
         properties.forEach((key, value) -> {
             String[] keyPath = key.toString().split("\\s*\\.\\s*");
-            System.out.println(Arrays.toString(keyPath));
+            String strValue = value.toString().trim();
+
+            // Handle nested properties
             if (keyPath.length > 1) {
-                PropifyProperties subProperties = propifyProperties;
+                PropifyProperties current = propifyProperties;
                 for (int i = 0; i < keyPath.length - 1; i++) {
-                    PropifyProperties newSubProperties = (PropifyProperties) subProperties.computeIfAbsent(keyPath[i], k -> new PropifyProperties());
-                    subProperties = newSubProperties;
+                    String pathKey = keyPath[i].trim();
+                    Object existing = current.get(pathKey);
+                    if (existing instanceof PropifyProperties) {
+                        current = (PropifyProperties) existing;
+                    } else {
+                        PropifyProperties newProps = new PropifyProperties();
+                        current.put(pathKey, newProps);
+                        current = newProps;
+                    }
                 }
-                subProperties.put(keyPath[keyPath.length - 1], value);
+                current.put(keyPath[keyPath.length - 1].trim(), strValue);
             } else {
-                propifyProperties.put(key.toString(), value);
+                propifyProperties.put(key.toString().trim(), strValue);
             }
         });
+
         return propifyProperties;
     }
 
     @Override
     public Boolean accept(String mediaType) {
-        return "application/java-properties".equals(mediaType.toLowerCase()) ||
-               "application/x-java-properties".equals(mediaType.toLowerCase()) ||
-               "text/java-properties".equals(mediaType.toLowerCase()) ||
-               "text/x-java-properties".equals(mediaType.toLowerCase());
+        if (mediaType == null) {
+            return false;
+        }
+        String type = mediaType.toLowerCase();
+        return "application/java-properties".equals(type) ||
+               "application/x-java-properties".equals(type) ||
+               "text/java-properties".equals(type) ||
+               "text/x-java-properties".equals(type);
     }
-
 }
