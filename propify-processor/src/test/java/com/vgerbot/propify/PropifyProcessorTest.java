@@ -53,7 +53,6 @@ public class PropifyProcessorTest {
         
         // Setup processing environment
         when(processingEnv.getElementUtils()).thenReturn(elementUtils);
-        when(processingEnv.getTypeUtils()).thenReturn(typeUtils);
         when(processingEnv.getFiler()).thenReturn(filer);
         when(processingEnv.getMessager()).thenReturn(messager);
         
@@ -116,10 +115,6 @@ public class PropifyProcessorTest {
         
         when(roundEnv.getElementsAnnotatedWith(any(TypeElement.class)))
             .thenReturn((Set) Collections.singleton(typeElement));
-        
-        // Mock resource loading to return null (not found)
-        when(processingEnv.getFiler().getResource(any(), any(), any()))
-            .thenReturn(new TestFileObject(null));
 
         // Execute
         processor.process(Collections.singleton(typeElement), roundEnv);
