@@ -10,6 +10,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/propify-annotation/pom.xml" />
+        <option value="$PROJECT_DIR$/propify-test/pom.xml" />
       </set>
     </option>
   </component>

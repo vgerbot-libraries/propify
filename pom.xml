@@ -10,7 +10,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>propify-processor</module>
-        <module>propify-test</module>
     </modules>
 
     <properties>

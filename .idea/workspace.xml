@@ -5,13 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="66a6e504-a888-4c90-a058-f4a1c937cb4f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-test/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Props.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Props.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-test/src/main/resources/messages.properties" beforeDir="false" afterPath="$PROJECT_DIR$/propify-test/src/main/resources/messages.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-test/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-test/src/main/java/com/vgerbot/propify/test/Props.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-test/src/main/resources/messages.properties" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,36 +51,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Application.PropertiesParser.executor": "Run",
-    "Application.PropifyCodeGenerator.executor": "Run",
-    "Application.Utils.executor": "Run",
-    "Application.Utils_ParseValueTest.executor": "Run",
-    "JUnit.UtilsParseValueTest.executor": "Run",
-    "JUnit.UtilsParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger.executor": "Run",
-    "JUnit.UtilsTest.executor": "Run",
-    "JUnit.Utils_ParseValueTest.executor": "Run",
-    "JUnit.Utils_ParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger.executor": "Run",
-    "Maven.propify [clean].executor": "Run",
-    "Maven.propify [compile].executor": "Run",
-    "Maven.propify [install].executor": "Run",
-    "Maven.propify [validate].executor": "Run",
-    "Maven.propify-test [compile].executor": "Run",
-    "Maven.propify-test [install].executor": "Run",
-    "Remote JVM Debug.mvnDebug.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "com.codeium.enabled": "true",
-    "deletionFromPopupRequiresConfirmation": "false",
-    "git-widget-placeholder": "master",
-    "kotlin-language-version-configured": "true",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.annotationProcessors"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.PropertiesParser.executor&quot;: &quot;Run&quot;,
+    &quot;Application.PropifyCodeGenerator.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Utils.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Utils_ParseValueTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UtilsParseValueTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UtilsParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UtilsTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.Utils_ParseValueTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.Utils_ParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.propify [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.propify [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.propify [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.propify [validate].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.propify-test [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.propify-test [install].executor&quot;: &quot;Run&quot;,
+    &quot;Remote JVM Debug.mvnDebug.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;com.codeium.enabled&quot;: &quot;true&quot;,
+    &quot;deletionFromPopupRequiresConfirmation&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.annotationProcessors&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/propify-processor/src/main/resources/META-INF" />
@@ -165,6 +164,41 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="propify" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="propify" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="propify" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="mvnDebug" type="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
@@ -176,6 +210,18 @@
         <option name="DEBUG_PORT" value="8050" />
         <option name="LOCAL" value="false" />
       </RunnerSettings>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <module name="propify" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
       <method v="2" />
     </configuration>
     <list>
