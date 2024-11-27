@@ -3,6 +3,7 @@ package com.vgerbot.propify;
 import com.vgerbot.propify.service.ServiceLoaderWrapper;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -80,7 +81,7 @@ public final class PropifyContext {
         if (originClassName == null || originClassName.trim().isEmpty()) {
             throw new IllegalArgumentException("Origin class name cannot be null or empty");
         }
-
+        
         if (this.generatedClassName.isEmpty()) {
             return originClassName + "Propify";
         } else {

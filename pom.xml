@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>propify-processor</module>
+        <module>example</module>
     </modules>
 
     <properties>
@@ -17,7 +18,5 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-
 
 </project>
