@@ -3,6 +3,7 @@
   <component name="SonarLintProjectSettings">
     <option name="moduleMapping">
       <map>
+        <entry key="example" value="example-jdk8" />
         <entry key="propify-processor" value="propify-runtime" />
       </map>
     </option>
