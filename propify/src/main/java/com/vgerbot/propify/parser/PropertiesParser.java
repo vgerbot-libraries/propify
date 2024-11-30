@@ -1,6 +1,7 @@
 package com.vgerbot.propify.parser;
 
 import com.vgerbot.propify.PropifyConfigParser;
+import com.vgerbot.propify.PropifyContext;
 import com.vgerbot.propify.PropifyProperties;
 
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.util.Properties;
 
 public class PropertiesParser implements PropifyConfigParser {
     @Override
-    public PropifyProperties parse(InputStream stream) throws IOException {
+    public PropifyProperties parse(PropifyContext context, InputStream stream) throws IOException {
         if (stream == null) {
             throw new IOException("Input stream cannot be null");
         }
@@ -23,7 +24,7 @@ public class PropertiesParser implements PropifyConfigParser {
             throw new IOException("Invalid properties format: " + e.getMessage(), e);
         }
 
-        PropifyProperties propifyProperties = new PropifyProperties();
+        PropifyProperties propifyProperties = new PropifyProperties(context.isAutoTypeConversion());
         properties.forEach((key, value) -> {
             String[] keyPath = key.toString().split("\\s*\\.\\s*");
             String strValue = value.toString().trim();
@@ -37,7 +38,7 @@ public class PropertiesParser implements PropifyConfigParser {
                     if (existing instanceof PropifyProperties) {
                         current = (PropifyProperties) existing;
                     } else {
-                        PropifyProperties newProps = new PropifyProperties();
+                        PropifyProperties newProps = current.createNested();
                         current.put(pathKey, newProps);
                         current = newProps;
                     }

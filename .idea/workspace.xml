@@ -5,18 +5,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="66a6e504-a888-4c90-a058-f4a1c937cb4f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/example/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/src/main/java/com/vgerbot/example/jdk8/ExampleApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/src/main/java/com/vgerbot/example/jdk8/PropertiesConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/src/main/java/com/vgerbot/example/jdk8/YAMLConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/src/main/resources/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/example/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/propify/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/Propify.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/Propify.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyConfigParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyConfigParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyConfigResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyConfigResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/PropifyProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyProperties.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/generator/CodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/generator/CodeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/generator/JavaPoetCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/generator/JavaPoetCodeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/parser/PropertiesParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/parser/PropertiesParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/parser/YamlParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/parser/YamlParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/resource/ClasspathPropifyConfigResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/resource/ClasspathPropifyConfigResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify/service/ServiceLoaderWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/service/ServiceLoaderWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/resources/META-INF/gradle/incremental.annotation.processors" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/resources/META-INF/gradle/incremental.annotation.processors" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/resources/META-INF/services/com.vgerbot.propify.PropifyConfigParser" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/resources/META-INF/services/com.vgerbot.propify.PropifyConfigParser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/resources/META-INF/services/com.vgerbot.propify.PropifyConfigResource" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/resources/META-INF/services/com.vgerbot.propify.PropifyConfigResource" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/main/resources/META-INF/services/javax.annotation.processing.Processor" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/resources/META-INF/services/javax.annotation.processing.Processor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/test/java/com/vgerbot/propify/PropifyContextTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/test/java/com/vgerbot/propify/PropifyContextTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/test/java/com/vgerbot/propify/PropifyProcessorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/test/java/com/vgerbot/propify/PropifyProcessorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/test/java/com/vgerbot/propify/PropifyPropertiesTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/test/java/com/vgerbot/propify/PropifyPropertiesTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/test/java/com/vgerbot/propify/Utils_ConvertToFieldNameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/test/java/com/vgerbot/propify/Utils_ConvertToFieldNameTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/test/java/com/vgerbot/propify/Utils_ParseValueTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/test/java/com/vgerbot/propify/Utils_ParseValueTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/test/java/com/vgerbot/propify/generator/JavaPoetCodeGeneratorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/test/java/com/vgerbot/propify/generator/JavaPoetCodeGeneratorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/test/java/com/vgerbot/propify/parser/PropertiesParserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/test/java/com/vgerbot/propify/parser/PropertiesParserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/test/java/com/vgerbot/propify/parser/YamlParserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/test/java/com/vgerbot/propify/parser/YamlParserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify-processor/src/test/java/com/vgerbot/propify/resource/ClasspathPropifyConfigResourceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/test/java/com/vgerbot/propify/resource/ClasspathPropifyConfigResourceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +60,31 @@
     &quot;assignee&quot;: &quot;y1j2x34&quot;
   }
 }</component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="main" />
+                    <option name="lastUsedInstant" value="1732723609" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="master" />
+                    <option name="lastUsedInstant" value="1732723608" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;git@github.com:vgerbot-libraries/propify.git&quot;,
@@ -74,15 +119,18 @@
     "Maven.example-jdk8 [compile].executor": "Run",
     "Maven.propify [clean].executor": "Run",
     "Maven.propify [compile].executor": "Run",
+    "Maven.propify [deploy]  .executor": "Run",
+    "Maven.propify [deploy].executor": "Run",
     "Maven.propify [install].executor": "Run",
     "Maven.propify [validate].executor": "Run",
+    "Maven.propify-processor [test].executor": "Run",
     "Maven.propify-test [compile].executor": "Run",
     "Maven.propify-test [install].executor": "Run",
     "Remote JVM Debug.mvnDebug.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "com.codeium.enabled": "true",
     "deletionFromPopupRequiresConfirmation": "false",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/jianxin_yang/Workspaces/Github/propify/example-jdk8/src/main/resources",
     "project.structure.last.edited": "Project",
@@ -96,9 +144,9 @@
       <recent name="$PROJECT_DIR$/example-jdk8/src/main/resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/propify-processor/src/main/resources/META-INF" />
-      <recent name="$PROJECT_DIR$/propify-processor/src/main/java/com/vgerbot/propify" />
-      <recent name="$PROJECT_DIR$/propify-processor/src/test/resources" />
+      <recent name="$PROJECT_DIR$/propify/src/main/resources/META-INF" />
+      <recent name="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify" />
+      <recent name="$PROJECT_DIR$/propify/src/test/resources" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.vgerbot.propify" />
@@ -120,7 +168,7 @@
     </configuration>
     <configuration name="Utils" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.Utils" />
-      <module name="propify-processor" />
+      <module name="propify" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.vgerbot.propify.*" />
@@ -133,7 +181,7 @@
     </configuration>
     <configuration name="Utils_ParseValueTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.Utils_ParseValueTest" />
-      <module name="propify-processor" />
+      <module name="propify" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.vgerbot.propify.*" />
@@ -145,7 +193,7 @@
       </method>
     </configuration>
     <configuration name="Utils_ParseValueTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="propify-processor" />
+      <module name="propify" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.vgerbot.propify.*" />
@@ -176,20 +224,20 @@
       </method>
     </configuration>
     <configuration default="true" type="JetRunConfigurationType">
-      <module name="propify" />
+      <module name="propify-parent" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="propify" />
+      <module name="propify-parent" />
       <option name="filePath" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <module name="propify" />
+      <module name="propify-parent" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -224,7 +272,7 @@
       <method v="2" />
     </configuration>
     <configuration default="true" type="Tox" factoryName="Tox">
-      <module name="propify" />
+      <module name="propify-parent" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -275,6 +323,7 @@
       <item itemvalue="Application.Utils_ParseValueTest" />
       <item itemvalue="JUnit.Utils_ParseValueTest" />
       <item itemvalue="JUnit.Utils_ParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger" />
+      <item itemvalue="Maven.propify [deploy]  " />
       <item itemvalue="Remote JVM Debug.mvnDebug" />
     </list>
     <recent_temporary>

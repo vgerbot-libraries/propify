@@ -84,7 +84,7 @@ public class PropifyProcessor extends AbstractProcessor {
         PropifyProperties properties;
         try (InputStream stream = context.loadResource()) {
             PropifyConfigParser parser = context.getParser();
-            properties = parser.parse(stream);
+            properties = parser.parse(context, stream);
         }
 
         // Generate code

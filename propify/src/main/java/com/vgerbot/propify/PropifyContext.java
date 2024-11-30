@@ -3,7 +3,6 @@ package com.vgerbot.propify;
 import com.vgerbot.propify.service.ServiceLoaderWrapper;
 
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -14,6 +13,7 @@ public final class PropifyContext {
     private final String mediaType;
     private final String generatedClassName;
     private final ProcessingEnvironment processingEnvironment;
+    private final boolean autoTypeConversion;
 
     public PropifyContext(Propify propifyAnnotation, ProcessingEnvironment processingEnvironment) {
         this(propifyAnnotation, processingEnvironment,
@@ -35,6 +35,7 @@ public final class PropifyContext {
         this.processingEnvironment = processingEnvironment;
         this.configParserServiceLoader = configParserServiceLoader;
         this.resourceServiceLoader = resourceServiceLoader;
+        this.autoTypeConversion = propifyAnnotation.autoTypeConversion();
 
         String location = propifyAnnotation.location();
         if (location == null || location.trim().isEmpty()) {
@@ -57,6 +58,10 @@ public final class PropifyContext {
 
     public ProcessingEnvironment getProcessingEnvironment() {
         return processingEnvironment;
+    }
+
+    public boolean isAutoTypeConversion() {
+        return autoTypeConversion;
     }
 
     public InputStream loadResource() throws IOException {

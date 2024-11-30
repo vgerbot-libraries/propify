@@ -4,7 +4,8 @@
     <option name="moduleMapping">
       <map>
         <entry key="example" value="example-jdk8" />
-        <entry key="propify-processor" value="propify-runtime" />
+        <entry key="propify" value="propify-runtime" />
+        <entry key="propify-parent" value="propify" />
       </map>
     </option>
   </component>

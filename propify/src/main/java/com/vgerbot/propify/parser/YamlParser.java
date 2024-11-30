@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.vgerbot.propify.PropifyConfigParser;
+import com.vgerbot.propify.PropifyContext;
 import com.vgerbot.propify.PropifyProperties;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class YamlParser implements PropifyConfigParser {
     }
 
     @Override
-    public PropifyProperties parse(InputStream stream) throws IOException {
+    public PropifyProperties parse(PropifyContext context, InputStream stream) throws IOException {
         if (stream == null) {
             throw new IOException("Input stream cannot be null");
         }
@@ -28,16 +29,16 @@ public class YamlParser implements PropifyConfigParser {
         try {
             yamlMap = yamlMapper.readValue(stream, Map.class);
             if (yamlMap == null) {
-                return new PropifyProperties();
+                return new PropifyProperties(context.isAutoTypeConversion());
             }
         } catch (JsonProcessingException e) {
             if (e.getMessage() != null && e.getMessage().contains("No content")) {
-                return new PropifyProperties();
+                return new PropifyProperties(context.isAutoTypeConversion());
             }
             throw new IOException("Invalid YAML format: " + e.getMessage(), e);
         }
 
-        PropifyProperties properties = new PropifyProperties();
+        PropifyProperties properties = new PropifyProperties(context.isAutoTypeConversion());
         convertMapToProperties(yamlMap, properties);
         return properties;
     }
@@ -66,7 +67,7 @@ public class YamlParser implements PropifyConfigParser {
             }
 
             if (value instanceof Map) {
-                PropifyProperties nestedProps = new PropifyProperties();
+                PropifyProperties nestedProps = properties.createNested();
                 convertMapToProperties((Map<String, Object>) value, nestedProps);
                 properties.put(key, nestedProps);
             } else if (value instanceof List) {

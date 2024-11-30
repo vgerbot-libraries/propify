@@ -1,22 +1,47 @@
 package com.vgerbot.propify.parser;
 
+import com.vgerbot.propify.Propify;
+import com.vgerbot.propify.PropifyContext;
 import com.vgerbot.propify.PropifyProperties;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class PropertiesParserTest {
+
     private PropertiesParser parser;
 
+    private PropifyContext context;
+    @Mock
+    private Propify propifyAnnotation;
+    @Mock private ProcessingEnvironment processingEnv;
+    @Mock private Filer filer;
+    @Mock private Messager messager;
     @Before
     public void setUp() {
         parser = new PropertiesParser();
+//        when(processingEnv.getFiler()).thenReturn(filer);
+//        when(processingEnv.getMessager()).thenReturn(messager);
+        when(propifyAnnotation.location()).thenReturn("classpath: test.yml");
+        when(propifyAnnotation.autoTypeConversion()).thenReturn(true);
+        context = new PropifyContext(
+                propifyAnnotation,
+                processingEnv
+        );
     }
 
     @Test
@@ -141,7 +166,7 @@ public class PropertiesParserTest {
 
     private PropifyProperties parseProperties(String props) throws IOException {
         try (InputStream stream = new ByteArrayInputStream(props.getBytes(StandardCharsets.UTF_8))) {
-            return parser.parse(stream);
+            return parser.parse(context, stream);
         }
     }
 }

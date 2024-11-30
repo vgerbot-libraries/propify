@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.vgerbot</groupId>
-        <artifactId>propify</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <artifactId>propify-parent</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <licenses>
@@ -30,7 +30,7 @@
         <url>https://github.com/vgerbot-libraries/propify/tree/main</url>
     </scm>
 
-    <artifactId>propify-processor</artifactId>
+    <artifactId>propify</artifactId>
     <name>Propify Annotation Processor</name>
     <description>Java annotation processor for generating type-safe configuration classes</description>
     <url>https://github.com/y1j2x34/propify</url>
