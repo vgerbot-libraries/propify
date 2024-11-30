@@ -9,9 +9,31 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Chien-hsin Yang</name>
+            <email>y1j2x345@gmail.com</email>
+            <organizationUrl>https://github.com/y1j2x34</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/vgerbot-libraries/propify.git</connection>
+        <developerConnection>scm:git:ssh://github.com:vgerbot-libraries/propify.git</developerConnection>
+        <url>https://github.com/vgerbot-libraries/propify/tree/main</url>
+    </scm>
+
     <artifactId>propify-processor</artifactId>
     <name>Propify Annotation Processor</name>
     <description>Java annotation processor for generating type-safe configuration classes</description>
+    <url>https://github.com/y1j2x34/propify</url>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -57,7 +79,58 @@
                     <compilerArgument>-proc:none</compilerArgument>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.6.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>oss</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>published</waitUntil>
+
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
 </project>
