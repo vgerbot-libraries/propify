@@ -17,21 +17,79 @@ Propify is a lightweight Java annotation processor that generates type-safe Java
 
 ## Installation
 
+You can obtain Propify through various build systems:
+
 ### Maven
 
+Add the following to your `pom.xml`:
+
 ```xml
-<dependency>
-    <groupId>com.vgerbot</groupId>
-    <artifactId>propify-processor</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <scope>provided</scope>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>com.vgerbot</groupId>
+        <artifactId>propify</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+</dependencies>
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+                <annotationProcessorPaths>
+                    <path>
+                        <groupId>com.vgerbot</groupId>
+                        <artifactId>propify</artifactId>
+                        <version>1.0.0</version>
+                    </path>
+                </annotationProcessorPaths>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
 ```
 
 ### Gradle
 
+For Gradle version >= 4.6:
+
 ```groovy
-annotationProcessor 'com.vgerbot:propify-processor:1.0-SNAPSHOT'
+dependencies {
+    implementation 'com.vgerbot:propify:1.0.0'
+    annotationProcessor 'com.vgerbot:propify:1.0.0'
+}
+```
+
+For older Gradle versions (< 4.6):
+
+```groovy
+plugins {
+    id 'net.ltgt.apt' version '0.21'
+}
+
+dependencies {
+    compile 'com.vgerbot:propify:1.0.0'
+    apt 'com.vgerbot:propify:1.0.0'
+}
+```
+
+### Apache Ant
+
+For Ant-based projects, add the following to your `build.xml`:
+
+```xml
+<javac
+    srcdir="src/main/java"
+    destdir="target/classes"
+    classpath="path/to/propify-1.0.0.jar">
+    <compilerarg line="-processorpath path/to/propify-1.0.0.jar"/>
+    <compilerarg line="-s target/generated-sources"/>
+</javac>
 ```
 
 ## Quick Start
