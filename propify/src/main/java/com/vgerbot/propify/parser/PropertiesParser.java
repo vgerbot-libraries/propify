@@ -3,6 +3,7 @@ package com.vgerbot.propify.parser;
 import com.vgerbot.propify.PropifyConfigParser;
 import com.vgerbot.propify.PropifyContext;
 import com.vgerbot.propify.PropifyProperties;
+import com.vgerbot.propify.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,10 +25,11 @@ public class PropertiesParser implements PropifyConfigParser {
             throw new IOException("Invalid properties format: " + e.getMessage(), e);
         }
 
-        PropifyProperties propifyProperties = new PropifyProperties(context.isAutoTypeConversion());
+        PropifyProperties propifyProperties = new PropifyProperties();
         properties.forEach((key, value) -> {
             String[] keyPath = key.toString().split("\\s*\\.\\s*");
             String strValue = value.toString().trim();
+            Object convertedValue = context.isAutoTypeConversion() ? Utils.convertValue(strValue) : strValue;
 
             // Handle nested properties
             if (keyPath.length > 1) {
@@ -38,14 +40,12 @@ public class PropertiesParser implements PropifyConfigParser {
                     if (existing instanceof PropifyProperties) {
                         current = (PropifyProperties) existing;
                     } else {
-                        PropifyProperties newProps = current.createNested();
-                        current.put(pathKey, newProps);
-                        current = newProps;
+                        current = current.createNested(pathKey);
                     }
                 }
-                current.put(keyPath[keyPath.length - 1].trim(), strValue);
+                current.put(keyPath[keyPath.length - 1].trim(), convertedValue);
             } else {
-                propifyProperties.put(key.toString().trim(), strValue);
+                propifyProperties.put(key.toString().trim(), convertedValue);
             }
         });
 

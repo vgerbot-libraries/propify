@@ -1,7 +1,5 @@
 package com.vgerbot.propify;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -178,7 +176,7 @@ public class Utils {
      * @return the converted object in its corresponding Java type, or the original
      * object if no conversion is applicable
      */
-    public static Object parseValue(Object value) {
+    public static Object convertValue(Object value) {
         if (value == null) {
             return value;
         }

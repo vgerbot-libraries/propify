@@ -6,10 +6,10 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.vgerbot.propify.PropifyConfigParser;
 import com.vgerbot.propify.PropifyContext;
 import com.vgerbot.propify.PropifyProperties;
+import com.vgerbot.propify.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 
 public class YamlParser implements PropifyConfigParser {
@@ -29,17 +29,17 @@ public class YamlParser implements PropifyConfigParser {
         try {
             yamlMap = yamlMapper.readValue(stream, Map.class);
             if (yamlMap == null) {
-                return new PropifyProperties(context.isAutoTypeConversion());
+                return new PropifyProperties();
             }
         } catch (JsonProcessingException e) {
             if (e.getMessage() != null && e.getMessage().contains("No content")) {
-                return new PropifyProperties(context.isAutoTypeConversion());
+                return new PropifyProperties();
             }
             throw new IOException("Invalid YAML format: " + e.getMessage(), e);
         }
 
-        PropifyProperties properties = new PropifyProperties(context.isAutoTypeConversion());
-        convertMapToProperties(yamlMap, properties);
+        PropifyProperties properties = new PropifyProperties();
+        convertMapToProperties(context, yamlMap, properties);
         return properties;
     }
 
@@ -56,7 +56,7 @@ public class YamlParser implements PropifyConfigParser {
     }
 
     @SuppressWarnings("unchecked")
-    private void convertMapToProperties(Map<String, Object> map, PropifyProperties properties) {
+    private void convertMapToProperties(PropifyContext context,Map<String, Object> map, PropifyProperties properties) {
         if (map == null) {
             return;
         }
@@ -67,12 +67,11 @@ public class YamlParser implements PropifyConfigParser {
             }
 
             if (value instanceof Map) {
-                PropifyProperties nestedProps = properties.createNested();
-                convertMapToProperties((Map<String, Object>) value, nestedProps);
-                properties.put(key, nestedProps);
-            } else if (value instanceof List) {
+                PropifyProperties nestedProps = properties.createNested(key);
+                convertMapToProperties(context, (Map<String, Object>) value, nestedProps);
+            } else if (value instanceof String && context.isAutoTypeConversion()) {
                 // Preserve lists as-is
-                properties.put(key, value);
+                properties.put(key, Utils.convertValue(value));
             } else {
                 properties.put(key, value);
             }

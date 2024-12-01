@@ -3,37 +3,32 @@ package com.vgerbot.propify;
 import java.util.HashMap;
 
 /**
- * Properties map that parses values to native Java types.
+ * A specialized HashMap implementation for managing hierarchical configuration properties.
+ * This class extends HashMap to store property key-value pairs where values can be of any type (Object).
+ * It provides functionality to create and manage nested property structures, allowing for
+ * hierarchical configuration data representation.
  *
- * <p>This class is a thin wrapper around {@link java.util.HashMap} that overrides
- * the {@link java.util.Map#put(Object, Object)} method to parse values to native
- * Java types using {@link Utils#parseValue(Object)} when autoTypeConversion is enabled.
+ * <p>Example usage:
+ * <pre>
+ * PropifyProperties props = new PropifyProperties();
+ * props.put("simple.key", "value");
+ * PropifyProperties nested = props.createNested("parent");
+ * nested.put("child", "value");
+ * </pre>
  */
 public class PropifyProperties extends HashMap<String, Object> {
-    private final boolean autoTypeConversion;
-
-    public PropifyProperties(boolean autoTypeConversion) {
-        this.autoTypeConversion = autoTypeConversion;
-    }
-
-    public PropifyProperties() {
-        this(true); // Default to true for backward compatibility
-    }
-
-    @Override
-    public Object put(String key, Object value) {
-        if (value instanceof PropifyProperties) {
-            return super.put(key, value);
-        }
-        return super.put(key, autoTypeConversion ? Utils.parseValue(value) : value);
-    }
 
     /**
-     * Creates a new nested PropifyProperties instance with the same autoTypeConversion setting.
+     * Creates a new nested PropifyProperties instance and associates it with the specified key
+     * in the current properties map.
      *
-     * @return a new PropifyProperties instance
+     * @param key The key under which to store the nested properties
+     * @return A new PropifyProperties instance that has been added to the current map
+     *         under the specified key
      */
-    public PropifyProperties createNested() {
-        return new PropifyProperties(this.autoTypeConversion);
+    public PropifyProperties createNested(String key) {
+        PropifyProperties nested = new PropifyProperties();
+        this.put(key, nested);
+        return nested;
     }
 }
