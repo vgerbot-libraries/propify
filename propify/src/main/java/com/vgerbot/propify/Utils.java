@@ -113,29 +113,86 @@ public class Utils {
     public static void main(String[] args) {
         System.out.println("!@#$%^&*()".replaceAll("[^\\p{L}\\p{N}_$]+", "-"));
     }
+
     /**
-     * Converts a given value to a Java literal string.
-     * If the value is an instance of Long, Float, Double, or Byte,
-     * it is converted to a string literal in the corresponding type.
-     * If the value is an instance of String, it is enclosed in double quotes.
-     * Otherwise, it is converted to a string using {@link String#valueOf(Object)}.
+     * Converts a given value to a Java literal string representation.
+     * Handles various Java types with appropriate literal suffixes and formatting:
+     * - Numeric types (Long, Float, Double, Byte, Short) with type suffixes
+     * - Characters with single quotes and proper escaping
+     * - Strings with double quotes and proper escaping
+     * - Arrays with proper formatting
+     * - Other types converted using String.valueOf()
      *
      * @param value the value to be converted
      * @return the converted string literal
      */
     public static String toLiteralString(Object value) {
-        if (value instanceof Long) {
-            return value + "L";  // long 类型的字面量
-        } else if (value instanceof Float) {
-            return value + "F";  // float 类型的字面量
-        } else if (value instanceof Double) {
-            return value + "D";  // double 类型的字面量
-        } else if (value instanceof Byte) {
-            return value + "B";  // byte 类型的字面量
-        } else if (value instanceof String) {
-            return "\"" + value + "\"";
+        if (value == null) {
+            return "null";
         }
-        return String.valueOf(value);  // 其他类型直接转为字符串
+        
+        if (value instanceof Long) {
+            return value + "L";
+        } else if (value instanceof Float) {
+            return value + "F";
+        } else if (value instanceof Double) {
+            return value + "D";
+        } else if (value instanceof Byte) {
+            return value + "B";
+        } else if (value instanceof Short) {
+            return value + "S";
+        } else if (value instanceof Character) {
+            return "'" + escapeChar((Character) value) + "'";
+        } else if (value instanceof String) {
+            return "\"" + escapeString((String) value) + "\"";
+        } else if (value.getClass().isArray()) {
+            return arrayToLiteralString(value);
+        }
+        
+        return String.valueOf(value);
+    }
+
+    private static String escapeChar(char c) {
+        switch (c) {
+            case '\b': return "\\b";
+            case '\t': return "\\t";
+            case '\n': return "\\n";
+            case '\f': return "\\f";
+            case '\r': return "\\r";
+            case '\"': return "\\\"";
+            case '\'': return "\\'";
+            case '\\': return "\\\\";
+            default:
+                if (c < 32 || c > 126) {
+                    return String.format("\\u%04x", (int) c);
+                }
+                return String.valueOf(c);
+        }
+    }
+
+    private static String escapeString(String str) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            sb.append(escapeChar(str.charAt(i)));
+        }
+        return sb.toString();
+    }
+
+    private static String arrayToLiteralString(Object array) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        
+        int length = java.lang.reflect.Array.getLength(array);
+        for (int i = 0; i < length; i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            Object element = java.lang.reflect.Array.get(array, i);
+            sb.append(toLiteralString(element));
+        }
+        
+        sb.append("}");
+        return sb.toString();
     }
 
     /**
