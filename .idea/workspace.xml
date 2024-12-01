@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="66a6e504-a888-4c90-a058-f4a1c937cb4f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/build.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/build.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/propify/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/propify/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/Utils.java" afterDir="false" />
     </list>
@@ -97,6 +99,7 @@
     "Maven.propify [install].executor": "Run",
     "Maven.propify [test].executor": "Run",
     "Maven.propify [validate].executor": "Run",
+    "Maven.propify [verify].executor": "Run",
     "Maven.propify-parent [clean].executor": "Run",
     "Maven.propify-parent [verify].executor": "Run",
     "Maven.propify-processor [test].executor": "Run",
