@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Implementation of CodeGenerator using JavaPoet library for Java source code generation.
  */
-public class JavaPoetCodeGenerator implements CodeGenerator {
+public class JavaPoetCodeGenerator {
     private static class SingletonHolder {
         private static final JavaPoetCodeGenerator INSTANCE = new JavaPoetCodeGenerator();
     }
@@ -23,7 +23,6 @@ public class JavaPoetCodeGenerator implements CodeGenerator {
         return SingletonHolder.INSTANCE;
     }
 
-    @Override
     public String generateCode(String packageName, String className, PropifyProperties properties) {
         TypeSpec typeSpec = generateType(
                 Arrays.asList(Modifier.PUBLIC, Modifier.FINAL),

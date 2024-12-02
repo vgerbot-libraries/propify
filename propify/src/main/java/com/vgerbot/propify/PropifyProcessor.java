@@ -1,6 +1,7 @@
 package com.vgerbot.propify;
 
 import com.vgerbot.propify.generator.JavaPoetCodeGenerator;
+import com.vgerbot.propify.generator.I18nJavaPoetCodeGenerator;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -12,9 +13,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.HashSet;
+import java.util.ResourceBundle;
 import java.util.Set;
 
-@SupportedAnnotationTypes("com.vgerbot.propify.Propify")
+@SupportedAnnotationTypes({"com.vgerbot.propify.Propify", "com.vgerbot.propify.PropifyI18n"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PropifyProcessor extends AbstractProcessor {
     private Messager messager;
@@ -29,6 +31,7 @@ public class PropifyProcessor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         final Set<String> set = new HashSet<>();
         set.add(Propify.class.getCanonicalName());
+        set.add(PropifyI18n.class.getCanonicalName());
         return set;
     }
 
@@ -48,7 +51,14 @@ public class PropifyProcessor extends AbstractProcessor {
                 }
                 
                 try {
-                    processElement((TypeElement) element);
+                    Propify propifyAnnotation = element.getAnnotation(Propify.class);
+                    if (propifyAnnotation != null) {
+                        processPropifyAnnotation(propifyAnnotation, (TypeElement) element);
+                    }
+                    PropifyI18n i18nAnnotation = element.getAnnotation(PropifyI18n.class);
+                    if(i18nAnnotation != null) {
+                        processI18nAnnotation(i18nAnnotation, (TypeElement) element);
+                    }
                 } catch (Exception e) {
                     String message = e.getMessage();
                     if (message != null) {
@@ -60,7 +70,7 @@ public class PropifyProcessor extends AbstractProcessor {
                                 "Could not find resource", element);
                         } else {
                             messager.printMessage(Diagnostic.Kind.ERROR, 
-                                "Failed to process @Propify annotation: " + message, element);
+                                "Failed to process annotation: " + message, element);
                         }
                     } else {
                         throw new RuntimeException(e);
@@ -71,12 +81,34 @@ public class PropifyProcessor extends AbstractProcessor {
         return true;
     }
 
-    private void processElement(final TypeElement element) throws IOException {
-        Propify propifyAnnotation = element.getAnnotation(Propify.class);
-        if (propifyAnnotation == null) {
-            return;
+    private void processI18nAnnotation(final PropifyI18n i18nAnnotation, final TypeElement element) throws IOException {
+        // Get package name
+        final String packageName = processingEnv.getElementUtils()
+            .getPackageOf(element)
+            .getQualifiedName()
+            .toString();
+
+        String generatedClassName = i18nAnnotation.generatedClassName().replace("$$", element.getSimpleName().toString());
+        // Generate code using JavaPoet
+        final String code = I18nJavaPoetCodeGenerator.getInstance()
+            .generateCode(packageName, generatedClassName, i18nAnnotation.baseName(), i18nAnnotation.defaultLocale(), ResourceBundle.getBundle(i18nAnnotation.baseName()));
+
+        // Write generated file
+        final JavaFileObject file = processingEnv.getFiler()
+            .createSourceFile(packageName + "." + generatedClassName);
+            
+        try (Writer writer = file.openWriter()) {
+            writer.write(code);
         }
 
+        messager.printMessage(
+            Diagnostic.Kind.NOTE,
+            "Generated MessageResource for i18n support",
+            element
+        );
+    }
+
+    private void processPropifyAnnotation(final Propify propifyAnnotation, final TypeElement element) throws IOException {
         // Create context and load configuration
         final PropifyContext context = new PropifyContext(propifyAnnotation, processingEnv);
         

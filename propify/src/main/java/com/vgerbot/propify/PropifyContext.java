@@ -64,6 +64,10 @@ public final class PropifyContext {
         return autoTypeConversion;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
     public InputStream loadResource() throws IOException {
         for (PropifyConfigResource configLoader : resourceServiceLoader) {
             if (configLoader.accept(location)) {
