@@ -94,6 +94,7 @@ public class PropifyProcessor extends AbstractProcessor {
         // Generate code using JavaPoet
         final String code = I18nJavaPoetCodeGenerator.getInstance()
             .generateCode(packageName, generatedClassName, i18nAnnotation.baseName(), i18nAnnotation.defaultLocale(), resourceBundle);
+        System.err.println(code);
         processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, code);
         // Write generated file
         final JavaFileObject file = processingEnv.getFiler()

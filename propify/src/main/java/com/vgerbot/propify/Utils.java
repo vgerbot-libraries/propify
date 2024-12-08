@@ -103,7 +103,7 @@ public class Utils {
         }
 
         String result = camelCaseName.toString();
-        if (JAVA_KEYWORDS.contains(result)) {
+        if (JAVA_KEYWORDS.contains(result) || Character.isDigit(result.charAt(0))) {
             result += "_";
         }
 

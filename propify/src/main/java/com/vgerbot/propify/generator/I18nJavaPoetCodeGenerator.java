@@ -71,7 +71,7 @@ public class I18nJavaPoetCodeGenerator {
             }
 
             String[] parameterNames = parameterSpecs.stream().map(it -> it.name).toArray(String[]::new);
-            String format = "{"+String.join(",", Arrays.stream(parameterNames).map(v -> "$S").toArray(String[]::new))+"}";
+            String format = "{" + String.join(",", Arrays.stream(parameterNames).map(v -> "$S").toArray(String[]::new)) + "}";
             AnnotationSpec annotation = AnnotationSpec.builder(Message.class)
                     .addMember("key", CodeBlock.of("$S", key))
                     .addMember("arguments", CodeBlock.of(format, parameterNames))
@@ -88,7 +88,7 @@ public class I18nJavaPoetCodeGenerator {
     private List<ParameterSpec> generateMethodParameters(String pattern) {
         MessageFormat format = new MessageFormat(pattern);
         Set<String> argumentNames = format.getArgumentNames();
-        return argumentNames.stream().map(argName -> ParameterSpec.builder(String.class, argName).build())
+        return argumentNames.stream().map(argName -> ParameterSpec.builder(String.class, Utils.convertToFieldName(argName)).build())
                 .collect(Collectors.toList());
     }
 
@@ -105,7 +105,10 @@ public class I18nJavaPoetCodeGenerator {
         return MethodSpec.methodBuilder("getDefault")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(ClassName.get("", "LocaleMessages"))
-                .addStatement("return get($T.forLanguageTag($S))", Locale.class, defaultLocale)
+                .addStatement(
+                        defaultLocale.trim().isEmpty() ?
+                                CodeBlock.of("return get($T.getDefault())", Locale.class)
+                                : CodeBlock.of("return get($T.forLanguageTag($S))", Locale.class, defaultLocale))
                 .build();
     }
 

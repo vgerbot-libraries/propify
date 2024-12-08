@@ -24,7 +24,7 @@ public class PropifyI18nResourceBundle {
             return Proxy.newProxyInstance(type.getClassLoader(), new Class[] { type }, (proxy, method, args) -> {
                 Message annotation = method.getAnnotation(Message.class);
                 if (annotation == null) {
-                    throw new RuntimeException(method.toString() + " is not annotated with @PropifyI18nMessage");
+                    throw new RuntimeException(method.toString() + " is not annotated with @Message");
                 }
                 String keyName = annotation.key();
                 String[] arguments = annotation.arguments();
