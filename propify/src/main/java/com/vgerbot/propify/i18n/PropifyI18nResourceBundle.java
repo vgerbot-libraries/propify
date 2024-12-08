@@ -1,6 +1,5 @@
 package com.vgerbot.propify.i18n;
 
-import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,16 +22,19 @@ public class PropifyI18nResourceBundle {
         return (T) proxyCache.computeIfAbsent(cacheKey, key -> {
             final ResourceBundle bundle = ResourceBundle.getBundle(this.baseName, locale);
             return Proxy.newProxyInstance(type.getClassLoader(), new Class[] { type }, (proxy, method, args) -> {
-                Parameter[] parameters = method.getParameters();
+                Message annotation = method.getAnnotation(Message.class);
+                if (annotation == null) {
+                    throw new RuntimeException(method.toString() + " is not annotated with @PropifyI18nMessage");
+                }
+                String keyName = annotation.key();
+                String[] arguments = annotation.arguments();
 
-                Map<String, Object> paramsMap = IntStream.range(0, parameters.length)
-                        .boxed()
-                        .collect(Collectors.toMap(i -> parameters[i].getName(), i -> args[i]));
-
-                String keyName = method.getName().replaceAll("^get", "").toLowerCase();
-                if(parameters.length == 0) {
+                if(arguments.length == 0) {
                     return bundle.getObject(keyName);
                 } else {
+                    Map<String, Object> paramsMap = IntStream.range(0, arguments.length)
+                            .boxed()
+                            .collect(Collectors.toMap(i -> arguments[i], i -> args[i]));
                     Object value = bundle.getObject(keyName);
                     if(value instanceof CharSequence) {
                         return extension.format(value.toString(), paramsMap);

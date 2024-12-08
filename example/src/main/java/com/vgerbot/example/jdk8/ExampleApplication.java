@@ -31,5 +31,6 @@ public class ExampleApplication {
 
         System.out.println("server.host = " + yamlProps.getServer().getHost());
         System.out.println("server.port = " + yamlProps.getServer().getPort());
+
     }
 }

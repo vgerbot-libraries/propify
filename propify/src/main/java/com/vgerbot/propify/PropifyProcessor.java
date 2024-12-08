@@ -8,13 +8,13 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
+import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
+import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.util.HashSet;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 @SupportedAnnotationTypes({"com.vgerbot.propify.Propify", "com.vgerbot.propify.PropifyI18n"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
@@ -31,7 +31,7 @@ public class PropifyProcessor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         final Set<String> set = new HashSet<>();
         set.add(Propify.class.getCanonicalName());
-        set.add(PropifyI18n.class.getCanonicalName());
+        set.add(I18n.class.getCanonicalName());
         return set;
     }
 
@@ -55,7 +55,7 @@ public class PropifyProcessor extends AbstractProcessor {
                     if (propifyAnnotation != null) {
                         processPropifyAnnotation(propifyAnnotation, (TypeElement) element);
                     }
-                    PropifyI18n i18nAnnotation = element.getAnnotation(PropifyI18n.class);
+                    I18n i18nAnnotation = element.getAnnotation(I18n.class);
                     if(i18nAnnotation != null) {
                         processI18nAnnotation(i18nAnnotation, (TypeElement) element);
                     }
@@ -81,7 +81,7 @@ public class PropifyProcessor extends AbstractProcessor {
         return true;
     }
 
-    private void processI18nAnnotation(final PropifyI18n i18nAnnotation, final TypeElement element) throws IOException {
+    private void processI18nAnnotation(final I18n i18nAnnotation, final TypeElement element) throws IOException {
         // Get package name
         final String packageName = processingEnv.getElementUtils()
             .getPackageOf(element)
@@ -89,10 +89,12 @@ public class PropifyProcessor extends AbstractProcessor {
             .toString();
 
         String generatedClassName = i18nAnnotation.generatedClassName().replace("$$", element.getSimpleName().toString());
+        FileObject resource = processingEnv.getFiler().getResource(StandardLocation.CLASS_PATH, "", i18nAnnotation.baseName() + ".properties");
+        ResourceBundle resourceBundle = new PropertyResourceBundle(resource.openInputStream());
         // Generate code using JavaPoet
         final String code = I18nJavaPoetCodeGenerator.getInstance()
-            .generateCode(packageName, generatedClassName, i18nAnnotation.baseName(), i18nAnnotation.defaultLocale(), ResourceBundle.getBundle(i18nAnnotation.baseName()));
-
+            .generateCode(packageName, generatedClassName, i18nAnnotation.baseName(), i18nAnnotation.defaultLocale(), resourceBundle);
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, code);
         // Write generated file
         final JavaFileObject file = processingEnv.getFiler()
             .createSourceFile(packageName + "." + generatedClassName);

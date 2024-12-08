@@ -2,12 +2,12 @@ package com.vgerbot.propify.generator;
 
 import com.ibm.icu.text.MessageFormat;
 import com.squareup.javapoet.*;
+import com.vgerbot.propify.Utils;
+import com.vgerbot.propify.i18n.Message;
 import com.vgerbot.propify.i18n.PropifyI18nResourceBundle;
 import com.vgerbot.propify.i18n.ICUMessageTemplateExtension;
 
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,7 +61,7 @@ public class I18nJavaPoetCodeGenerator {
 
     private Iterable<MethodSpec> generateInterfaceMethods(ResourceBundle bundle) {
         return bundle.keySet().stream().map(key -> {
-            String methodName = key.replaceAll("\\.", "_");
+            String methodName = Utils.convertToFieldName(key);
             Object value = bundle.getObject(key);
             List<ParameterSpec> parameterSpecs;
             if (value instanceof CharSequence) {
@@ -69,10 +69,18 @@ public class I18nJavaPoetCodeGenerator {
             } else {
                 parameterSpecs = Collections.emptyList();
             }
+
+            String[] parameterNames = parameterSpecs.stream().map(it -> it.name).toArray(String[]::new);
+            String format = "{"+String.join(",", Arrays.stream(parameterNames).map(v -> "$S").toArray(String[]::new))+"}";
+            AnnotationSpec annotation = AnnotationSpec.builder(Message.class)
+                    .addMember("key", CodeBlock.of("$S", key))
+                    .addMember("arguments", CodeBlock.of(format, parameterNames))
+                    .build();
             return MethodSpec.methodBuilder(methodName)
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                     .returns(String.class)
                     .addParameters(parameterSpecs)
+                    .addAnnotation(annotation)
                     .build();
         }).collect(Collectors.toList());
     }
@@ -101,4 +109,6 @@ public class I18nJavaPoetCodeGenerator {
                 .build();
     }
 
+    public static void main(String[] args) {
+    }
 }

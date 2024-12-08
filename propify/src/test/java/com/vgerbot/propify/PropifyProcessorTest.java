@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -69,8 +68,9 @@ public class PropifyProcessorTest {
     @Test
     public void testGetSupportedAnnotationTypes() {
         Set<String> types = processor.getSupportedAnnotationTypes();
-        assertEquals(1, types.size());
+        assertEquals(2, types.size());
         assertTrue(types.contains(Propify.class.getCanonicalName()));
+        assertTrue(types.contains(I18n.class.getCanonicalName()));
     }
 
     @Test

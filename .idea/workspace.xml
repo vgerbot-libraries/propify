@@ -5,14 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="66a6e504-a888-4c90-a058-f4a1c937cb4f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/build.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/build.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/example/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/src/main/java/com/vgerbot/example/jdk8/ExampleApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/example/src/main/java/com/vgerbot/example/jdk8/ExampleApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/propify/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyI18n.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/I18n.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/generator/I18nJavaPoetCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/generator/I18nJavaPoetCodeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/i18n/PropifyI18nResourceBundle.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/i18n/PropifyI18nResourceBundle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify/src/main/resources/META-INF/services/com.vgerbot.propify.PropifyConfigParser" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/resources/META-INF/services/com.vgerbot.propify.PropifyConfigParser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify/src/test/java/com/vgerbot/propify/PropifyProcessorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/test/java/com/vgerbot/propify/PropifyProcessorTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +26,7 @@
       <list>
         <option value="Interface" />
         <option value="Class" />
+        <option value="AnnotationType" />
       </list>
     </option>
   </component>
@@ -44,6 +47,10 @@
             <RecentBranchesForRepo>
               <option name="branches">
                 <list>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/i18n" />
+                    <option name="lastUsedInstant" value="1733145486" />
+                  </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="main" />
                     <option name="lastUsedInstant" value="1732723609" />
@@ -81,6 +88,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.ExampleApplication.executor": "Run",
+    "Application.I18nExample.executor": "Run",
+    "Application.I18nJavaPoetCodeGenerator.executor": "Run",
     "Application.Main.executor": "Run",
     "Application.PropertiesParser.executor": "Run",
     "Application.PropifyCodeGenerator.executor": "Run",
@@ -102,6 +111,7 @@
     "Maven.propify [validate].executor": "Run",
     "Maven.propify [verify].executor": "Run",
     "Maven.propify-parent [clean].executor": "Run",
+    "Maven.propify-parent [install].executor": "Run",
     "Maven.propify-parent [verify].executor": "Run",
     "Maven.propify-processor [test].executor": "Run",
     "Maven.propify-test [compile].executor": "Run",
@@ -110,17 +120,18 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "com.codeium.enabled": "true",
     "deletionFromPopupRequiresConfirmation": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feature/i18n",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/jianxin_yang/Workspaces/Github/propify/example-jdk8/src/main/resources",
+    "last_opened_file_path": "/home/jianxin_yang/Workspaces/Github/propify/propify/src/main/resources",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.annotationProcessors"
+    "settings.editor.selected.configurable": "http.proxy"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/propify/src/main/resources" />
       <recent name="$PROJECT_DIR$/example-jdk8/src/main/resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -132,7 +143,7 @@
       <recent name="com.vgerbot.propify" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.ExampleApplication">
+  <component name="RunManager" selected="Application.I18nExample">
     <configuration name="ExampleApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.vgerbot.example.jdk8.ExampleApplication" />
       <module name="example" />
@@ -146,12 +157,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Utils" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.Utils" />
+    <configuration name="I18nExample" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.vgerbot.example.jdk8.I18nExample" />
+      <module name="example" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.vgerbot.example.jdk8.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="I18nJavaPoetCodeGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.generator.I18nJavaPoetCodeGenerator" />
       <module name="propify" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.vgerbot.propify.*" />
+          <option name="PATTERN" value="com.vgerbot.propify.generator.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -183,22 +207,6 @@
       <option name="PACKAGE_NAME" value="com.vgerbot.propify" />
       <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.Utils_ParseValueTest" />
       <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Utils_ParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="example-jdk9" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.vgerbot.propify.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.vgerbot.propify" />
-      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.Utils_ParseValueTest" />
-      <option name="METHOD_NAME" value="testParseValue_NoSuffix_IntegerValue_ReturnsInteger" />
-      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -298,21 +306,21 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Application.I18nExample" />
       <item itemvalue="Application.ExampleApplication" />
-      <item itemvalue="Application.Utils" />
+      <item itemvalue="Application.I18nJavaPoetCodeGenerator" />
       <item itemvalue="Application.Utils_ParseValueTest" />
       <item itemvalue="JUnit.Utils_ParseValueTest" />
-      <item itemvalue="JUnit.Utils_ParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger" />
       <item itemvalue="Maven.propify [deploy]  " />
       <item itemvalue="Remote JVM Debug.mvnDebug" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.I18nExample" />
+        <item itemvalue="Application.I18nJavaPoetCodeGenerator" />
         <item itemvalue="Application.ExampleApplication" />
         <item itemvalue="JUnit.Utils_ParseValueTest" />
         <item itemvalue="Application.Utils_ParseValueTest" />
-        <item itemvalue="Application.Utils" />
-        <item itemvalue="JUnit.Utils_ParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger" />
       </list>
     </recent_temporary>
   </component>
@@ -334,6 +342,11 @@
           <url>jar:///usr/lib/jvm/java-8-openjdk/jre/lib/rt.jar!/java/lang/IllegalArgumentException.class</url>
           <line>14</line>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/example/src/main/java/com/vgerbot/example/jdk8/I18nExample.java</url>
+          <line>16</line>
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -21,7 +21,6 @@
             <groupId>com.vgerbot</groupId>
             <artifactId>propify</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 

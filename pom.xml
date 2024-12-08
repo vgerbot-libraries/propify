@@ -11,6 +11,7 @@
 
     <modules>
         <module>propify</module>
+        <module>example</module>
     </modules>
 
     <properties>
