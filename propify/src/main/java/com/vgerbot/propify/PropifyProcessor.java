@@ -1,6 +1,7 @@
 package com.vgerbot.propify;
 
-import com.vgerbot.propify.generator.JavaPoetCodeGenerator;
+import com.vgerbot.propify.compile.CompileTimeResourceLoaderProvider;
+import com.vgerbot.propify.generator.PropifyCodeGenerator;
 import com.vgerbot.propify.generator.I18nJavaPoetCodeGenerator;
 
 import javax.annotation.processing.*;
@@ -113,12 +114,18 @@ public class PropifyProcessor extends AbstractProcessor {
 
     private void processPropifyAnnotation(final Propify propifyAnnotation, final TypeElement element) throws IOException {
         // Create context and load configuration
-        final PropifyContext context = new PropifyContext(propifyAnnotation, processingEnv);
-        
+        final PropifyContext context = new PropifyContext(
+                propifyAnnotation.location(),
+                propifyAnnotation.mediaType(),
+                propifyAnnotation.autoTypeConversion(),
+                propifyAnnotation.generatedClassName(),
+                new CompileTimeResourceLoaderProvider(processingEnv)
+        );
+        PropifyConfigParserProvider provider = new PropifyConfigParserProvider();
         // Load and parse properties
         PropifyProperties properties;
         try (InputStream stream = context.loadResource()) {
-            PropifyConfigParser parser = context.getParser();
+            PropifyConfigParser parser = provider.getParser(context.getMediaType());
             properties = parser.parse(context, stream);
         }
 
@@ -127,10 +134,11 @@ public class PropifyProcessor extends AbstractProcessor {
             .getPackageOf(element)
             .getQualifiedName()
             .toString();
-        final String generatedClassName = context.getClassName(element.getSimpleName().toString());
 
-        final String code = JavaPoetCodeGenerator.getInstance()
-            .generateCode(packageName, generatedClassName, properties);
+        final String generatedClassName = context.generateClassName(element.getSimpleName().toString());
+
+        final String code = PropifyCodeGenerator.getInstance()
+            .generateCode(packageName, generatedClassName, context, properties);
 
         // Write generated file
         final JavaFileObject file = processingEnv.getFiler()

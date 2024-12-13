@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66a6e504-a888-4c90-a058-f4a1c937cb4f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/example/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/src/main/java/com/vgerbot/example/jdk8/ExampleApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/example/src/main/java/com/vgerbot/example/jdk8/ExampleApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyI18n.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/I18n.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/generator/I18nJavaPoetCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/generator/I18nJavaPoetCodeGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/i18n/PropifyI18nResourceBundle.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/i18n/PropifyI18nResourceBundle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify/src/main/resources/META-INF/services/com.vgerbot.propify.PropifyConfigParser" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/resources/META-INF/services/com.vgerbot.propify.PropifyConfigParser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/propify/src/test/java/com/vgerbot/propify/PropifyProcessorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/test/java/com/vgerbot/propify/PropifyProcessorTest.java" afterDir="false" />
-    </list>
+    <list default="true" id="66a6e504-a888-4c90-a058-f4a1c937cb4f" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -24,9 +13,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="AnnotationType" />
         <option value="Interface" />
         <option value="Class" />
-        <option value="AnnotationType" />
       </list>
     </option>
   </component>
@@ -47,6 +36,10 @@
             <RecentBranchesForRepo>
               <option name="branches">
                 <list>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/refactor-propify-code-generator" />
+                    <option name="lastUsedInstant" value="1734107549" />
+                  </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="feature/i18n" />
                     <option name="lastUsedInstant" value="1733145486" />
@@ -100,7 +93,9 @@
     "JUnit.UtilsTest.executor": "Run",
     "JUnit.Utils_ParseValueTest.executor": "Run",
     "JUnit.Utils_ParseValueTest.testParseValue_NoSuffix_IntegerValue_ReturnsInteger.executor": "Run",
+    "Maven.example [clean].executor": "Run",
     "Maven.example [compile].executor": "Run",
+    "Maven.example [install].executor": "Run",
     "Maven.example-jdk8 [compile].executor": "Run",
     "Maven.propify [clean].executor": "Run",
     "Maven.propify [compile].executor": "Run",
@@ -111,6 +106,7 @@
     "Maven.propify [validate].executor": "Run",
     "Maven.propify [verify].executor": "Run",
     "Maven.propify-parent [clean].executor": "Run",
+    "Maven.propify-parent [compile].executor": "Run",
     "Maven.propify-parent [install].executor": "Run",
     "Maven.propify-parent [verify].executor": "Run",
     "Maven.propify-processor [test].executor": "Run",
@@ -120,10 +116,10 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "com.codeium.enabled": "true",
     "deletionFromPopupRequiresConfirmation": "false",
-    "git-widget-placeholder": "feature/i18n",
+    "git-widget-placeholder": "feature/refactor-propify-code-generator",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/jianxin_yang/Workspaces/Github/propify/propify/src/main/resources",
-    "project.structure.last.edited": "Project",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
     "settings.editor.selected.configurable": "http.proxy"
@@ -143,7 +139,7 @@
       <recent name="com.vgerbot.propify" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.I18nExample">
+  <component name="RunManager" selected="Application.PropifyCodeGenerator">
     <configuration name="ExampleApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.vgerbot.example.jdk8.ExampleApplication" />
       <module name="example" />
@@ -183,12 +179,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Utils_ParseValueTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.Utils_ParseValueTest" />
+    <configuration name="PropifyCodeGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.generator.PropifyCodeGenerator" />
       <module name="propify" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.vgerbot.propify.*" />
+          <option name="PATTERN" value="com.vgerbot.propify.generator.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -306,21 +302,21 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Application.PropifyCodeGenerator" />
       <item itemvalue="Application.I18nExample" />
       <item itemvalue="Application.ExampleApplication" />
       <item itemvalue="Application.I18nJavaPoetCodeGenerator" />
-      <item itemvalue="Application.Utils_ParseValueTest" />
       <item itemvalue="JUnit.Utils_ParseValueTest" />
       <item itemvalue="Maven.propify [deploy]  " />
       <item itemvalue="Remote JVM Debug.mvnDebug" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.PropifyCodeGenerator" />
         <item itemvalue="Application.I18nExample" />
         <item itemvalue="Application.I18nJavaPoetCodeGenerator" />
         <item itemvalue="Application.ExampleApplication" />
         <item itemvalue="JUnit.Utils_ParseValueTest" />
-        <item itemvalue="Application.Utils_ParseValueTest" />
       </list>
     </recent_temporary>
   </component>

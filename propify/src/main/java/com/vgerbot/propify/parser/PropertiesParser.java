@@ -1,7 +1,7 @@
 package com.vgerbot.propify.parser;
 
-import com.vgerbot.propify.PropifyConfigParser;
 import com.vgerbot.propify.PropifyContext;
+import com.vgerbot.propify.PropifyConfigParser;
 import com.vgerbot.propify.PropifyProperties;
 import com.vgerbot.propify.Utils;
 
@@ -54,8 +54,8 @@ public class PropertiesParser implements PropifyConfigParser {
 
     @Override
     public Boolean accept(String mediaType) {
-        if (mediaType == null) {
-            return false;
+        if (mediaType == null || mediaType.trim().isEmpty()) {
+            return true;
         }
         String type = mediaType.toLowerCase();
         return "application/java-properties".equals(type) ||

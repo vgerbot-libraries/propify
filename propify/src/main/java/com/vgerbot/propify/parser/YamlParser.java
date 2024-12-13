@@ -3,8 +3,8 @@ package com.vgerbot.propify.parser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.vgerbot.propify.PropifyConfigParser;
 import com.vgerbot.propify.PropifyContext;
+import com.vgerbot.propify.PropifyConfigParser;
 import com.vgerbot.propify.PropifyProperties;
 import com.vgerbot.propify.Utils;
 
@@ -56,7 +56,7 @@ public class YamlParser implements PropifyConfigParser {
     }
 
     @SuppressWarnings("unchecked")
-    private void convertMapToProperties(PropifyContext context,Map<String, Object> map, PropifyProperties properties) {
+    private void convertMapToProperties(PropifyContext context, Map<String, Object> map, PropifyProperties properties) {
         if (map == null) {
             return;
         }

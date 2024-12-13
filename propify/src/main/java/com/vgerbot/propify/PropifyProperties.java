@@ -1,6 +1,8 @@
 package com.vgerbot.propify;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 
 /**
  * A specialized HashMap implementation for managing hierarchical configuration properties.
@@ -17,7 +19,13 @@ import java.util.HashMap;
  * </pre>
  */
 public class PropifyProperties extends HashMap<String, Object> {
-
+    private final String keyPath;
+    public PropifyProperties() {
+        this("");
+    }
+    private PropifyProperties(String keyPath) {
+        this.keyPath = keyPath;
+    }
     /**
      * Creates a new nested PropifyProperties instance and associates it with the specified key
      * in the current properties map.
@@ -27,8 +35,32 @@ public class PropifyProperties extends HashMap<String, Object> {
      *         under the specified key
      */
     public PropifyProperties createNested(String key) {
-        PropifyProperties nested = new PropifyProperties();
+        PropifyProperties nested = new PropifyProperties(this.keyPath + "." + key);
         this.put(key, nested);
         return nested;
+    }
+    public PropifyProperties getNested(String keyPath) {
+        int dotIndex = keyPath.indexOf('.');
+        if (dotIndex < 0) {
+            Object value = this.get(keyPath);
+            if(value instanceof PropifyProperties) {
+                return (PropifyProperties) value;
+            } else {
+                return this.createNested(keyPath);
+            }
+        } else {
+            String key = keyPath.substring(0, dotIndex);
+            Object nested = this.get(key);
+            if(nested instanceof PropifyProperties) {
+                String nextKeyPath = keyPath.substring(dotIndex + 1);
+                if(nextKeyPath.indexOf('.') < 0) {
+                    return (PropifyProperties) nested;
+                } else {
+                    return ((PropifyProperties) nested).getNested(nextKeyPath);
+                }
+            } else {
+                return this.createNested(keyPath);
+            }
+        }
     }
 }

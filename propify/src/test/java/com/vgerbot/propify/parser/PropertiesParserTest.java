@@ -3,6 +3,7 @@ package com.vgerbot.propify.parser;
 import com.vgerbot.propify.Propify;
 import com.vgerbot.propify.PropifyContext;
 import com.vgerbot.propify.PropifyProperties;
+import com.vgerbot.propify.compile.CompileTimeResourceLoaderProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,8 +40,11 @@ public class PropertiesParserTest {
         when(propifyAnnotation.location()).thenReturn("classpath: test.yml");
         when(propifyAnnotation.autoTypeConversion()).thenReturn(true);
         context = new PropifyContext(
-                propifyAnnotation,
-                processingEnv
+                propifyAnnotation.location(),
+                propifyAnnotation.mediaType(),
+                propifyAnnotation.autoTypeConversion(),
+                propifyAnnotation.generatedClassName(),
+                new CompileTimeResourceLoaderProvider(processingEnv)
         );
     }
 

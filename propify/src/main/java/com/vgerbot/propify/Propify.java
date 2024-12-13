@@ -1,5 +1,6 @@
 package com.vgerbot.propify;
 
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -65,7 +66,7 @@ public @interface Propify {
      * classpath.
      *
      * @return the location URI of the configuration resource
-     * @see PropifyConfigResource For details on resource loading
+     * @see ResourceLoader For details on resource loading
      * @since 1.0.0
      */
     String location();
@@ -128,4 +129,20 @@ public @interface Propify {
      * @since 1.1.0
      */
     boolean autoTypeConversion() default true;
+
+    /**
+     * Indicates whether to generate dynamic or static code for configuration properties.
+     *
+     * <p>When set to true (default), dynamic code generation is enabled, meaning the configuration
+     * data will be loaded at runtime, allowing for flexibility and changes to the configuration
+     * without recompiling the application.
+     *
+     * <p>When set to false, static code generation is used, embedding the configuration data
+     * directly into the generated code. This approach results in faster access times but requires
+     * recompilation to reflect any changes in the configuration.
+     *
+     * @return true for dynamic code generation (default), false for static code generation.
+     * @since 1.2.0
+     */
+    boolean dynamic() default true;
 }

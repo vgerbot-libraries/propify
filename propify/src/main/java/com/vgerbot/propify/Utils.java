@@ -1,5 +1,8 @@
 package com.vgerbot.propify;
 
+import com.squareup.javapoet.TypeName;
+
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -108,6 +111,12 @@ public class Utils {
         }
 
         return result;
+    }
+    public static String convertToGetterName(String input, Type type) {
+        String fieldName = convertToFieldName(input);
+        String getterPrefix = Boolean.class.equals(type) ? "is" : "get";
+        String methodName = getterPrefix + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        return methodName;
     }
 
     public static void main(String[] args) {

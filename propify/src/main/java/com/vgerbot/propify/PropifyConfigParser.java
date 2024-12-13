@@ -67,7 +67,6 @@ public interface PropifyConfigParser {
      *   &lt;li&gt;Respect the autoTypeConversion setting from the context
      * &lt;/ul&gt;
      *
-     * @param context the PropifyContext containing configuration settings
      * @param stream the input stream containing configuration data
      * @return a {@link PropifyProperties} object containing the parsed configuration
      * @throws IOException if an error occurs while reading or parsing the stream

@@ -1,5 +1,6 @@
 package com.vgerbot.propify.resource;
 
+import com.vgerbot.propify.compile.ClasspathResourceLoader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ClasspathPropifyConfigResourceTest {
 
-    private ClasspathPropifyConfigResource resource;
+    private ClasspathResourceLoader resource;
 
     @Mock private ProcessingEnvironment processingEnv;
     @Mock private Filer filer;
@@ -33,7 +34,7 @@ public class ClasspathPropifyConfigResourceTest {
 
     @Before
     public void setUp() {
-        resource = new ClasspathPropifyConfigResource();
+        resource = new ClasspathResourceLoader(processingEnv);
         when(processingEnv.getFiler()).thenReturn(filer);
         when(processingEnv.getMessager()).thenReturn(messager);
     }
@@ -70,7 +71,7 @@ public class ClasspathPropifyConfigResourceTest {
         when(fileObject.openInputStream()).thenReturn(expectedStream);
 
         // Execute
-        InputStream result = resource.load(processingEnv, location);
+        InputStream result = resource.load(location);
 
         // Verify
         assertNotNull(result);
@@ -89,7 +90,7 @@ public class ClasspathPropifyConfigResourceTest {
         when(filer.getResource(any(), any(), any())).thenThrow(new IOException("Resource not found"));
 
         // Execute
-        resource.load(processingEnv, location);
+        resource.load(location);
     }
 
     @Test
@@ -102,7 +103,7 @@ public class ClasspathPropifyConfigResourceTest {
             .thenReturn(new ByteArrayInputStream("content".getBytes()));
 
         // Execute
-        resource.load(processingEnv, location);
+        resource.load(location);
 
         // Verify correct path was used
         verify(filer).getResource(StandardLocation.CLASS_PATH, "", "config/test.yaml");
@@ -116,7 +117,7 @@ public class ClasspathPropifyConfigResourceTest {
         when(fileObject.openInputStream()).thenReturn(new ByteArrayInputStream(new byte[0]));
 
         // Execute
-        InputStream result = resource.load(processingEnv, location);
+        InputStream result = resource.load(location);
 
         // Verify
         assertEquals(0, result.available());
@@ -124,7 +125,7 @@ public class ClasspathPropifyConfigResourceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testLoad_WithoutClasspathPrefix_ThrowsException() throws IOException {
-        resource.load(processingEnv, "config/test.yaml");
+        resource.load("config/test.yaml");
     }
 
     @Test
@@ -137,7 +138,7 @@ public class ClasspathPropifyConfigResourceTest {
             .thenReturn(new ByteArrayInputStream("content".getBytes()));
 
         // Execute
-        InputStream result = resource.load(processingEnv, location);
+        InputStream result = resource.load(location);
 
         // Verify
         assertNotNull(result);
@@ -153,7 +154,7 @@ public class ClasspathPropifyConfigResourceTest {
             .thenReturn(new ByteArrayInputStream("content".getBytes()));
 
         // Execute
-        resource.load(processingEnv, location);
+        resource.load(location);
 
         // Verify correct message was logged
         verify(messager).printMessage(

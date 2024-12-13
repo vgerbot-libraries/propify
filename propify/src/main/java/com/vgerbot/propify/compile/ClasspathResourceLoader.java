@@ -1,6 +1,6 @@
-package com.vgerbot.propify.resource;
+package com.vgerbot.propify.compile;
 
-import com.vgerbot.propify.PropifyConfigResource;
+import com.vgerbot.propify.ResourceLoader;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic;
@@ -9,11 +9,17 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ClasspathPropifyConfigResource implements PropifyConfigResource {
+public class ClasspathResourceLoader implements ResourceLoader {
     private static final String CLASSPATH_PREFIX = "classpath:";
-
+    private final ProcessingEnvironment processingEnvironment;
+    public ClasspathResourceLoader(ProcessingEnvironment processingEnvironment) {
+        if (processingEnvironment == null) {
+            throw new IllegalArgumentException("ProcessingEnvironment cannot be null");
+        }
+        this.processingEnvironment = processingEnvironment;
+    }
     @Override
-    public Boolean accept(String location) {
+    public boolean accept(String location) {
         if (location == null) {
             return false;
         }
@@ -21,10 +27,7 @@ public class ClasspathPropifyConfigResource implements PropifyConfigResource {
     }
 
     @Override
-    public InputStream load(ProcessingEnvironment processingEnvironment, String location) throws IOException {
-        if (processingEnvironment == null) {
-            throw new IllegalArgumentException("ProcessingEnvironment cannot be null");
-        }
+    public InputStream load(String location) throws IOException {
         if (location == null) {
             throw new IllegalArgumentException("Location cannot be null");
         }
@@ -39,14 +42,14 @@ public class ClasspathPropifyConfigResource implements PropifyConfigResource {
 
         try {
             processingEnvironment.getMessager().printMessage(
-                Diagnostic.Kind.NOTE, 
-                "loading classpath source: " + filePath
+                    Diagnostic.Kind.NOTE,
+                    "loading classpath source: " + filePath
             );
 
             FileObject fileObject = processingEnvironment.getFiler().getResource(
-                StandardLocation.CLASS_PATH,
-                "",
-                filePath
+                    StandardLocation.CLASS_PATH,
+                    "",
+                    filePath
             );
 
             if (fileObject == null) {

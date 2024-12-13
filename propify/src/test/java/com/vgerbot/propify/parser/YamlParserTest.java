@@ -3,6 +3,7 @@ package com.vgerbot.propify.parser;
 import com.vgerbot.propify.Propify;
 import com.vgerbot.propify.PropifyContext;
 import com.vgerbot.propify.PropifyProperties;
+import com.vgerbot.propify.compile.CompileTimeResourceLoaderProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +13,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.tools.FileObject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,8 +41,11 @@ public class YamlParserTest {
         when(propifyAnnotation.location()).thenReturn("classpath: test.yml");
         when(propifyAnnotation.autoTypeConversion()).thenReturn(true);
         context = new PropifyContext(
-                propifyAnnotation,
-                processingEnv
+                propifyAnnotation.location(),
+                propifyAnnotation.mediaType(),
+                propifyAnnotation.autoTypeConversion(),
+                propifyAnnotation.generatedClassName(),
+                new CompileTimeResourceLoaderProvider(processingEnv)
         );
     }
 

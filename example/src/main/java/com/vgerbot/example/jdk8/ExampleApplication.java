@@ -4,7 +4,7 @@ public class ExampleApplication {
     public static void main(String[] args) {
 
         System.out.println("==================== JAVA PROPERTIES ============================");
-        ApplicationPropertiesPropify props = new ApplicationPropertiesPropify();
+        ApplicationPropertiesPropify props = ApplicationPropertiesPropify.getInstance();
 
         System.out.println("app.name = " + props.getApp().getName());
         System.out.println("app.version = " + props.getApp().getVersion());
@@ -19,7 +19,7 @@ public class ExampleApplication {
 
         System.out.println("==================== YAML PROPERTIES ============================");
 
-        ApplicationYAMLPropify yamlProps = new ApplicationYAMLPropify();
+        ApplicationYAMLPropify yamlProps = ApplicationYAMLPropify.getInstance();
 
         System.out.println("app.name = " + yamlProps.getApp().getName());
         System.out.println("app.version = " + yamlProps.getApp().getVersion());

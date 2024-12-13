@@ -1,4 +1,7 @@
-package com.vgerbot.propify;
+package com.vgerbot.propify.compile;
+
+import com.vgerbot.propify.PropifyConfigParser;
+import com.vgerbot.propify.PropifyProcessor;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import java.io.IOException;
@@ -22,7 +25,7 @@ import java.io.InputStream;
  *
  * &lt;p&gt;Resource loaders are discovered through Java's ServiceLoader mechanism.
  * To register a new loader implementation, include its fully qualified class name in:
- * {@code META-INF/services/com.vgerbot.propify.PropifyConfigResource}
+ * {@code META-INF/services/com.vgerbot.propify.compile.PropifyConfigResource}
  *
  * &lt;p&gt;Example implementation for a custom resource type:
  * &lt;pre&gt;
