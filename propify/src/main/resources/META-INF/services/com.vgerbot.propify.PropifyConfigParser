@@ -1,2 +1,2 @@
-com.vgerbot.propify.parser.PropertiesParser
-com.vgerbot.propify.parser.YamlParser
+com.vgerbot.propify.parser.PropertiesConfigParser
+com.vgerbot.propify.parser.YamlConfigParser

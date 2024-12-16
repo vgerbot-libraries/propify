@@ -94,9 +94,9 @@ public interface PropifyConfigParser {
      *   &lt;li&gt;Handle both primary and alternative MIME types where appropriate
      * &lt;/ul&gt;
      *
-     * @param mediaType the media type to check, following MIME type format
+     * @param context the media type to check, following MIME type format
      * @return true if this parser can handle the specified media type, false otherwise
      * @since 1.0.0
      */
-    Boolean accept(String mediaType);
+    Boolean accept(PropifyContext context);
 }

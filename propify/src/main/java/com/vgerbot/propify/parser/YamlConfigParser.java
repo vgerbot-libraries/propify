@@ -10,12 +10,13 @@ import com.vgerbot.propify.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
-public class YamlParser implements PropifyConfigParser {
+public class YamlConfigParser implements PropifyConfigParser {
     private final ObjectMapper yamlMapper;
 
-    public YamlParser() {
+    public YamlConfigParser() {
         this.yamlMapper = new ObjectMapper(new YAMLFactory());
     }
 
@@ -27,7 +28,7 @@ public class YamlParser implements PropifyConfigParser {
 
         Map<String, Object> yamlMap;
         try {
-            yamlMap = yamlMapper.readValue(stream, Map.class);
+            yamlMap = yamlMapper.readValue(stream, HashMap.class);
             if (yamlMap == null) {
                 return new PropifyProperties();
             }
@@ -44,8 +45,13 @@ public class YamlParser implements PropifyConfigParser {
     }
 
     @Override
-    public Boolean accept(String mediaType) {
-        if (mediaType == null) {
+    public Boolean accept(PropifyContext context) {
+        String mediaType = context.getMediaType();
+        if (mediaType == null || mediaType.trim().isEmpty()) {
+            String location = context.getLocation().trim();
+            if(!location.isEmpty()) {
+                return location.endsWith(".yml") || location.endsWith(".yaml");
+            }
             return false;
         }
         String type = mediaType.toLowerCase();
@@ -76,5 +82,14 @@ public class YamlParser implements PropifyConfigParser {
                 properties.put(key, value);
             }
         });
+    }
+
+    public static void main(String[] args) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+//        URL resource = Thread.currentThread().getContextClassLoader().getResource("config.yaml");
+        InputStream stream = YamlConfigParser.class.getClassLoader().getResourceAsStream("config.yml");
+//        FileInputStream stream = new FileInputStream(resource.getFile());
+        Map map = objectMapper.readValue(stream, Map.class);
+        System.out.println(map);
     }
 }

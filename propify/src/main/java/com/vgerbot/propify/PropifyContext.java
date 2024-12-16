@@ -10,19 +10,22 @@ public final class PropifyContext {
     private final boolean autoTypeConversion;
     private final String generatedClassName;
     private final ResourceLoaderProvider resourceLoaderProvider;
+    private final Logger logger;
 
     public PropifyContext(
             String location,
             String mediaType,
             boolean autoTypeConversion,
             String generatedClassName,
-            ResourceLoaderProvider resourceLoaderProvider
+            ResourceLoaderProvider resourceLoaderProvider,
+            Logger logger
     ) {
         this.location = location;
         this.mediaType = mediaType;
         this.autoTypeConversion = autoTypeConversion;
         this.generatedClassName = generatedClassName;
         this.resourceLoaderProvider = resourceLoaderProvider;
+        this.logger = logger;
     }
     public String getLocation() {
         return location;
@@ -54,5 +57,9 @@ public final class PropifyContext {
         } else {
             return this.generatedClassName.replaceAll("\\$\\$", originClassName);
         }
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 }

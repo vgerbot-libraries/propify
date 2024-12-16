@@ -10,7 +10,7 @@ app:
 database:
   url: jdbc:postgresql://localhost:5432/mydb
   username: admin
-  password: ${DATABASE_PASSWORD}
+  password: secret123
   poolSize: 10
   maxConnections: 20
 

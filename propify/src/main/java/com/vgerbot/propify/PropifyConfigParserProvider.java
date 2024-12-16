@@ -7,11 +7,10 @@ public class PropifyConfigParserProvider {
     public static PropifyConfigParserProvider getInstance() {
         return INSTANCE;
     }
-    public PropifyConfigParser getParser(String mediaType) {
+    public PropifyConfigParser getParser(PropifyContext context) {
         ClassLoader classLoader = PropifyProcessor.class.getClassLoader();
         for(PropifyConfigParser parser: ServiceLoaderWrapper.forClass(PropifyConfigParser.class, classLoader)) {
-            System.out.println("parser: " + parser + ", " + mediaType);
-            if (parser.accept(mediaType)) {
+            if (parser.accept(context)) {
                 return parser;
             }
         }

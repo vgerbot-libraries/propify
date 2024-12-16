@@ -168,6 +168,7 @@ Propify provides built-in support for internationalization through the `@I18n` a
 welcome=Welcome
 greeting=Hello, {name}!
 app.name=Example App
+time.format=At {1,time,::jmm} on {1,date,::dMMMM}, 
 
 # messages_zh_CN.properties
 welcome=欢迎

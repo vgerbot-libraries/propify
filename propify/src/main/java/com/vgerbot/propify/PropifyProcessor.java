@@ -1,8 +1,11 @@
 package com.vgerbot.propify;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.vgerbot.propify.compile.CompileTimeResourceLoaderProvider;
 import com.vgerbot.propify.generator.PropifyCodeGenerator;
 import com.vgerbot.propify.generator.I18nJavaPoetCodeGenerator;
+import com.vgerbot.propify.logger.CompileTimeLogger;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -95,8 +98,6 @@ public class PropifyProcessor extends AbstractProcessor {
         // Generate code using JavaPoet
         final String code = I18nJavaPoetCodeGenerator.getInstance()
             .generateCode(packageName, generatedClassName, i18nAnnotation.baseName(), i18nAnnotation.defaultLocale(), resourceBundle);
-        System.err.println(code);
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, code);
         // Write generated file
         final JavaFileObject file = processingEnv.getFiler()
             .createSourceFile(packageName + "." + generatedClassName);
@@ -119,13 +120,14 @@ public class PropifyProcessor extends AbstractProcessor {
                 propifyAnnotation.mediaType(),
                 propifyAnnotation.autoTypeConversion(),
                 propifyAnnotation.generatedClassName(),
-                new CompileTimeResourceLoaderProvider(processingEnv)
+                new CompileTimeResourceLoaderProvider(processingEnv),
+                new CompileTimeLogger(processingEnv)
         );
         PropifyConfigParserProvider provider = new PropifyConfigParserProvider();
         // Load and parse properties
         PropifyProperties properties;
         try (InputStream stream = context.loadResource()) {
-            PropifyConfigParser parser = provider.getParser(context.getMediaType());
+            PropifyConfigParser parser = provider.getParser(context);
             properties = parser.parse(context, stream);
         }
 

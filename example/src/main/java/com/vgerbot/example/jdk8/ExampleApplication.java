@@ -32,5 +32,8 @@ public class ExampleApplication {
         System.out.println("server.host = " + yamlProps.getServer().getHost());
         System.out.println("server.port = " + yamlProps.getServer().getPort());
 
+        System.out.println("server.ssl.keystore = " + yamlProps.getServer().getSsl().getKeystore());
+        System.out.println("server.ssl.isEnabled = " + yamlProps.getServer().getSsl().isEnabled());
+
     }
 }

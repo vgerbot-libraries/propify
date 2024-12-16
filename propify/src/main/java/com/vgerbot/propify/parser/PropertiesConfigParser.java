@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-public class PropertiesParser implements PropifyConfigParser {
+public class PropertiesConfigParser implements PropifyConfigParser {
     @Override
     public PropifyProperties parse(PropifyContext context, InputStream stream) throws IOException {
         if (stream == null) {
@@ -53,9 +53,14 @@ public class PropertiesParser implements PropifyConfigParser {
     }
 
     @Override
-    public Boolean accept(String mediaType) {
+    public Boolean accept(PropifyContext context) {
+        String mediaType = context.getMediaType();
         if (mediaType == null || mediaType.trim().isEmpty()) {
-            return true;
+            String location = context.getLocation().trim();
+            if(!location.isEmpty()) {
+                return location.endsWith(".properties");
+            }
+            return false;
         }
         String type = mediaType.toLowerCase();
         return "application/java-properties".equals(type) ||
