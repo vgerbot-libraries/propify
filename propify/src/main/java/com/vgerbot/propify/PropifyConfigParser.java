@@ -6,26 +6,26 @@ import java.io.InputStream;
 /**
  * Core interface for parsing configuration resources in the Propify framework.
  *
- * &lt;p&gt;This interface defines the contract for parsers that can read configuration data
+ * <p>This interface defines the contract for parsers that can read configuration data
  * from various formats (such as properties files, YAML, JSON, etc.) and convert them
  * into a standardized {@link PropifyProperties} representation. Implementations of this
  * interface handle the specifics of parsing different configuration formats while
  * maintaining a consistent API for the rest of the framework.
  *
- * &lt;p&gt;Key responsibilities of implementations:
- * &lt;ul&gt;
- *   &lt;li&gt;Parse configuration data from an input stream
- *   &lt;li&gt;Convert configuration values to appropriate Java types
- *   &lt;li&gt;Handle nested properties and complex data structures
- *   &lt;li&gt;Maintain consistent error handling and reporting
- * &lt;/ul&gt;
+ * <p>Key responsibilities of implementations:
+ * <ul>
+ *   <li>Parse configuration data from an input stream
+ *   <li>Convert configuration values to appropriate Java types
+ *   <li>Handle nested properties and complex data structures
+ *   <li>Maintain consistent error handling and reporting
+ * </ul>
  *
- * &lt;p&gt;Parsers are discovered through Java's ServiceLoader mechanism. To register a new
+ * <p>Parsers are discovered through Java's ServiceLoader mechanism. To register a new
  * parser implementation, include its fully qualified class name in:
  * {@code META-INF/services/com.vgerbot.propify.PropifyConfigParser}
  *
- * &lt;p&gt;Example implementation for a custom format:
- * &lt;pre&gt;
+ * <p>Example implementation for a custom format:
+ * <pre>
  * public class CustomFormatParser implements PropifyConfigParser {
  *     {@literal @}Override
  *     public PropifyProperties parse(PropifyContext context, InputStream stream) throws IOException {
@@ -39,7 +39,7 @@ import java.io.InputStream;
  *         return "application/x-custom-format".equalsIgnoreCase(mediaType);
  *     }
  * }
- * &lt;/pre&gt;
+ * </pre>
  *
  * @see PropifyProperties The standardized properties container
  * @see PropifyProcessor The annotation processor that uses these parsers
@@ -50,22 +50,22 @@ public interface PropifyConfigParser {
     /**
      * Parses configuration data from an input stream into a {@link PropifyProperties} object.
      *
-     * &lt;p&gt;This method is responsible for:
-     * &lt;ul&gt;
-     *   &lt;li&gt;Reading and parsing the configuration data from the input stream
-     *   &lt;li&gt;Converting string values to appropriate Java types (numbers, booleans, etc.)
-     *   &lt;li&gt;Handling nested properties using dot notation (e.g., "server.port")
-     *   &lt;li&gt;Maintaining the hierarchical structure of the configuration
-     * &lt;/ul&gt;
+     * <p>This method is responsible for:
+     * <ul>
+     *   <li>Reading and parsing the configuration data from the input stream
+     *   <li>Converting string values to appropriate Java types (numbers, booleans, etc.)
+     *   <li>Handling nested properties using dot notation (e.g., "server.port")
+     *   <li>Maintaining the hierarchical structure of the configuration
+     * </ul>
      *
-     * &lt;p&gt;Implementation guidelines:
-     * &lt;ul&gt;
-     *   &lt;li&gt;Always close any resources created during parsing
-     *   &lt;li&gt;Handle character encoding appropriately (UTF-8 recommended)
-     *   &lt;li&gt;Provide clear error messages for parsing failures
-     *   &lt;li&gt;Validate data types and formats where appropriate
-     *   &lt;li&gt;Respect the autoTypeConversion setting from the context
-     * &lt;/ul&gt;
+     * <p>Implementation guidelines:
+     * <ul>
+     *   <li>Always close any resources created during parsing
+     *   <li>Handle character encoding appropriately (UTF-8 recommended)
+     *   <li>Provide clear error messages for parsing failures
+     *   <li>Validate data types and formats where appropriate
+     *   <li>Respect the autoTypeConversion setting from the context
+     * </ul>
      *
      * @param stream the input stream containing configuration data
      * @return a {@link PropifyProperties} object containing the parsed configuration
@@ -78,21 +78,21 @@ public interface PropifyConfigParser {
     /**
      * Determines if this parser can handle configuration data of the specified media type.
      *
-     * &lt;p&gt;The media type string follows the MIME type format as specified in
-     * &lt;a href="https://tools.ietf.org/html/rfc2046"&gt;RFC 2046&lt;/a&gt;.
+     * <p>The media type string follows the MIME type format as specified in
+     * <a href="https://tools.ietf.org/html/rfc2046">RFC 2046</a>.
      * Common media types include:
-     * &lt;ul&gt;
-     *   &lt;li&gt;{@code text/x-java-properties} - Java Properties files
-     *   &lt;li&gt;{@code application/yaml} - YAML files
-     *   &lt;li&gt;{@code application/json} - JSON files
-     * &lt;/ul&gt;
+     * <ul>
+     *   <li>{@code text/x-java-properties} - Java Properties files
+     *   <li>{@code application/yaml} - YAML files
+     *   <li>{@code application/json} - JSON files
+     * </ul>
      *
-     * &lt;p&gt;Implementation guidelines:
-     * &lt;ul&gt;
-     *   &lt;li&gt;Media type comparison should be case-insensitive
-     *   &lt;li&gt;Consider supporting multiple media types for the same format
-     *   &lt;li&gt;Handle both primary and alternative MIME types where appropriate
-     * &lt;/ul&gt;
+     * <p>Implementation guidelines:
+     * <ul>
+     *   <li>Media type comparison should be case-insensitive
+     *   <li>Consider supporting multiple media types for the same format
+     *   <li>Handle both primary and alternative MIME types where appropriate
+     * </ul>
      *
      * @param context the media type to check, following MIME type format
      * @return true if this parser can handle the specified media type, false otherwise

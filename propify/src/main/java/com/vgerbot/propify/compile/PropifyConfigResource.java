@@ -10,25 +10,25 @@ import java.io.InputStream;
 /**
  * Core interface for loading configuration resources in the Propify framework.
  *
- * &lt;p&gt;This interface defines the contract for resource loaders that can access
+ * <p>This interface defines the contract for resource loaders that can access
  * configuration files from various locations such as the classpath, file system,
  * or remote URLs. Implementations handle the specifics of resource access while
  * providing a consistent API for the framework to load configuration data.
  *
- * &lt;p&gt;Key responsibilities of implementations:
- * &lt;ul&gt;
- *   &lt;li&gt;Determine if they can handle a given resource location
- *   &lt;li&gt;Load resources from supported locations
- *   &lt;li&gt;Handle resource access errors appropriately
- *   &lt;li&gt;Manage resource lifecycle (opening/closing streams)
- * &lt;/ul&gt;
+ * <p>Key responsibilities of implementations:
+ * <ul>
+ *   <li>Determine if they can handle a given resource location
+ *   <li>Load resources from supported locations
+ *   <li>Handle resource access errors appropriately
+ *   <li>Manage resource lifecycle (opening/closing streams)
+ * </ul>
  *
- * &lt;p&gt;Resource loaders are discovered through Java's ServiceLoader mechanism.
+ * <p>Resource loaders are discovered through Java's ServiceLoader mechanism.
  * To register a new loader implementation, include its fully qualified class name in:
  * {@code META-INF/services/com.vgerbot.propify.compile.PropifyConfigResource}
  *
- * &lt;p&gt;Example implementation for a custom resource type:
- * &lt;pre&gt;
+ * <p>Example implementation for a custom resource type:
+ * <pre>
  * public class CustomResourceLoader implements PropifyConfigResource {
  *     {@literal @}Override
  *     public Boolean accept(String location) {
@@ -42,7 +42,7 @@ import java.io.InputStream;
  *         return new CustomResourceInputStream(location);
  *     }
  * }
- * &lt;/pre&gt;
+ * </pre>
  *
  * @see PropifyProcessor The annotation processor that uses these resource loaders
  * @see PropifyConfigParser Interface for parsing the loaded resources
@@ -53,20 +53,20 @@ public interface PropifyConfigResource {
     /**
      * Determines if this resource loader can handle the specified location.
      *
-     * &lt;p&gt;The location string typically follows a URI-like format with a scheme
+     * <p>The location string typically follows a URI-like format with a scheme
      * indicating the resource type. Common schemes include:
-     * &lt;ul&gt;
-     *   &lt;li&gt;{@code classpath:} - Resources in the Java classpath
-     *   &lt;li&gt;{@code file:} - Local file system resources
-     *   &lt;li&gt;{@code http:} or {@code https:} - Remote resources via HTTP
-     * &lt;/ul&gt;
+     * <ul>
+     *   <li>{@code classpath:} - Resources in the Java classpath
+     *   <li>{@code file:} - Local file system resources
+     *   <li>{@code http:} or {@code https:} - Remote resources via HTTP
+     * </ul>
      *
-     * &lt;p&gt;Implementation guidelines:
-     * &lt;ul&gt;
-     *   &lt;li&gt;Check for supported schemes/protocols
-     *   &lt;li&gt;Validate basic location format
-     *   &lt;li&gt;Consider case sensitivity based on the resource type
-     * &lt;/ul&gt;
+     * <p>Implementation guidelines:
+     * <ul>
+     *   <li>Check for supported schemes/protocols
+     *   <li>Validate basic location format
+     *   <li>Consider case sensitivity based on the resource type
+     * </ul>
      *
      * @param location the resource location to check
      * @return true if this loader can handle the specified location, false otherwise
@@ -77,24 +77,24 @@ public interface PropifyConfigResource {
     /**
      * Loads a configuration resource from the specified location.
      *
-     * &lt;p&gt;This method is responsible for:
-     * &lt;ul&gt;
-     *   &lt;li&gt;Opening a connection to the resource
-     *   &lt;li&gt;Providing access to the resource content as an InputStream
-     *   &lt;li&gt;Handling resource access errors appropriately
-     *   &lt;li&gt;Managing resource lifecycle
-     * &lt;/ul&gt;
+     * <p>This method is responsible for:
+     * <ul>
+     *   <li>Opening a connection to the resource
+     *   <li>Providing access to the resource content as an InputStream
+     *   <li>Handling resource access errors appropriately
+     *   <li>Managing resource lifecycle
+     * </ul>
      *
-     * &lt;p&gt;Implementation guidelines:
-     * &lt;ul&gt;
-     *   &lt;li&gt;Use appropriate character encoding (UTF-8 recommended)
-     *   &lt;li&gt;Handle resource not found scenarios
-     *   &lt;li&gt;Provide clear error messages for access failures
-     *   &lt;li&gt;Consider resource caching if appropriate
-     *   &lt;li&gt;Ensure proper resource cleanup
-     * &lt;/ul&gt;
+     * <p>Implementation guidelines:
+     * <ul>
+     *   <li>Use appropriate character encoding (UTF-8 recommended)
+     *   <li>Handle resource not found scenarios
+     *   <li>Provide clear error messages for access failures
+     *   <li>Consider resource caching if appropriate
+     *   <li>Ensure proper resource cleanup
+     * </ul>
      *
-     * &lt;p&gt;The returned InputStream should be closed by the caller when no longer needed.
+     * <p>The returned InputStream should be closed by the caller when no longer needed.
      *
      * @param processingEnvironment the annotation processing environment
      * @param location the location of the resource to load

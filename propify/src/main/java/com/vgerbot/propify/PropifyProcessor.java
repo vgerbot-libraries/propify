@@ -20,17 +20,50 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.*;
 
+/**
+ * Annotation processor that handles {@link Propify} and {@link I18n} annotations.
+ * 
+ * <p>This processor generates strongly-typed configuration classes from external configuration
+ * files and internationalization resource bundles during the compilation phase. It supports:
+ * <ul>
+ *   <li>Configuration property class generation from various formats (properties, YAML)</li>
+ *   <li>Internationalization (i18n) support through resource bundles</li>
+ *   <li>Automatic type conversion for configuration values</li>
+ *   <li>Compile-time validation of configuration resources</li>
+ * </ul>
+ *
+ * <p>The processor is registered through the Java Service Provider Interface (SPI) mechanism
+ * and is automatically picked up by the Java compiler when the propify library is on the
+ * annotation processor path.
+ *
+ * @see Propify The annotation for configuration property generation
+ * @see I18n The annotation for internationalization support
+ * @since 1.0.0
+ */
 @SupportedAnnotationTypes({"com.vgerbot.propify.Propify", "com.vgerbot.propify.PropifyI18n"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PropifyProcessor extends AbstractProcessor {
     private Messager messager;
 
+    /**
+     * Initializes the annotation processor with the processing environment.
+     * 
+     * <p>This method is called by the Java compiler before any processing begins.
+     * It sets up the messager for compile-time logging and diagnostics.
+     *
+     * @param processingEnv provides access to processing tools and environment
+     */
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         this.messager = processingEnv.getMessager();
     }
 
+    /**
+     * Returns the set of annotation types supported by this processor.
+     * 
+     * @return a set containing the fully qualified names of the supported annotations
+     */
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         final Set<String> set = new HashSet<>();
@@ -39,11 +72,32 @@ public class PropifyProcessor extends AbstractProcessor {
         return set;
     }
 
+    /**
+     * Returns the latest supported source version.
+     * 
+     * @return the latest supported source version
+     */
     @Override
     public SourceVersion getSupportedSourceVersion() {
         return SourceVersion.latestSupported();
     }
 
+    /**
+     * Processes annotations found in the source code.
+     * 
+     * <p>This method is called by the compiler for each round of annotation processing.
+     * It handles both {@link Propify} and {@link I18n} annotations by:
+     * <ul>
+     *   <li>Loading and parsing configuration files</li>
+     *   <li>Generating type-safe configuration classes</li>
+     *   <li>Creating i18n resource bundle wrappers</li>
+     *   <li>Reporting any errors encountered during processing</li>
+     * </ul>
+     *
+     * @param annotations the annotation types requested to be processed
+     * @param roundEnv environment for information about the current and prior round
+     * @return true if the annotations are claimed by this processor
+     */
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         for (final TypeElement annotation : annotations) {
@@ -85,6 +139,20 @@ public class PropifyProcessor extends AbstractProcessor {
         return true;
     }
 
+    /**
+     * Processes an {@link I18n} annotation to generate internationalization support code.
+     * 
+     * <p>This method:
+     * <ul>
+     *   <li>Loads the base resource bundle</li>
+     *   <li>Generates a type-safe wrapper class for accessing messages</li>
+     *   <li>Creates utility methods for locale handling</li>
+     * </ul>
+     *
+     * @param i18nAnnotation the I18n annotation to process
+     * @param element the annotated type element
+     * @throws IOException if there are errors reading resources or writing generated code
+     */
     private void processI18nAnnotation(final I18n i18nAnnotation, final TypeElement element) throws IOException {
         // Get package name
         final String packageName = processingEnv.getElementUtils()
@@ -113,6 +181,21 @@ public class PropifyProcessor extends AbstractProcessor {
         );
     }
 
+    /**
+     * Processes a {@link Propify} annotation to generate configuration classes.
+     * 
+     * <p>This method:
+     * <ul>
+     *   <li>Creates a processing context</li>
+     *   <li>Loads and parses the configuration file</li>
+     *   <li>Generates a type-safe configuration class</li>
+     *   <li>Handles automatic type conversion if enabled</li>
+     * </ul>
+     *
+     * @param propifyAnnotation the Propify annotation to process
+     * @param element the annotated type element
+     * @throws IOException if there are errors reading resources or writing generated code
+     */
     private void processPropifyAnnotation(final Propify propifyAnnotation, final TypeElement element) throws IOException {
         // Create context and load configuration
         final PropifyContext context = new PropifyContext(
