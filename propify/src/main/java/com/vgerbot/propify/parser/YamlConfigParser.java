@@ -1,47 +1,95 @@
 package com.vgerbot.propify.parser;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.vgerbot.propify.PropifyContext;
 import com.vgerbot.propify.PropifyConfigParser;
 import com.vgerbot.propify.PropifyProperties;
 import com.vgerbot.propify.Utils;
+import org.apache.commons.configuration2.YAMLConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.interpol.ConfigurationInterpolator;
+import org.apache.commons.configuration2.interpol.EnvironmentLookup;
+import org.apache.commons.configuration2.interpol.SystemPropertiesLookup;
+import org.apache.commons.configuration2.io.FileHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class YamlConfigParser implements PropifyConfigParser {
-    private final ObjectMapper yamlMapper;
-
-    public YamlConfigParser() {
-        this.yamlMapper = new ObjectMapper(new YAMLFactory());
-    }
-
     @Override
     public PropifyProperties parse(PropifyContext context, InputStream stream) throws IOException {
         if (stream == null) {
             throw new IOException("Input stream cannot be null");
         }
 
-        Map<String, Object> yamlMap;
         try {
-            yamlMap = yamlMapper.readValue(stream, HashMap.class);
-            if (yamlMap == null) {
-                return new PropifyProperties();
+            // Create and configure YAML Configuration
+            YAMLConfiguration config = new YAMLConfiguration();
+            
+            // Setup environment variable and system property interpolation
+            ConfigurationInterpolator interpolator = config.getInterpolator();
+            interpolator.registerLookup("env", new EnvironmentLookup());
+            interpolator.registerLookup("sys", new SystemPropertiesLookup());
+            
+            // Use FileHandler to load from InputStream
+            FileHandler handler = new FileHandler(config);
+            handler.setEncoding(StandardCharsets.UTF_8.name());
+            handler.load(stream);
+
+            PropifyProperties properties = new PropifyProperties();
+
+            // Convert configuration to PropifyProperties
+            Iterator<String> keys = config.getKeys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                processKey(context, config, key, properties);
             }
-        } catch (JsonProcessingException e) {
-            if (e.getMessage() != null && e.getMessage().contains("No content")) {
-                return new PropifyProperties();
-            }
-            throw new IOException("Invalid YAML format: " + e.getMessage(), e);
+
+            return properties;
+        } catch (ConfigurationException e) {
+            throw new IOException("Failed to parse YAML configuration: " + e.getMessage(), e);
+        }
+    }
+
+    private void processKey(PropifyContext context, YAMLConfiguration config, String key, PropifyProperties properties) {
+        Object value = config.getProperty(key);
+        
+        if (value == null) {
+            return;
         }
 
-        PropifyProperties properties = new PropifyProperties();
-        convertMapToProperties(context, yamlMap, properties);
-        return properties;
+        // Handle different value types
+        if (value instanceof List) {
+            processListValue(context, key, (List<?>) value, properties);
+        } else if (value instanceof String && context.isAutoTypeConversion()) {
+            // Handle string values with potential type conversion
+            String strValue = (String) value;
+            // Check if it's a duration string (e.g., "30m", "24h")
+            if (strValue.matches("\\d+[smhd]")) {
+                properties.put(key, strValue); // Keep duration strings as-is
+            } else {
+                properties.put(key, Utils.convertValue(strValue));
+            }
+        } else {
+            properties.put(key, value);
+        }
+    }
+
+    private void processListValue(PropifyContext context, String key, List<?> list, PropifyProperties properties) {
+        List<Object> processedList = new ArrayList<>();
+        
+        for (Object item : list) {
+            if (item instanceof String && context.isAutoTypeConversion()) {
+                processedList.add(Utils.convertValue((String) item));
+            } else {
+                processedList.add(item);
+            }
+        }
+        
+        properties.put(key, processedList);
     }
 
     @Override
@@ -59,37 +107,5 @@ public class YamlConfigParser implements PropifyConfigParser {
                "application/x-yaml".equals(type) ||
                "text/yaml".equals(type) ||
                "text/x-yaml".equals(type);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void convertMapToProperties(PropifyContext context, Map<String, Object> map, PropifyProperties properties) {
-        if (map == null) {
-            return;
-        }
-
-        map.forEach((key, value) -> {
-            if (key == null) {
-                return;
-            }
-
-            if (value instanceof Map) {
-                PropifyProperties nestedProps = properties.createNested(key);
-                convertMapToProperties(context, (Map<String, Object>) value, nestedProps);
-            } else if (value instanceof String && context.isAutoTypeConversion()) {
-                // Preserve lists as-is
-                properties.put(key, Utils.convertValue(value));
-            } else {
-                properties.put(key, value);
-            }
-        });
-    }
-
-    public static void main(String[] args) throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
-//        URL resource = Thread.currentThread().getContextClassLoader().getResource("config.yaml");
-        InputStream stream = YamlConfigParser.class.getClassLoader().getResourceAsStream("config.yml");
-//        FileInputStream stream = new FileInputStream(resource.getFile());
-        Map map = objectMapper.readValue(stream, Map.class);
-        System.out.println(map);
     }
 }

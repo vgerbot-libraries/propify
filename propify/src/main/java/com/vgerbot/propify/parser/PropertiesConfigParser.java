@@ -4,12 +4,18 @@ import com.vgerbot.propify.PropifyContext;
 import com.vgerbot.propify.PropifyConfigParser;
 import com.vgerbot.propify.PropifyProperties;
 import com.vgerbot.propify.Utils;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.io.FileHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Properties;
+import java.util.Iterator;
 
 public class PropertiesConfigParser implements PropifyConfigParser {
     @Override
@@ -18,38 +24,52 @@ public class PropertiesConfigParser implements PropifyConfigParser {
             throw new IOException("Input stream cannot be null");
         }
 
-        Properties properties = new Properties();
-        try (InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
-            properties.load(reader);
-        } catch (IllegalArgumentException e) {
-            throw new IOException("Invalid properties format: " + e.getMessage(), e);
-        }
+        try {
+            // Create and configure the Properties Configuration
+            PropertiesConfiguration config = new PropertiesConfiguration();
+            config.setListDelimiterHandler(new DefaultListDelimiterHandler(','));
 
-        PropifyProperties propifyProperties = new PropifyProperties();
-        properties.forEach((key, value) -> {
-            String[] keyPath = key.toString().split("\\s*\\.\\s*");
-            String strValue = value.toString().trim();
-            Object convertedValue = context.isAutoTypeConversion() ? Utils.convertValue(strValue) : strValue;
+            // Use FileHandler to load from InputStream
+            FileHandler handler = new FileHandler(config);
+            handler.setEncoding(StandardCharsets.UTF_8.name());
+            handler.load(stream);
 
-            // Handle nested properties
-            if (keyPath.length > 1) {
-                PropifyProperties current = propifyProperties;
-                for (int i = 0; i < keyPath.length - 1; i++) {
-                    String pathKey = keyPath[i].trim();
-                    Object existing = current.get(pathKey);
-                    if (existing instanceof PropifyProperties) {
-                        current = (PropifyProperties) existing;
-                    } else {
-                        current = current.createNested(pathKey);
-                    }
+            PropifyProperties propifyProperties = new PropifyProperties();
+
+            // Convert configuration to PropifyProperties
+            Iterator<String> keys = config.getKeys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                Object value = config.getProperty(key);
+                
+                // Handle value conversion if enabled
+                if (context.isAutoTypeConversion() && value instanceof String) {
+                    value = Utils.convertValue((String) value);
                 }
-                current.put(keyPath[keyPath.length - 1].trim(), convertedValue);
-            } else {
-                propifyProperties.put(key.toString().trim(), convertedValue);
-            }
-        });
 
-        return propifyProperties;
+                // Handle nested properties
+                String[] keyPath = key.split("\\s*\\.\\s*");
+                if (keyPath.length > 1) {
+                    PropifyProperties current = propifyProperties;
+                    for (int i = 0; i < keyPath.length - 1; i++) {
+                        String pathKey = keyPath[i].trim();
+                        Object existing = current.get(pathKey);
+                        if (existing instanceof PropifyProperties) {
+                            current = (PropifyProperties) existing;
+                        } else {
+                            current = current.createNested(pathKey);
+                        }
+                    }
+                    current.put(keyPath[keyPath.length - 1].trim(), value);
+                } else {
+                    propifyProperties.put(key.trim(), value);
+                }
+            }
+
+            return propifyProperties;
+        } catch (ConfigurationException e) {
+            throw new IOException("Failed to parse properties configuration: " + e.getMessage(), e);
+        }
     }
 
     @Override
