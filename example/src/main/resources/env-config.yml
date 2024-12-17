@@ -1,0 +1,62 @@
+# Application configuration
+app:
+  environment: ${APP_ENV:production}  # Default to production if not set
+  debug: ${DEBUG_MODE:false}
+  name: ${APP_NAME:MyApplication}
+  version: ${APP_VERSION:1.0.0}
+
+# Database configuration
+database:
+  url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:myapp}
+  username: ${DB_USER:postgres}
+  password: ${DB_PASSWORD:}  # No default for sensitive information
+  pool:
+    minSize: ${DB_POOL_MIN:5}
+    maxSize: ${DB_POOL_MAX:20}
+    idleTimeout: ${DB_POOL_IDLE:300000}
+
+# Redis configuration
+redis:
+  mode: ${REDIS_MODE:standalone}  # standalone or cluster
+  nodes: ${REDIS_CLUSTER_NODES:localhost:6379}  # Comma-separated list for cluster mode
+  password: ${REDIS_PASSWORD:}
+  database: ${REDIS_DATABASE:0}
+  timeout: ${REDIS_TIMEOUT:2000}
+
+# Logging configuration
+logging:
+  level: ${LOG_LEVEL:INFO}
+  path: ${LOG_PATH:/var/log/myapp}
+  maxSize: ${LOG_MAX_SIZE:100MB}
+  maxHistory: ${LOG_MAX_HISTORY:30}
+  pattern: ${LOG_PATTERN:%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n}
+
+# Email service configuration
+email:
+  smtp:
+    host: ${SMTP_HOST:smtp.gmail.com}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USER:}
+    password: ${SMTP_PASSWORD:}
+    auth: ${SMTP_AUTH:true}
+    starttls: ${SMTP_STARTTLS:true}
+  from: ${EMAIL_FROM:noreply@example.com}
+  templatePath: ${EMAIL_TEMPLATE_PATH:classpath:templates/email}
+
+# API configuration
+api:
+  key: ${API_KEY:}
+  baseUrl: ${API_BASE_URL:https://api.example.com}
+  version: ${API_VERSION:v1}
+  timeout: ${API_TIMEOUT:30000}
+  retryCount: ${API_RETRY_COUNT:3}
+
+# Metrics configuration
+metrics:
+  enabled: ${METRICS_ENABLED:true}
+  prefix: ${METRICS_PREFIX:myapp}
+  reportInterval: ${METRICS_INTERVAL:60}
+  tags:
+    environment: ${APP_ENV:production}
+    region: ${AWS_REGION:us-east-1}
+    service: ${SERVICE_NAME:myapp}

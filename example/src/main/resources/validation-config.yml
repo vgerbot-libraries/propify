@@ -1,0 +1,38 @@
+# Server configuration with validation
+server:
+  host: localhost
+  port: 8080  # Must be between 1024 and 65535
+  maxThreads: 100  # Must be between 1 and 1000
+  connectionTimeout: 30s  # Duration format
+
+# Database connection pool settings
+database:
+  pool:
+    minSize: 5  # Must be at least 1
+    maxSize: 20  # Must be at least 1
+    idleTimeout: 5m  # Duration format
+
+# Cache configuration with duration
+cache:
+  ttl: 1h  # Duration format
+  maxSize: 10000  # Must be non-negative
+
+# Rate limiting configuration
+rateLimiting:
+  enabled: true
+  maxRequests: 100  # Must be at least 1
+  timeWindow: 1m  # Duration format
+
+# Email configuration with URL validation
+email:
+  smtpUrl: smtp://mail.example.com:587  # Must be valid URL
+  fromAddress: noreply@example.com  # Must be valid email
+
+# Security settings
+security:
+  passwordMinLength: 12  # Must be at least 8
+  maxLoginAttempts: 5  # Must be between 1 and 10
+  allowedOrigins:  # Must have at least one entry
+    - http://localhost:3000
+    - https://example.com
+    - https://admin.example.com
