@@ -22,6 +22,26 @@
             <artifactId>propify</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-configuration2</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.17.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.13</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -33,13 +53,13 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>com.vgerbot</groupId>
-                            <artifactId>propify</artifactId>
-                            <version>${project.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
+<!--                    <annotationProcessorPaths>-->
+<!--                        <path>-->
+<!--                            <groupId>com.vgerbot</groupId>-->
+<!--                            <artifactId>propify</artifactId>-->
+<!--                            <version>${project.version}</version>-->
+<!--                        </path>-->
+<!--                    </annotationProcessorPaths>-->
                 </configuration>
             </plugin>
         </plugins>

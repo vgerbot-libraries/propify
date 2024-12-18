@@ -7,6 +7,7 @@ import com.vgerbot.propify.Utils;
 import org.apache.commons.configuration2.YAMLConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.interpol.ConfigurationInterpolator;
+import org.apache.commons.configuration2.interpol.DefaultLookups;
 import org.apache.commons.configuration2.interpol.EnvironmentLookup;
 import org.apache.commons.configuration2.interpol.SystemPropertiesLookup;
 import org.apache.commons.configuration2.io.FileHandler;
@@ -31,8 +32,8 @@ public class YamlConfigParser implements PropifyConfigParser {
             
             // Setup environment variable and system property interpolation
             ConfigurationInterpolator interpolator = config.getInterpolator();
-            interpolator.registerLookup("env", new EnvironmentLookup());
-            interpolator.registerLookup("sys", new SystemPropertiesLookup());
+            interpolator.registerLookup("env", DefaultLookups.ENVIRONMENT.getLookup());
+            interpolator.registerLookup("sys", DefaultLookups.SYSTEM_PROPERTIES.getLookup());
             
             // Use FileHandler to load from InputStream
             FileHandler handler = new FileHandler(config);

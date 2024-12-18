@@ -1,7 +1,5 @@
 package com.vgerbot.propify;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.vgerbot.propify.compile.CompileTimeResourceLoaderProvider;
 import com.vgerbot.propify.generator.PropifyCodeGenerator;
 import com.vgerbot.propify.generator.I18nJavaPoetCodeGenerator;
