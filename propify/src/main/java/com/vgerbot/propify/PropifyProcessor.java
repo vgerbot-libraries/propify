@@ -4,6 +4,9 @@ import com.vgerbot.propify.compile.CompileTimeResourceLoaderProvider;
 import com.vgerbot.propify.generator.PropifyCodeGenerator;
 import com.vgerbot.propify.generator.I18nJavaPoetCodeGenerator;
 import com.vgerbot.propify.logger.CompileTimeLogger;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.interpol.DefaultLookups;
+import org.apache.commons.configuration2.interpol.Lookup;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -17,10 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Annotation processor that handles {@link Propify} and {@link I18n} annotations.
- * 
+ *
  * <p>This processor generates strongly-typed configuration classes from external configuration
  * files and internationalization resource bundles during the compilation phase. It supports:
  * <ul>
@@ -45,7 +49,7 @@ public class PropifyProcessor extends AbstractProcessor {
 
     /**
      * Initializes the annotation processor with the processing environment.
-     * 
+     *
      * <p>This method is called by the Java compiler before any processing begins.
      * It sets up the messager for compile-time logging and diagnostics.
      *
@@ -59,7 +63,7 @@ public class PropifyProcessor extends AbstractProcessor {
 
     /**
      * Returns the set of annotation types supported by this processor.
-     * 
+     *
      * @return a set containing the fully qualified names of the supported annotations
      */
     @Override
@@ -72,7 +76,7 @@ public class PropifyProcessor extends AbstractProcessor {
 
     /**
      * Returns the latest supported source version.
-     * 
+     *
      * @return the latest supported source version
      */
     @Override
@@ -82,7 +86,7 @@ public class PropifyProcessor extends AbstractProcessor {
 
     /**
      * Processes annotations found in the source code.
-     * 
+     *
      * <p>This method is called by the compiler for each round of annotation processing.
      * It handles both {@link Propify} and {@link I18n} annotations by:
      * <ul>
@@ -93,40 +97,40 @@ public class PropifyProcessor extends AbstractProcessor {
      * </ul>
      *
      * @param annotations the annotation types requested to be processed
-     * @param roundEnv environment for information about the current and prior round
+     * @param roundEnv    environment for information about the current and prior round
      * @return true if the annotations are claimed by this processor
      */
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         for (final TypeElement annotation : annotations) {
             final Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(annotation);
-            
+
             for (final Element element : annotatedElements) {
                 if (!(element instanceof TypeElement)) {
                     continue;
                 }
-                
+
                 try {
                     Propify propifyAnnotation = element.getAnnotation(Propify.class);
                     if (propifyAnnotation != null) {
                         processPropifyAnnotation(propifyAnnotation, (TypeElement) element);
                     }
                     I18n i18nAnnotation = element.getAnnotation(I18n.class);
-                    if(i18nAnnotation != null) {
+                    if (i18nAnnotation != null) {
                         processI18nAnnotation(i18nAnnotation, (TypeElement) element);
                     }
                 } catch (Exception e) {
                     String message = e.getMessage();
                     if (message != null) {
                         if (message.contains("No parser found for media type")) {
-                            messager.printMessage(Diagnostic.Kind.ERROR, 
-                                "No parser found for media type", element);
+                            messager.printMessage(Diagnostic.Kind.ERROR,
+                                    "No parser found for media type", element);
                         } else if (message.contains("Could not find resource")) {
-                            messager.printMessage(Diagnostic.Kind.ERROR, 
-                                "Could not find resource", element);
+                            messager.printMessage(Diagnostic.Kind.ERROR,
+                                    "Could not find resource", element);
                         } else {
-                            messager.printMessage(Diagnostic.Kind.ERROR, 
-                                "Failed to process annotation: " + message, element);
+                            messager.printMessage(Diagnostic.Kind.ERROR,
+                                    "Failed to process annotation: " + message, element);
                         }
                     } else {
                         throw new RuntimeException(e);
@@ -139,7 +143,7 @@ public class PropifyProcessor extends AbstractProcessor {
 
     /**
      * Processes an {@link I18n} annotation to generate internationalization support code.
-     * 
+     *
      * <p>This method:
      * <ul>
      *   <li>Loads the base resource bundle</li>
@@ -148,40 +152,40 @@ public class PropifyProcessor extends AbstractProcessor {
      * </ul>
      *
      * @param i18nAnnotation the I18n annotation to process
-     * @param element the annotated type element
+     * @param element        the annotated type element
      * @throws IOException if there are errors reading resources or writing generated code
      */
     private void processI18nAnnotation(final I18n i18nAnnotation, final TypeElement element) throws IOException {
         // Get package name
         final String packageName = processingEnv.getElementUtils()
-            .getPackageOf(element)
-            .getQualifiedName()
-            .toString();
+                .getPackageOf(element)
+                .getQualifiedName()
+                .toString();
 
         String generatedClassName = i18nAnnotation.generatedClassName().replace("$$", element.getSimpleName().toString());
         FileObject resource = processingEnv.getFiler().getResource(StandardLocation.CLASS_PATH, "", i18nAnnotation.baseName() + ".properties");
         ResourceBundle resourceBundle = new PropertyResourceBundle(resource.openInputStream());
         // Generate code using JavaPoet
         final String code = I18nJavaPoetCodeGenerator.getInstance()
-            .generateCode(packageName, generatedClassName, i18nAnnotation.baseName(), i18nAnnotation.defaultLocale(), resourceBundle);
+                .generateCode(packageName, generatedClassName, i18nAnnotation.baseName(), i18nAnnotation.defaultLocale(), resourceBundle);
         // Write generated file
         final JavaFileObject file = processingEnv.getFiler()
-            .createSourceFile(packageName + "." + generatedClassName);
-            
+                .createSourceFile(packageName + "." + generatedClassName);
+
         try (Writer writer = file.openWriter()) {
             writer.write(code);
         }
 
         messager.printMessage(
-            Diagnostic.Kind.NOTE,
-            "Generated MessageResource for i18n support",
-            element
+                Diagnostic.Kind.NOTE,
+                "Generated MessageResource for i18n support",
+                element
         );
     }
 
     /**
      * Processes a {@link Propify} annotation to generate configuration classes.
-     * 
+     *
      * <p>This method:
      * <ul>
      *   <li>Creates a processing context</li>
@@ -191,7 +195,7 @@ public class PropifyProcessor extends AbstractProcessor {
      * </ul>
      *
      * @param propifyAnnotation the Propify annotation to process
-     * @param element the annotated type element
+     * @param element           the annotated type element
      * @throws IOException if there are errors reading resources or writing generated code
      */
     private void processPropifyAnnotation(final Propify propifyAnnotation, final TypeElement element) throws IOException {
@@ -201,40 +205,60 @@ public class PropifyProcessor extends AbstractProcessor {
                 propifyAnnotation.mediaType(),
                 propifyAnnotation.autoTypeConversion(),
                 propifyAnnotation.generatedClassName(),
+                propifyAnnotation.listDelimiter(),
                 new CompileTimeResourceLoaderProvider(processingEnv),
                 new CompileTimeLogger(processingEnv)
         );
         PropifyConfigParserProvider provider = new PropifyConfigParserProvider();
         // Load and parse properties
         PropifyProperties properties;
+        PropifyPropertiesBuilder propifyPropertiesBuilder = new PropifyPropertiesBuilder();
         try (InputStream stream = context.loadResource()) {
             PropifyConfigParser parser = provider.getParser(context);
-            properties = parser.parse(context, stream);
+            Configuration configuration = parser.parse(context, stream);
+
+            Map<String, Lookup> map = Arrays.stream(propifyAnnotation.lookups()).collect(Collectors.toMap(Propify.Lookup::key, it -> it.lookup().getLookup()));
+            Map<String, ? extends Lookup> customLookupMap = Arrays.stream(propifyAnnotation.customLookups()).collect(Collectors.toMap(Propify.CustomLookup::key, it -> {
+                try {
+                    return it.type().newInstance();
+                } catch (InstantiationException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }));
+            Map<String, Lookup> allLookupsMap = new HashMap<>();
+            allLookupsMap.putAll(map);
+            allLookupsMap.putAll(customLookupMap);
+            configuration.installInterpolator(allLookupsMap, Collections.emptyList());
+
+            propifyPropertiesBuilder.config(configuration);
         }
+        properties = propifyPropertiesBuilder.build();
 
         // Generate code
         final String packageName = processingEnv.getElementUtils()
-            .getPackageOf(element)
-            .getQualifiedName()
-            .toString();
+                .getPackageOf(element)
+                .getQualifiedName()
+                .toString();
 
         final String generatedClassName = context.generateClassName(element.getSimpleName().toString());
 
         final String code = PropifyCodeGenerator.getInstance()
-            .generateCode(packageName, generatedClassName, context, properties);
+                .generateCode(packageName, generatedClassName, context, properties);
 
         // Write generated file
         final JavaFileObject file = processingEnv.getFiler()
-            .createSourceFile(packageName + "." + generatedClassName);
-            
+                .createSourceFile(packageName + "." + generatedClassName);
+
         try (Writer writer = file.openWriter()) {
             writer.write(code);
         }
 
         messager.printMessage(
-            Diagnostic.Kind.NOTE,
-            "Generated " + generatedClassName + " from " + propifyAnnotation.location(),
-            element
+                Diagnostic.Kind.NOTE,
+                "Generated " + generatedClassName + " from " + propifyAnnotation.location(),
+                element
         );
     }
 }

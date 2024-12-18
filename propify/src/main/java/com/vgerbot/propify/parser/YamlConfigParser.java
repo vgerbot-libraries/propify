@@ -4,6 +4,7 @@ import com.vgerbot.propify.PropifyContext;
 import com.vgerbot.propify.PropifyConfigParser;
 import com.vgerbot.propify.PropifyProperties;
 import com.vgerbot.propify.Utils;
+import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.YAMLConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.interpol.ConfigurationInterpolator;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class YamlConfigParser implements PropifyConfigParser {
     @Override
-    public PropifyProperties parse(PropifyContext context, InputStream stream) throws IOException {
+    public Configuration parse(PropifyContext context, InputStream stream) throws IOException {
         if (stream == null) {
             throw new IOException("Input stream cannot be null");
         }
@@ -40,58 +41,12 @@ public class YamlConfigParser implements PropifyConfigParser {
             handler.setEncoding(StandardCharsets.UTF_8.name());
             handler.load(stream);
 
-            PropifyProperties properties = new PropifyProperties();
-
-            // Convert configuration to PropifyProperties
-            Iterator<String> keys = config.getKeys();
-            while (keys.hasNext()) {
-                String key = keys.next();
-                processKey(context, config, key, properties);
-            }
-
-            return properties;
+            return config;
         } catch (ConfigurationException e) {
             throw new IOException("Failed to parse YAML configuration: " + e.getMessage(), e);
         }
     }
 
-    private void processKey(PropifyContext context, YAMLConfiguration config, String key, PropifyProperties properties) {
-        Object value = config.getProperty(key);
-        
-        if (value == null) {
-            return;
-        }
-
-        // Handle different value types
-        if (value instanceof List) {
-            processListValue(context, key, (List<?>) value, properties);
-        } else if (value instanceof String && context.isAutoTypeConversion()) {
-            // Handle string values with potential type conversion
-            String strValue = (String) value;
-            // Check if it's a duration string (e.g., "30m", "24h")
-            if (strValue.matches("\\d+[smhd]")) {
-                properties.put(key, strValue); // Keep duration strings as-is
-            } else {
-                properties.put(key, Utils.convertValue(strValue));
-            }
-        } else {
-            properties.put(key, value);
-        }
-    }
-
-    private void processListValue(PropifyContext context, String key, List<?> list, PropifyProperties properties) {
-        List<Object> processedList = new ArrayList<>();
-        
-        for (Object item : list) {
-            if (item instanceof String && context.isAutoTypeConversion()) {
-                processedList.add(Utils.convertValue((String) item));
-            } else {
-                processedList.add(item);
-            }
-        }
-        
-        properties.put(key, processedList);
-    }
 
     @Override
     public Boolean accept(PropifyContext context) {

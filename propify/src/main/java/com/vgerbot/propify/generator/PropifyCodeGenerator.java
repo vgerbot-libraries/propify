@@ -146,6 +146,7 @@ public final class PropifyCodeGenerator {
                 "application/properties",
                 true,
                 "$$PropertiesPropify",
+                ',',
                 RuntimeResourceLoaderProvider.getInstance(),
                 new RuntimeLogger()
         ), properties);

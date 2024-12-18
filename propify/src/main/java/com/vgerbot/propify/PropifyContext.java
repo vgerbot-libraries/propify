@@ -29,6 +29,7 @@ public final class PropifyContext {
     private final boolean autoTypeConversion;
     private final String generatedClassName;
     private final ResourceLoaderProvider resourceLoaderProvider;
+    private final char listDelimiter;
     private final Logger logger;
 
     /**
@@ -46,6 +47,7 @@ public final class PropifyContext {
             String mediaType,
             boolean autoTypeConversion,
             String generatedClassName,
+            char listDelimiter,
             ResourceLoaderProvider resourceLoaderProvider,
             Logger logger
     ) {
@@ -53,6 +55,7 @@ public final class PropifyContext {
         this.mediaType = mediaType;
         this.autoTypeConversion = autoTypeConversion;
         this.generatedClassName = generatedClassName;
+        this.listDelimiter = listDelimiter;
         this.resourceLoaderProvider = resourceLoaderProvider;
         this.logger = logger;
     }
@@ -148,5 +151,9 @@ public final class PropifyContext {
      */
     public Logger getLogger() {
         return logger;
+    }
+
+    public char getListDelimiter() {
+        return listDelimiter;
     }
 }

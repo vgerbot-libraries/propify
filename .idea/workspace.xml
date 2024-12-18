@@ -6,13 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="66a6e504-a888-4c90-a058-f4a1c937cb4f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/src/main/java/com/vgerbot/example/jdk8/ExampleApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/src/main/java/com/vgerbot/example/jdk8/I18nExample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/src/main/java/com/vgerbot/example/jdk8/PropertiesConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/src/main/java/com/vgerbot/example/jdk8/YAMLConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/src/main/resources/messages_en_US.properties" beforeDir="false" afterPath="$PROJECT_DIR$/example/src/main/resources/messages_en_US.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/src/main/resources/messages_zh_CN.properties" beforeDir="false" afterPath="$PROJECT_DIR$/example/src/main/resources/messages_zh_CN.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/propify/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/propify/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/Propify.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/Propify.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyConfigParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyConfigParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/PropifyProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/generator/PropifyCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/generator/PropifyCodeGenerator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/parser/PropertiesConfigParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/parser/PropertiesConfigParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/parser/YamlConfigParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/propify/src/main/java/com/vgerbot/propify/parser/YamlConfigParser.java" afterDir="false" />
     </list>
@@ -97,6 +96,7 @@
     "Application.Main.executor": "Run",
     "Application.PropertiesParser.executor": "Run",
     "Application.PropifyCodeGenerator.executor": "Run",
+    "Application.PropifyPropertiesBuilder.executor": "Run",
     "Application.Utils.executor": "Run",
     "Application.Utils_ParseValueTest.executor": "Run",
     "Application.YamlParser.executor": "Run",
@@ -135,7 +135,7 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "editor.stickyLines"
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -152,7 +152,7 @@
       <recent name="com.vgerbot.propify" />
     </key>
   </component>
-  <component name="RunManager" selected="Maven.propify-parent [compile]">
+  <component name="RunManager" selected="Application.PropifyPropertiesBuilder">
     <configuration name="ExampleApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.vgerbot.example.jdk8.ExampleApplication" />
       <module name="example" />
@@ -166,24 +166,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="PropifyCodeGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.generator.PropifyCodeGenerator" />
+    <configuration name="PropifyPropertiesBuilder" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.vgerbot.propify.PropifyPropertiesBuilder" />
       <module name="propify" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.vgerbot.propify.generator.*" />
+          <option name="PATTERN" value="com.vgerbot.propify.*" />
           <option name="ENABLED" value="true" />
         </pattern>
-      </extension>
-      <extension name="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
       </extension>
       <method v="2">
         <option name="Make" enabled="true" />
@@ -357,9 +347,9 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Application.PropifyPropertiesBuilder" />
       <item itemvalue="Application.ExampleApplication" />
       <item itemvalue="Application.YamlConfigParser" />
-      <item itemvalue="Application.PropifyCodeGenerator" />
       <item itemvalue="Maven.propify [deploy]  " />
       <item itemvalue="Maven.example [compile]" />
       <item itemvalue="Maven.propify-parent [compile]" />
@@ -367,11 +357,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.PropifyPropertiesBuilder" />
         <item itemvalue="Maven.propify-parent [compile]" />
         <item itemvalue="Application.ExampleApplication" />
         <item itemvalue="Application.YamlConfigParser" />
         <item itemvalue="Maven.example [compile]" />
-        <item itemvalue="Application.PropifyCodeGenerator" />
       </list>
     </recent_temporary>
   </component>

@@ -1,6 +1,11 @@
 package com.vgerbot.propify;
 
 
+import org.apache.commons.configuration2.interpol.DefaultLookups;
+import org.apache.commons.configuration2.interpol.EnvironmentLookup;
+import org.apache.commons.configuration2.interpol.Lookup;
+import org.apache.commons.configuration2.interpol.SystemPropertiesLookup;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -50,6 +55,18 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
 public @interface Propify {
+
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Lookup {
+        String key();
+        DefaultLookups lookup();
+    }
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface CustomLookup {
+        String key();
+        Class<? extends org.apache.commons.configuration2.interpol.Lookup> type();
+    }
 
     /**
      * Specifies the location of the configuration resource file.
@@ -130,4 +147,15 @@ public @interface Propify {
      */
     boolean autoTypeConversion() default true;
 
+    char listDelimiter() default ',';
+
+    Lookup[] lookups() default {
+        @Lookup(key = "env", lookup = DefaultLookups.ENVIRONMENT),
+        @Lookup(key = "sys", lookup = DefaultLookups.SYSTEM_PROPERTIES),
+        @Lookup(key = "file", lookup = DefaultLookups.FILE),
+        @Lookup(key = "date", lookup = DefaultLookups.DATE),
+        @Lookup(key = "properties", lookup = DefaultLookups.PROPERTIES),
+    };
+
+    CustomLookup[] customLookups() default {};
 }

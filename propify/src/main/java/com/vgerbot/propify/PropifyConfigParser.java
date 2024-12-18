@@ -1,5 +1,7 @@
 package com.vgerbot.propify;
 
+import org.apache.commons.configuration2.Configuration;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -73,7 +75,7 @@ public interface PropifyConfigParser {
      * @see PropifyProperties For the structure of the returned object
      * @since 1.0.0
      */
-    PropifyProperties parse(PropifyContext context, InputStream stream) throws IOException;
+    Configuration parse(PropifyContext context, InputStream stream) throws IOException;
 
     /**
      * Determines if this parser can handle configuration data of the specified media type.
