@@ -1,4 +1,4 @@
-package com.vgerbot.propify;
+package com.vgerbot.propify.core;
 
 import java.io.IOException;
 import java.io.InputStream;

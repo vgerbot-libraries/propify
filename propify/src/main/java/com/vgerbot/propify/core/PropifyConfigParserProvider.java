@@ -1,5 +1,6 @@
-package com.vgerbot.propify;
+package com.vgerbot.propify.core;
 
+import com.vgerbot.propify.PropifyProcessor;
 import com.vgerbot.propify.service.ServiceLoaderWrapper;
 
 /**

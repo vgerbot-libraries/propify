@@ -1,8 +1,6 @@
 package com.vgerbot.example.jdk8;
 
-import com.vgerbot.propify.I18n;
-import java.util.Locale;
-import java.util.Date;
+import com.vgerbot.propify.i18n.I18n;
 
 @I18n(baseName = "messages", generatedClassName = "I18nMessages")
 public class I18nAdvancedExample {

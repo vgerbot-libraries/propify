@@ -1,6 +1,6 @@
 package com.vgerbot.example.jdk8;
 
-import com.vgerbot.propify.Propify;
+import com.vgerbot.propify.core.Propify;
 import com.vgerbot.propify.lookup.PropifyLookup;
 
 class CustomLookup implements PropifyLookup {

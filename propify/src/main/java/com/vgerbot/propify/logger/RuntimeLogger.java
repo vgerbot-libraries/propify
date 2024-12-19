@@ -1,7 +1,5 @@
 package com.vgerbot.propify.logger;
 
-import com.vgerbot.propify.Logger;
-
 import java.util.logging.Level;
 
 public class RuntimeLogger implements Logger {

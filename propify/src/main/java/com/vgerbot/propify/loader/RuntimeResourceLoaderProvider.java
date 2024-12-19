@@ -1,7 +1,7 @@
-package com.vgerbot.propify.runtime;
+package com.vgerbot.propify.loader;
 
-import com.vgerbot.propify.ResourceLoader;
-import com.vgerbot.propify.ResourceLoaderProvider;
+import com.vgerbot.propify.core.ResourceLoader;
+import com.vgerbot.propify.core.ResourceLoaderProvider;
 import com.vgerbot.propify.service.ServiceLoaderWrapper;
 
 import java.util.ArrayList;

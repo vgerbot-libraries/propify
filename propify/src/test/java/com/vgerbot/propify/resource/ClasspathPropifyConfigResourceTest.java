@@ -1,6 +1,6 @@
 package com.vgerbot.propify.resource;
 
-import com.vgerbot.propify.compile.ClasspathResourceLoader;
+import com.vgerbot.propify.loader.CompileTimeClasspathResourceLoader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ClasspathPropifyConfigResourceTest {
 
-    private ClasspathResourceLoader resource;
+    private CompileTimeClasspathResourceLoader resource;
 
     @Mock private ProcessingEnvironment processingEnv;
     @Mock private Filer filer;
@@ -34,7 +34,7 @@ public class ClasspathPropifyConfigResourceTest {
 
     @Before
     public void setUp() {
-        resource = new ClasspathResourceLoader(processingEnv);
+        resource = new CompileTimeClasspathResourceLoader(processingEnv);
         when(processingEnv.getFiler()).thenReturn(filer);
         when(processingEnv.getMessager()).thenReturn(messager);
     }

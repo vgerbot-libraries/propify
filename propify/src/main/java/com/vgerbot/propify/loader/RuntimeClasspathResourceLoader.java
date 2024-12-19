@@ -1,11 +1,11 @@
-package com.vgerbot.propify.runtime;
+package com.vgerbot.propify.loader;
 
-import com.vgerbot.propify.ResourceLoader;
+import com.vgerbot.propify.core.ResourceLoader;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ClasspathResourceLoader implements ResourceLoader  {
+public class RuntimeClasspathResourceLoader implements ResourceLoader  {
     private static final String CLASSPATH_PREFIX = "classpath:";
     @Override
     public boolean accept(String location) {

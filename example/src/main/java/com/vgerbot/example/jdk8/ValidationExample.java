@@ -1,6 +1,6 @@
 package com.vgerbot.example.jdk8;
 
-import com.vgerbot.propify.Propify;
+import com.vgerbot.propify.core.Propify;
 
 @Propify(location = "classpath:validation-config.yml")
 public class ValidationExample {

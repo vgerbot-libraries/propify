@@ -1,4 +1,6 @@
-package com.vgerbot.propify;
+package com.vgerbot.propify.i18n;
+
+import com.vgerbot.propify.PropifyProcessor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

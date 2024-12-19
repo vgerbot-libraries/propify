@@ -1,12 +1,13 @@
 package com.vgerbot.propify;
 
 import com.vgerbot.propify.common.Utils;
-import com.vgerbot.propify.compile.CompileTimeResourceLoaderProvider;
+import com.vgerbot.propify.loader.CompileTimeResourceLoaderProvider;
+import com.vgerbot.propify.core.*;
 import com.vgerbot.propify.generator.PropifyCodeGenerator;
 import com.vgerbot.propify.generator.I18nJavaPoetCodeGenerator;
+import com.vgerbot.propify.i18n.I18n;
 import com.vgerbot.propify.logger.CompileTimeLogger;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.interpol.Lookup;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -40,7 +41,7 @@ import java.util.*;
  * @see I18n The annotation for internationalization support
  * @since 1.0.0
  */
-@SupportedAnnotationTypes({"com.vgerbot.propify.Propify", "com.vgerbot.propify.PropifyI18n"})
+@SupportedAnnotationTypes({"com.vgerbot.propify.core.Propify", "com.vgerbot.propify.PropifyI18n"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PropifyProcessor extends AbstractProcessor {
     private Messager messager;

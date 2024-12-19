@@ -1,7 +1,7 @@
 package com.vgerbot.propify.parser;
 
-import com.vgerbot.propify.PropifyContext;
-import com.vgerbot.propify.PropifyConfigParser;
+import com.vgerbot.propify.core.PropifyContext;
+import com.vgerbot.propify.core.PropifyConfigParser;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;

@@ -1,5 +1,6 @@
-package com.vgerbot.propify;
+package com.vgerbot.propify.core;
 
+import com.vgerbot.propify.PropifyProcessor;
 import org.apache.commons.configuration2.Configuration;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.io.InputStream;
  *
  * <p>Parsers are discovered through Java's ServiceLoader mechanism. To register a new
  * parser implementation, include its fully qualified class name in:
- * {@code META-INF/services/com.vgerbot.propify.PropifyConfigParser}
+ * {@code META-INF/services/com.vgerbot.propify.core.PropifyConfigParser}
  *
  * <p>Example implementation for a custom format:
  * <pre>

@@ -1,5 +1,7 @@
 package com.vgerbot.propify;
 
+import com.vgerbot.propify.core.Propify;
+import com.vgerbot.propify.i18n.I18n;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

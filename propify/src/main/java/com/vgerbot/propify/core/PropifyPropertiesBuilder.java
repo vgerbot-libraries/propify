@@ -1,4 +1,4 @@
-package com.vgerbot.propify;
+package com.vgerbot.propify.core;
 
 import org.apache.commons.configuration2.Configuration;
 

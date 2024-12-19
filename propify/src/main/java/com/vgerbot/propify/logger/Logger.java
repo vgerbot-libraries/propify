@@ -1,4 +1,6 @@
-package com.vgerbot.propify;
+package com.vgerbot.propify.logger;
+
+import com.vgerbot.propify.core.PropifyContext;
 
 /**
  * Core logging interface for the Propify framework.

@@ -1,7 +1,5 @@
 package com.vgerbot.propify.logger;
 
-import com.vgerbot.propify.Logger;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic;
 

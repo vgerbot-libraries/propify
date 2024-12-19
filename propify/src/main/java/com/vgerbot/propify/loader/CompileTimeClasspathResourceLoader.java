@@ -1,6 +1,6 @@
-package com.vgerbot.propify.compile;
+package com.vgerbot.propify.loader;
 
-import com.vgerbot.propify.ResourceLoader;
+import com.vgerbot.propify.core.ResourceLoader;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic;
@@ -9,10 +9,10 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ClasspathResourceLoader implements ResourceLoader {
+public class CompileTimeClasspathResourceLoader implements ResourceLoader {
     private static final String CLASSPATH_PREFIX = "classpath:";
     private final ProcessingEnvironment processingEnvironment;
-    public ClasspathResourceLoader(ProcessingEnvironment processingEnvironment) {
+    public CompileTimeClasspathResourceLoader(ProcessingEnvironment processingEnvironment) {
         if (processingEnvironment == null) {
             throw new IllegalArgumentException("ProcessingEnvironment cannot be null");
         }

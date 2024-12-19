@@ -1,8 +1,8 @@
-package com.vgerbot.propify;
+package com.vgerbot.propify.core;
 
-import java.util.Arrays;
+import com.vgerbot.propify.PropifyProcessor;
+
 import java.util.HashMap;
-import java.util.Optional;
 
 /**
  * A specialized HashMap implementation for managing hierarchical configuration properties.

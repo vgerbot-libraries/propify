@@ -1,5 +1,7 @@
-package com.vgerbot.propify;
+package com.vgerbot.propify.core;
 
+import com.vgerbot.propify.PropifyProcessor;
+import com.vgerbot.propify.logger.Logger;
 import com.vgerbot.propify.lookup.PropifyLookup;
 import com.vgerbot.propify.lookup.PropifyLookupAdaptor;
 import org.apache.commons.configuration2.interpol.Lookup;
@@ -9,7 +11,6 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 

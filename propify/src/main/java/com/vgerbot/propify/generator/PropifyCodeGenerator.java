@@ -1,10 +1,10 @@
 package com.vgerbot.propify.generator;
 
 import com.squareup.javapoet.*;
-import com.vgerbot.propify.*;
 import com.vgerbot.propify.common.Utils;
+import com.vgerbot.propify.core.*;
 import com.vgerbot.propify.logger.RuntimeLogger;
-import com.vgerbot.propify.runtime.RuntimeResourceLoaderProvider;
+import com.vgerbot.propify.loader.RuntimeResourceLoaderProvider;
 import org.apache.commons.configuration2.Configuration;
 
 import javax.lang.model.element.Modifier;

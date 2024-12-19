@@ -1,4 +1,4 @@
-package com.vgerbot.propify;
+package com.vgerbot.propify.core;
 
 /**
  * Provider interface for obtaining resource loaders based on location strings.
