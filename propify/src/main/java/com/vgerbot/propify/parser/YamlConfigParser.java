@@ -1,24 +1,17 @@
 package com.vgerbot.propify.parser;
 
-import com.vgerbot.propify.PropifyContext;
 import com.vgerbot.propify.PropifyConfigParser;
-import com.vgerbot.propify.PropifyProperties;
-import com.vgerbot.propify.Utils;
+import com.vgerbot.propify.PropifyContext;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.YAMLConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.interpol.ConfigurationInterpolator;
 import org.apache.commons.configuration2.interpol.DefaultLookups;
-import org.apache.commons.configuration2.interpol.EnvironmentLookup;
-import org.apache.commons.configuration2.interpol.SystemPropertiesLookup;
 import org.apache.commons.configuration2.io.FileHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class YamlConfigParser implements PropifyConfigParser {
     @Override

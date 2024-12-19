@@ -2,7 +2,7 @@ package com.vgerbot.propify.generator;
 
 import com.ibm.icu.text.MessageFormat;
 import com.squareup.javapoet.*;
-import com.vgerbot.propify.Utils;
+import com.vgerbot.propify.common.Utils;
 import com.vgerbot.propify.i18n.Message;
 import com.vgerbot.propify.i18n.PropifyI18nResourceBundle;
 import com.vgerbot.propify.i18n.ICUMessageTemplateExtension;

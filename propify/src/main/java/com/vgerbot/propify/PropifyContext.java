@@ -1,7 +1,17 @@
 package com.vgerbot.propify;
 
+import com.vgerbot.propify.lookup.PropifyLookup;
+import com.vgerbot.propify.lookup.PropifyLookupAdaptor;
+import org.apache.commons.configuration2.interpol.Lookup;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Context class that holds configuration and processing information for the Propify annotation processor.
@@ -26,18 +36,17 @@ public final class PropifyContext {
 
     private final String location;
     private final String mediaType;
-    private final boolean autoTypeConversion;
     private final String generatedClassName;
     private final ResourceLoaderProvider resourceLoaderProvider;
     private final char listDelimiter;
     private final Logger logger;
+    private final String[] lookups;
 
     /**
      * Creates a new PropifyContext with the specified configuration.
      *
      * @param location the location of the configuration resource
      * @param mediaType the media type of the configuration resource
-     * @param autoTypeConversion whether automatic type conversion is enabled
      * @param generatedClassName pattern for generating the configuration class name
      * @param resourceLoaderProvider provider for resource loading capabilities
      * @param logger logger for processing messages and diagnostics
@@ -45,17 +54,17 @@ public final class PropifyContext {
     public PropifyContext(
             String location,
             String mediaType,
-            boolean autoTypeConversion,
             String generatedClassName,
             char listDelimiter,
+            String[] lookups,
             ResourceLoaderProvider resourceLoaderProvider,
             Logger logger
     ) {
         this.location = location;
         this.mediaType = mediaType;
-        this.autoTypeConversion = autoTypeConversion;
         this.generatedClassName = generatedClassName;
         this.listDelimiter = listDelimiter;
+        this.lookups = lookups;
         this.resourceLoaderProvider = resourceLoaderProvider;
         this.logger = logger;
     }
@@ -85,15 +94,6 @@ public final class PropifyContext {
      */
     public String getGeneratedClassName() {
         return generatedClassName;
-    }
-
-    /**
-     * Checks if automatic type conversion is enabled.
-     *
-     * @return true if automatic type conversion is enabled, false otherwise
-     */
-    public boolean isAutoTypeConversion() {
-        return this.autoTypeConversion;
     }
 
     /**
@@ -155,5 +155,23 @@ public final class PropifyContext {
 
     public char getListDelimiter() {
         return listDelimiter;
+    }
+
+    public String[] getLookups() {
+        return lookups;
+    }
+
+    public Map<String, Lookup> getAllLookups() {
+        return Arrays.stream(this.lookups).map(it -> {
+            try {
+                Class<PropifyLookup> cls = (Class<PropifyLookup>)Class.forName(it);
+                Constructor<PropifyLookup> constructor = cls.getConstructor();
+                constructor.setAccessible(true);
+                return constructor.newInstance();
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException |
+                     InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toMap(PropifyLookup::getPrefix, PropifyLookupAdaptor::new));
     }
 }

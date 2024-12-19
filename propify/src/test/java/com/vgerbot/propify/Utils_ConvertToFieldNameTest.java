@@ -1,4 +1,5 @@
 package com.vgerbot.propify;
+import com.vgerbot.propify.common.Utils;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 

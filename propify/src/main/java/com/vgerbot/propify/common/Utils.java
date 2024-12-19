@@ -1,12 +1,12 @@
-package com.vgerbot.propify;
+package com.vgerbot.propify.common;
 
-import com.squareup.javapoet.TypeName;
-
+import javax.lang.model.element.AnnotationValue;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 /**
  * Utility functions for propify processor.
@@ -15,8 +15,7 @@ import java.util.regex.Pattern;
  * converting strings to valid Java class names or field names.
  */
 public class Utils {
-    private static final Pattern NUMBER_PATTERN = Pattern.compile("([+-])?(\\d+)(\\.\\d+)?([BblLfFdD]?)");
-    
+
     private static final Set<String> JAVA_KEYWORDS = new HashSet<String>() {{
         add("abstract"); add("assert"); add("boolean"); add("break"); add("byte");
         add("case"); add("catch"); add("char"); add("class"); add("const");
@@ -225,67 +224,33 @@ public class Utils {
         }
     }
 
-    /**
-     * Converts a given object to its corresponding Java type.
-     * <p>
-     * The function attempts to interpret the input object as a specific Java type.
-     * If the object is a string representation of a boolean ("true" or "false"),
-     * it is converted to a Boolean. If the object is a string representation of a
-     * number with an optional suffix (such as 'L', 'B', 'F', 'D'), it is converted
-     * to the corresponding numeric type (Long, Byte, Float, Double). If no suffix
-     * is present and the number is within the range of an Integer, it is converted
-     * to an Integer; otherwise, it is converted to a Long.
-     * <p>
-     * If the input object does not match any recognized pattern, it is returned as is.
-     *
-     * @param value the object to be converted
-     * @return the converted object in its corresponding Java type, or the original
-     * object if no conversion is applicable
-     */
-    public static Object convertValue(Object value) {
-        if (value == null) {
-            return value;
+    public static String[] getClassesFromAnnotationValue(AnnotationValue annotationValue) {
+        if(annotationValue == null) {
+            return new String[0];
         }
-        final String strValue = value + "";
-        if (value.equals("true") || value.equals("false")) {
-            return Boolean.valueOf(strValue);
-        }
-        Matcher matcher = NUMBER_PATTERN.matcher(strValue);
-        if (matcher.matches()) {
-            int gid = 1;
-            String signal = matcher.group(gid++);
-            String intPart = matcher.group(gid++);
-            String floatPart = matcher.group(gid++);
-            String suffix = matcher.group(gid++);
-            int sig = "-".equals(signal) ? -1 : 1;
-            switch (suffix.toLowerCase()) {
-                case "l":
-                    return sig * Long.valueOf(intPart);
-                case "b":
-                    return Byte.valueOf(intPart);
-                case "f":
-                    return Float.valueOf(strValue);
-                case "d":
-                    return Double.valueOf(strValue);
-                default:
-                    if (hasValue(floatPart)) {
-                        return Double.valueOf(strValue);
-                    } else {
-                        Long l = Long.valueOf(strValue);
-                        if (l > Integer.MAX_VALUE) {
-                            return l;
-                        } else {
-                            return Integer.valueOf(strValue);
+        Object value = annotationValue.getValue();
+        Class<?> cls = value.getClass();
+        if ("com.sun.tools.javac.util.List".equals(cls.getName())) {
+            try {
+                Method getMethod = cls.getDeclaredMethod("get", int.class);
+                Method sizeMethod = cls.getDeclaredMethod("size");
+                Integer size = (Integer)sizeMethod.invoke(value);
+                if(size >= 0) {
+                    return IntStream.range(0, size).mapToObj(index -> {
+                        try {
+                            Object classInfo = getMethod.invoke(value, index);
+                            Method getValueMethod = classInfo.getClass().getMethod("getValue");
+                            Object type = getValueMethod.invoke(classInfo);
+                            return type.toString();
+                        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                            throw new RuntimeException(e);
                         }
-                    }
+                    }).toArray(String[]::new);
+                }
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
             }
         }
-
-        return value;
+        return new String[]{};
     }
-
-    private static boolean hasValue(String value) {
-        return value != null && !value.isEmpty() && !"null".equals(value);
-    }
-
 }

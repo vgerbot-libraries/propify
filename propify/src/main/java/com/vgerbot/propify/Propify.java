@@ -1,10 +1,7 @@
 package com.vgerbot.propify;
 
 
-import org.apache.commons.configuration2.interpol.DefaultLookups;
-import org.apache.commons.configuration2.interpol.EnvironmentLookup;
-import org.apache.commons.configuration2.interpol.Lookup;
-import org.apache.commons.configuration2.interpol.SystemPropertiesLookup;
+import com.vgerbot.propify.lookup.PropifyLookup;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -56,17 +53,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 public @interface Propify {
 
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface Lookup {
-        String key();
-        DefaultLookups lookup();
-    }
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface CustomLookup {
-        String key();
-        Class<? extends org.apache.commons.configuration2.interpol.Lookup> type();
-    }
 
     /**
      * Specifies the location of the configuration resource file.
@@ -128,34 +114,8 @@ public @interface Propify {
      */
     String generatedClassName() default "$$Propify";
 
-    /**
-     * Controls whether automatic type conversion should be performed for configuration values.
-     *
-     * <p>When enabled (default), the processor will automatically convert string values from
-     * the configuration file to their appropriate Java types based on the property types in
-     * the generated class. This includes:
-     * <ul>
-     *   <li> Primitive wrapper classes (Integer, Long, Boolean, etc.)
-     *   <li>Collections and arrays of supported types
-     * </ul>
-     *
-     * <p>When disabled, values will be kept as strings and type conversion must be handled
-     * manually in the application code.
-     *
-     * @return true to enable automatic type conversion (default), false to disable it
-     * @since 1.1.0
-     */
-    boolean autoTypeConversion() default true;
-
     char listDelimiter() default ',';
 
-    Lookup[] lookups() default {
-        @Lookup(key = "env", lookup = DefaultLookups.ENVIRONMENT),
-        @Lookup(key = "sys", lookup = DefaultLookups.SYSTEM_PROPERTIES),
-        @Lookup(key = "file", lookup = DefaultLookups.FILE),
-        @Lookup(key = "date", lookup = DefaultLookups.DATE),
-        @Lookup(key = "properties", lookup = DefaultLookups.PROPERTIES),
-    };
+    Class<? extends PropifyLookup>[] lookups() default {};
 
-    CustomLookup[] customLookups() default {};
 }

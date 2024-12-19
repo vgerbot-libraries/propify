@@ -1,18 +1,20 @@
 package com.vgerbot.propify.generator;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.*;
 import com.vgerbot.propify.*;
+import com.vgerbot.propify.common.Utils;
 import com.vgerbot.propify.logger.RuntimeLogger;
 import com.vgerbot.propify.runtime.RuntimeResourceLoaderProvider;
+import org.apache.commons.configuration2.Configuration;
 
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class PropifyCodeGenerator {
     private static final PropifyCodeGenerator INSTANCE = new PropifyCodeGenerator();
@@ -29,25 +31,36 @@ public final class PropifyCodeGenerator {
                 properties
         );
         builder.addModifiers(Modifier.PUBLIC);
+        String[] lookups = context.getLookups();
+
+        CodeBlock.Builder constructContextCodeBuilder = CodeBlock.builder();
+        constructContextCodeBuilder.add("$T context = new $T(", PropifyContext.class, PropifyContext.class);
+        constructContextCodeBuilder.add("$S", context.getLocation());
+        constructContextCodeBuilder.add(",$S", context.getMediaType());
+        constructContextCodeBuilder.add(",$S", context.getGeneratedClassName());
+        constructContextCodeBuilder.add(",'$L'", context.getListDelimiter());
+        constructContextCodeBuilder.add(",new String[]{");
+        constructContextCodeBuilder.add(Arrays.stream(lookups).map(it -> "$S").collect(Collectors.joining(",")), lookups);
+        constructContextCodeBuilder.add("}");
+        constructContextCodeBuilder.add(",$T.getInstance()", RuntimeResourceLoaderProvider.class);
+        constructContextCodeBuilder.add(",new $T()", RuntimeLogger.class);
+        constructContextCodeBuilder.add(")");
+
+
         builder.addMethod(
                 MethodSpec.methodBuilder("getInstance")
                         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                         .returns(className1)
-                        .addStatement("$T context = new $T($S, $S, $L, $S, $T.getInstance(), new $T())",
-                                PropifyContext.class, PropifyContext.class,
-                                context.getLocation(),
-                                context.getMediaType(),
-                                context.isAutoTypeConversion(),
-                                context.getGeneratedClassName(),
-                                RuntimeResourceLoaderProvider.class,
-                                RuntimeLogger.class
-                                )
+                        .addStatement(constructContextCodeBuilder.build())
                         .beginControlFlow("try")
                         .addStatement("$T stream = context.loadResource()", InputStream.class)
                         .addStatement("$T parserProvider = $T.getInstance()", PropifyConfigParserProvider.class, PropifyConfigParserProvider.class)
                         .addStatement("$T parser = parserProvider.getParser(context)", PropifyConfigParser.class)
-                        .addStatement("$T properties = parser.parse(context, stream)", PropifyProperties.class)
-                        .addStatement("return new $T(properties)", className1)
+                        .addStatement("$T configuration = parser.parse(context, stream)", Configuration.class)
+                        .addStatement("configuration.installInterpolator(context.getAllLookups(), $T.emptyList());", Collections.class)
+                        .addStatement("$T propifyPropertiesBuilder = new $T();", PropifyPropertiesBuilder.class, PropifyPropertiesBuilder.class)
+                        .addStatement("propifyPropertiesBuilder.config(configuration);")
+                        .addStatement("return new $T(propifyPropertiesBuilder.build())", className1)
                         .nextControlFlow("catch ($T e)", IOException.class)
                         .addStatement("throw new RuntimeException(e)")
                         .endControlFlow()
@@ -144,9 +157,9 @@ public final class PropifyCodeGenerator {
         String code = generator.generateCode("com.vgerbot.propify", "XXX", new PropifyContext(
                 "classpath:config/application.properties",
                 "application/properties",
-                true,
                 "$$PropertiesPropify",
                 ',',
+                new String[]{},
                 RuntimeResourceLoaderProvider.getInstance(),
                 new RuntimeLogger()
         ), properties);

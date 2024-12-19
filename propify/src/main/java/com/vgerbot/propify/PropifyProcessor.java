@@ -1,17 +1,16 @@
 package com.vgerbot.propify;
 
+import com.vgerbot.propify.common.Utils;
 import com.vgerbot.propify.compile.CompileTimeResourceLoaderProvider;
 import com.vgerbot.propify.generator.PropifyCodeGenerator;
 import com.vgerbot.propify.generator.I18nJavaPoetCodeGenerator;
 import com.vgerbot.propify.logger.CompileTimeLogger;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.interpol.DefaultLookups;
 import org.apache.commons.configuration2.interpol.Lookup;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
 import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
@@ -20,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Annotation processor that handles {@link Propify} and {@link I18n} annotations.
@@ -199,13 +197,19 @@ public class PropifyProcessor extends AbstractProcessor {
      * @throws IOException if there are errors reading resources or writing generated code
      */
     private void processPropifyAnnotation(final Propify propifyAnnotation, final TypeElement element) throws IOException {
+
+        AnnotationMirror annotationMirror = getAnnotationMirror(element, Propify.class);
+
+        AnnotationValue annotationLookupsValue = getAnnotationValue(annotationMirror, "lookups");
+        String[] lookups = Utils.getClassesFromAnnotationValue(annotationLookupsValue);
+
         // Create context and load configuration
         final PropifyContext context = new PropifyContext(
                 propifyAnnotation.location(),
                 propifyAnnotation.mediaType(),
-                propifyAnnotation.autoTypeConversion(),
                 propifyAnnotation.generatedClassName(),
                 propifyAnnotation.listDelimiter(),
+                lookups,
                 new CompileTimeResourceLoaderProvider(processingEnv),
                 new CompileTimeLogger(processingEnv)
         );
@@ -217,20 +221,8 @@ public class PropifyProcessor extends AbstractProcessor {
             PropifyConfigParser parser = provider.getParser(context);
             Configuration configuration = parser.parse(context, stream);
 
-            Map<String, Lookup> map = Arrays.stream(propifyAnnotation.lookups()).collect(Collectors.toMap(Propify.Lookup::key, it -> it.lookup().getLookup()));
-            Map<String, ? extends Lookup> customLookupMap = Arrays.stream(propifyAnnotation.customLookups()).collect(Collectors.toMap(Propify.CustomLookup::key, it -> {
-                try {
-                    return it.type().newInstance();
-                } catch (InstantiationException e) {
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-            }));
-            Map<String, Lookup> allLookupsMap = new HashMap<>();
-            allLookupsMap.putAll(map);
-            allLookupsMap.putAll(customLookupMap);
-            configuration.installInterpolator(allLookupsMap, Collections.emptyList());
+//            Map<String, Lookup> allLookupsMap = context.getAllLookups();
+//            configuration.installInterpolator(allLookupsMap, Collections.emptyList());
 
             propifyPropertiesBuilder.config(configuration);
         }
@@ -260,5 +252,24 @@ public class PropifyProcessor extends AbstractProcessor {
                 "Generated " + generatedClassName + " from " + propifyAnnotation.location(),
                 element
         );
+    }
+
+    private static AnnotationMirror getAnnotationMirror(TypeElement typeElement, Class<?> clazz) {
+        String clazzName = clazz.getName();
+        for(AnnotationMirror m : typeElement.getAnnotationMirrors()) {
+            if(m.getAnnotationType().toString().equals(clazzName)) {
+                return m;
+            }
+        }
+        return null;
+    }
+
+    private static AnnotationValue getAnnotationValue(AnnotationMirror annotationMirror, String key) {
+        for(Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues().entrySet() ) {
+            if(entry.getKey().getSimpleName().toString().equals(key)) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 }

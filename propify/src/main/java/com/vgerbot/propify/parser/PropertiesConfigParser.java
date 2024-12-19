@@ -2,23 +2,15 @@ package com.vgerbot.propify.parser;
 
 import com.vgerbot.propify.PropifyContext;
 import com.vgerbot.propify.PropifyConfigParser;
-import com.vgerbot.propify.PropifyProperties;
-import com.vgerbot.propify.Utils;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
-import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
-import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.commons.configuration2.interpol.ConfigurationInterpolator;
-import org.apache.commons.configuration2.interpol.DefaultLookups;
 import org.apache.commons.configuration2.io.FileHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
 
 public class PropertiesConfigParser implements PropifyConfigParser {
     @Override

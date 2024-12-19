@@ -34,7 +34,10 @@ public class PropifyPropertiesBuilder {
                 value = convertToType(typeName, config.getString(key));
             } else {
                 value = config.getProperty(key);
-                value = config.getInterpolator().interpolate(value);
+                // FIXME: interpolate
+                if (value instanceof String) {
+                    value = config.getString(key);
+                }
             }
             this.storeValue(properties, keyName, value);
         }

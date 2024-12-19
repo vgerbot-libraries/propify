@@ -53,13 +53,13 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
-<!--                    <annotationProcessorPaths>-->
-<!--                        <path>-->
-<!--                            <groupId>com.vgerbot</groupId>-->
-<!--                            <artifactId>propify</artifactId>-->
-<!--                            <version>${project.version}</version>-->
-<!--                        </path>-->
-<!--                    </annotationProcessorPaths>-->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>com.vgerbot</groupId>
+                            <artifactId>propify</artifactId>
+                            <version>${project.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>
