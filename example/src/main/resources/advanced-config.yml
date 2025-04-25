@@ -1,0 +1,72 @@
+# Redis configuration with environment variable substitution
+redis:
+  host: localhost
+  port: ${REDIS_PORT:6379}  # Uses environment variable with default value
+  password: ${REDIS_PASSWORD:}  # Optional password
+
+# CORS configuration with list handling
+cors:
+  allowedOrigins:
+    - http://localhost:3000
+    - http://localhost:8080
+    - https://example.com
+  allowedMethods:
+    - GET
+    - POST
+    - PUT
+    - DELETE
+
+# Session configuration with duration type conversion
+session:
+  timeout: 30m  # 30 minutes
+  maxSessions: 1
+  persistent: false
+
+# Cache configuration
+cache:
+  ttl: 24h  # 24 hours
+  maxSize: 1000
+  enabled: true
+
+# Nested AWS configuration
+aws:
+  region: us-west-2
+  accessKeyId: ${AWS_ACCESS_KEY_ID}
+  secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
+  s3:
+    bucket: my-application-bucket
+    accessKey: ${AWS_S3_ACCESS_KEY:}
+    region: ${AWS_S3_REGION:us-west-2}
+    encryption: true
+
+# Feature flags using map configuration
+features:
+  flags:
+    darkMode: true
+    beta: false
+    analytics: true
+    newUserFlow: false
+    experimentalApi: false
+
+# Array of endpoint objects
+endpoints:
+  - path: /api/users
+    method: GET
+    roles:
+      - USER
+      - ADMIN
+    rateLimit: 100
+    
+  - path: /api/admin
+    method: POST
+    roles:
+      - ADMIN
+    rateLimit: 50
+    
+  - path: /api/public
+    method: GET
+    roles:
+      - ANONYMOUS
+      - USER
+      - ADMIN
+    rateLimit: 1000

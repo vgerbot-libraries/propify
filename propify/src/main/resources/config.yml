@@ -1,0 +1,22 @@
+app:
+  name: Example JDK9 App
+  version: 2.0.0
+  description: This is an example application using Propify with JDK9 and YAML config
+  features:
+    - modules
+    - yaml-config
+    - type-safety
+
+database:
+  url: jdbc:postgresql://localhost:5432/mydb
+  username: admin
+  password: secret123
+  poolSize: 10
+  maxConnections: 20
+
+server:
+  port: 9090
+  host: 0.0.0.0
+  ssl:
+    enabled: true
+    keystore: /path/to/keystore.jks

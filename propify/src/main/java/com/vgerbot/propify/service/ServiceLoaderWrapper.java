@@ -9,11 +9,6 @@ public interface ServiceLoaderWrapper<T> extends Iterable<T> {
 
     static <T> ServiceLoaderWrapper<T> forClass(Class<T> serviceClass, ClassLoader classLoader) {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(serviceClass, classLoader);
-        return new ServiceLoaderWrapper<T>() {
-            @Override
-            public Iterator<T> iterator() {
-                return serviceLoader.iterator();
-            }
-        };
+        return serviceLoader::iterator;
     }
 }

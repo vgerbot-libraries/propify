@@ -1,0 +1,3 @@
+com.vgerbot.propify.parser.PropertiesConfigParser
+com.vgerbot.propify.parser.YamlConfigParser
+com.vgerbot.propify.parser.IniConfigParser

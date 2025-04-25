@@ -6,11 +6,12 @@
 
     <groupId>com.vgerbot</groupId>
     <artifactId>propify-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>propify</module>
+        <module>example</module>
     </modules>
 
     <properties>

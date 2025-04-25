@@ -1,0 +1,22 @@
+# Array of endpoint objects
+endpoints(java.util.ArrayList<Map<string, Object>>):
+  - path: /api/users
+    method: GET
+    roles:
+      - USER
+      - ADMIN
+    rateLimit: 100
+
+  - path: /api/admin
+    method: POST
+    roles:
+      - ADMIN
+    rateLimit: 50
+
+  - path: /api/public
+    method: GET
+    roles:
+      - ANONYMOUS
+      - USER
+      - ADMIN
+    rateLimit: 1000

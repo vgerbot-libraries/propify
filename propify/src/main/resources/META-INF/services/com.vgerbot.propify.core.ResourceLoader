@@ -1,0 +1,3 @@
+com.vgerbot.propify.loader.RuntimeClasspathResourceLoader
+com.vgerbot.propify.loader.FileResourceLoader
+com.vgerbot.propify.loader.HTTPResourceLoader

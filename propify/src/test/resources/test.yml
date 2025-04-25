@@ -1,0 +1,39 @@
+# Database configuration
+database:
+  host: localhost
+  port: 5432
+  name: testdb
+  credentials:
+    username: admin
+    password: secret
+
+# Application settings
+application:
+  name: TestApp
+  version: 1.0.0
+  debug: true
+  features:
+    - logging
+    - metrics
+    - auth
+  
+# Environment variables
+env:
+  JAVA_HOME: /usr/lib/jvm/java-11
+  PATH: /usr/local/bin:/usr/bin
+
+# Empty node
+empty:
+
+# Complex structure
+servers:
+  - name: prod
+    host: prod.example.com
+    ports:
+      - 8080
+      - 8443
+  - name: dev
+    host: dev.example.com
+    ports:
+      - 3000
+      - 3001

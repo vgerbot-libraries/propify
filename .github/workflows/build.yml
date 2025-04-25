@@ -26,7 +26,7 @@ jobs:
       run: mvn -X -B verify
 
     - name: Run Codacy Coverage Reporter
-      uses: codacy/codacy-coverage-reporter-action@v1
+      uses: codacy/codacy-coverage-reporter-action@89d6c85
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         coverage-reports: propify/target/site/jacoco/jacoco.xml

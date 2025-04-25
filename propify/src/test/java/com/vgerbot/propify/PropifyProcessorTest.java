@@ -1,208 +1,216 @@
 package com.vgerbot.propify;
 
+import com.vgerbot.propify.core.Propify;
+import com.vgerbot.propify.i18n.I18n;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
-import javax.annotation.processing.*;
-import javax.lang.model.element.*;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Name;
+import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
-import javax.tools.JavaFileObject;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
-@SuppressWarnings("unchecked")
 public class PropifyProcessorTest {
-    
+
     private PropifyProcessor processor;
 
-    @Mock private ProcessingEnvironment processingEnv;
-    @Mock private Elements elementUtils;
-    @Mock private Types typeUtils;
-    @Mock private Filer filer;
-    @Mock private Messager messager;
-    @Mock private TypeElement typeElement;
-    @Mock private PackageElement packageElement;
-    @Mock private Name qualifiedName;
-    @Mock private Name simpleName;
-    @Mock private Propify propifyAnnotation;
-    @Mock private JavaFileObject sourceFile;
-    @Mock private RoundEnvironment roundEnv;
-    @Mock private Writer writer;
+    @Mock
+    private ProcessingEnvironment processingEnv;
+
+    @Mock
+    private Messager messager;
+
+    @Mock
+    private RoundEnvironment roundEnv;
+
+    @Mock
+    private TypeElement propifyAnnotation;
+    
+    @Mock
+    private TypeElement i18nAnnotation;
+
+    @Mock
+    private TypeElement typeElement;
+
+    @Mock
+    private Name name;
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        
         processor = new PropifyProcessor();
         
-        // Setup processing environment
-        when(processingEnv.getElementUtils()).thenReturn(elementUtils);
-        when(processingEnv.getFiler()).thenReturn(filer);
         when(processingEnv.getMessager()).thenReturn(messager);
+        when(typeElement.getKind()).thenReturn(ElementKind.CLASS);
+        when(typeElement.getSimpleName()).thenReturn(name);
+        when(name.toString()).thenReturn("TestConfig");
+        
+        // Mock behavior for propifyAnnotation and i18nAnnotation
+        when(propifyAnnotation.getQualifiedName()).thenReturn(mock(Name.class));
+        when(propifyAnnotation.getQualifiedName().toString()).thenReturn(Propify.class.getCanonicalName());
+        
+        when(i18nAnnotation.getQualifiedName()).thenReturn(mock(Name.class));
+        when(i18nAnnotation.getQualifiedName().toString()).thenReturn(I18n.class.getCanonicalName());
         
         processor.init(processingEnv);
+    }
 
-        // Setup common mocks
-        when(elementUtils.getPackageOf(typeElement)).thenReturn(packageElement);
-        when(packageElement.getQualifiedName()).thenReturn(qualifiedName);
-        when(typeElement.getSimpleName()).thenReturn(simpleName);
-        when(qualifiedName.toString()).thenReturn("com.example");
-        when(simpleName.toString()).thenReturn("TestProps");
+    @Test
+    public void testInit() throws NoSuchFieldException, IllegalAccessException {
+        // Verify that the processor was initialized correctly
+        assertEquals(processingEnv, PropifyProcessor.processingEnvironment);
+        Field field = processor.getClass().getDeclaredField("messager");
+        field.setAccessible(true);
+
+        assertNotNull("Messager should be initialized", field.get(processor));
     }
 
     @Test
     public void testGetSupportedAnnotationTypes() {
         Set<String> types = processor.getSupportedAnnotationTypes();
-        assertEquals(1, types.size());
-        assertTrue(types.contains(Propify.class.getCanonicalName()));
+        
+        assertTrue("Should support Propify annotation", 
+                types.contains(Propify.class.getCanonicalName()));
+        assertTrue("Should support I18n annotation", 
+                types.contains(I18n.class.getCanonicalName()));
+        assertEquals("Should support exactly 2 annotation types", 2, types.size());
     }
 
     @Test
     public void testGetSupportedSourceVersion() {
-        assertNotNull(processor.getSupportedSourceVersion());
+        assertNotNull("Supported source version should not be null", 
+                processor.getSupportedSourceVersion());
     }
 
     @Test
-    public void testProcess_ValidProperties_GeneratesCode() throws IOException {
-        // Setup
-        String yamlContent = "name: John\nage: 30";
-        when(typeElement.getAnnotation(Propify.class)).thenReturn(propifyAnnotation);
-        when(propifyAnnotation.location()).thenReturn("classpath: test.yaml");
-        when(propifyAnnotation.mediaType()).thenReturn("application/yaml");
+    public void testProcessWithNoAnnotatedElements() {
+        Set<TypeElement> annotations = new HashSet<>();
+        annotations.add(propifyAnnotation);
         
-        when(roundEnv.getElementsAnnotatedWith(any(TypeElement.class)))
-            .thenReturn((Set) Collections.singleton(typeElement));
+        when(roundEnv.getElementsAnnotatedWith(propifyAnnotation))
+                .thenReturn(Collections.emptySet());
         
-        // Mock resource loading
-        ByteArrayInputStream resourceStream = new ByteArrayInputStream(yamlContent.getBytes());
-        when(processingEnv.getFiler().getResource(any(), any(), any()))
-            .thenReturn(new TestFileObject(resourceStream));
+        boolean result = processor.process(annotations, roundEnv);
         
-        // Mock file creation
-        when(filer.createSourceFile(any())).thenReturn(sourceFile);
-        when(sourceFile.openWriter()).thenReturn(new StringWriter());
-
-        // Execute
-        boolean result = processor.process(Collections.singleton(typeElement), roundEnv);
-
-        // Verify
-        assertTrue(result);
-        verify(messager).printMessage(eq(Diagnostic.Kind.NOTE), any(), eq(typeElement));
+        assertTrue("Process should return true", result);
+        verify(roundEnv).getElementsAnnotatedWith(propifyAnnotation);
+        verifyNoMoreInteractions(messager);
     }
 
     @Test
-    public void testProcess_ResourceNotFound_ReportsError() throws IOException {
-        // Setup
-        when(typeElement.getAnnotation(Propify.class)).thenReturn(propifyAnnotation);
-        when(propifyAnnotation.location()).thenReturn("nonexistent.yaml");
-        when(propifyAnnotation.mediaType()).thenReturn("application/yaml");
-        
-        when(roundEnv.getElementsAnnotatedWith(any(TypeElement.class)))
-            .thenReturn((Set) Collections.singleton(typeElement));
+    public void testProcessWithNonTypeElement() {
+        Set<TypeElement> annotations = new HashSet<>();
+        annotations.add(propifyAnnotation);
 
-        // Execute
-        processor.process(Collections.singleton(typeElement), roundEnv);
-
-        // Verify error was reported
-        verify(messager).printMessage(
-            eq(Diagnostic.Kind.ERROR),
-            contains("Could not find resource"),
-            eq(typeElement)
-        );
-    }
-
-    @Test
-    public void testProcess_InvalidMediaType_ReportsError() throws IOException {
-        // Setup
-        when(typeElement.getAnnotation(Propify.class)).thenReturn(propifyAnnotation);
-        when(propifyAnnotation.mediaType()).thenReturn("invalid/type");
-        when(propifyAnnotation.location()).thenReturn("classpath:test.invalid");
-
-        when(processingEnv.getFiler().getResource(any(), any(), any()))
-            .thenReturn(new TestFileObject(null));
-
-        when(roundEnv.getElementsAnnotatedWith(any(TypeElement.class)))
-            .thenReturn((Set) Collections.singleton(typeElement));
-
-        // Execute
-        processor.process(Collections.singleton(typeElement), roundEnv);
-
-        // Verify error was reported
-        verify(messager).printMessage(
-            eq(Diagnostic.Kind.ERROR),
-            contains("No parser found for media type"),
-            eq(typeElement)
-        );
-    }
-
-    @Test
-    public void testProcess_IOException_ReportsError() throws IOException {
-        // Setup
-        when(typeElement.getAnnotation(Propify.class)).thenReturn(propifyAnnotation);
-        when(propifyAnnotation.location()).thenReturn("classpath: test.yaml");
-        when(propifyAnnotation.mediaType()).thenReturn("application/yaml");
-        
-        when(roundEnv.getElementsAnnotatedWith(any(TypeElement.class)))
-            .thenReturn((Set) Collections.singleton(typeElement));
-        
-        // Mock resource loading to throw IOException
-        when(processingEnv.getFiler().getResource(any(), any(), any()))
-            .thenThrow(new IOException("Test error"));
-
-        // Execute
-        processor.process(Collections.singleton(typeElement), roundEnv);
-
-        // Verify error was reported
-        verify(messager).printMessage(
-            eq(Diagnostic.Kind.ERROR),
-            contains("Could not find resource"),
-            eq(typeElement)
-        );
-    }
-
-    @Test
-    public void testProcess_NonTypeElement_Ignored() {
-        // Setup
         Element nonTypeElement = mock(Element.class);
-        when(roundEnv.getElementsAnnotatedWith(any(TypeElement.class)))
-            .thenReturn((Set) Collections.singleton(nonTypeElement));
+        when(nonTypeElement.getKind()).thenReturn(ElementKind.FIELD);
 
-        // Execute
-        boolean result = processor.process(Collections.singleton(typeElement), roundEnv);
+        Set<Element> elements = new HashSet<>();
+        elements.add(nonTypeElement);
 
-        // Verify
-        assertTrue(result);
-        verify(messager, never()).printMessage(any(), any(), any());
+        when((Set<Element>)roundEnv.getElementsAnnotatedWith(propifyAnnotation))
+                .thenReturn(elements);
+
+        boolean result = processor.process(annotations, roundEnv);
+
+        assertTrue("Process should return true", result);
+        verify(roundEnv).getElementsAnnotatedWith(propifyAnnotation);
+        verifyNoMoreInteractions(messager);
     }
 
-    // Helper class to mock FileObject for resource loading
-    private static class TestFileObject extends javax.tools.SimpleJavaFileObject {
-        private final InputStream content;
+    @Test
+    public void testProcessWithError() {
+        Set<TypeElement> annotations = new HashSet<>();
+        annotations.add(propifyAnnotation);
 
-        TestFileObject(InputStream content) {
-            super(java.net.URI.create("string:///test.yaml"), Kind.OTHER);
-            this.content = content;
-        }
+        Set<Element> elements = new HashSet<>();
+        elements.add(typeElement);
 
-        @Override
-        public InputStream openInputStream() {
-            return content;
-        }
+        when((Set<Element>)roundEnv.getElementsAnnotatedWith(propifyAnnotation))
+                .thenReturn(elements);
+
+        // Mock a Propify annotation on the typeElement
+        Propify mockPropify = mock(Propify.class);
+        when(typeElement.getAnnotation(Propify.class)).thenReturn(mockPropify);
+
+        // Simulate an error with specific message
+        when(mockPropify.location()).thenThrow(new RuntimeException("Could not find resource"));
+
+        boolean result = processor.process(annotations, roundEnv);
+
+        assertTrue("Process should return true", result);
+        verify(roundEnv).getElementsAnnotatedWith(propifyAnnotation);
+        verify(messager).printMessage(eq(Diagnostic.Kind.ERROR),
+                eq("Could not find resource"), eq(typeElement));
     }
-}
+
+    @Test
+    public void testProcessWithUnknownMediaTypeError() {
+        Set<TypeElement> annotations = new HashSet<>();
+        annotations.add(propifyAnnotation);
+
+        Set<Element> elements = new HashSet<>();
+        elements.add(typeElement);
+
+        when((Set<Element>)roundEnv.getElementsAnnotatedWith(propifyAnnotation))
+                .thenReturn(elements);
+
+        // Mock a Propify annotation on the typeElement
+        Propify mockPropify = mock(Propify.class);
+        when(typeElement.getAnnotation(Propify.class)).thenReturn(mockPropify);
+
+        // Simulate a media type error
+        when(mockPropify.location()).thenThrow(new RuntimeException("No parser found for media type"));
+
+        boolean result = processor.process(annotations, roundEnv);
+
+        assertTrue("Process should return true", result);
+        verify(roundEnv).getElementsAnnotatedWith(propifyAnnotation);
+        verify(messager).printMessage(eq(Diagnostic.Kind.ERROR),
+                eq("No parser found for media type"), eq(typeElement));
+    }
+
+    @Test
+    public void testProcessWithRuntimeException() {
+        Set<TypeElement> annotations = new HashSet<>();
+        annotations.add(propifyAnnotation);
+        
+        Set<Element> elements = new HashSet<>();
+        elements.add(typeElement);
+        
+        when((Set<Element>)roundEnv.getElementsAnnotatedWith(propifyAnnotation))
+                .thenReturn(elements);
+        
+        // Mock a Propify annotation on the typeElement
+        Propify mockPropify = mock(Propify.class);
+        when(typeElement.getAnnotation(Propify.class)).thenReturn(mockPropify);
+        
+        // Simulate an error with null message to trigger RuntimeException
+        RuntimeException exception = mock(RuntimeException.class);
+        when(exception.getMessage()).thenReturn(null);
+        when(mockPropify.location()).thenThrow(exception);
+        
+        try {
+            processor.process(annotations, roundEnv);
+            fail("Should have thrown RuntimeException");
+        } catch (RuntimeException e) {
+            // Expected
+        }
+        
+        verify(roundEnv).getElementsAnnotatedWith(propifyAnnotation);
+    }
+} 

@@ -6,6 +6,7 @@ Propify is a lightweight Java annotation processor that generates type-safe Java
 
 - 🔒 **Type-safe Configuration**: Access your configuration properties with compile-time type checking
 - 📝 **Multiple Format Support**: Works with both YAML and Properties files
+- 🌍 **Internationalization Support**: Built-in i18n capabilities with type-safe message access
 - 🛠 **Compile-time Code Generation**: No runtime overhead, all code is generated during compilation
 - ⚡ **Zero Runtime Dependencies**: Generated code has no dependencies on Propify itself
 - 🎯 **Simple Integration**: Just add the annotation processor to your build and start using it
@@ -154,11 +155,68 @@ public interface AppConfig {
 }
 ```
 
+## Internationalization (i18n)
+
+Propify provides built-in support for internationalization through the `@I18n` annotation. This allows you to manage translations in a type-safe manner.
+
+### Setting Up i18n
+
+1. Create message property files for different locales:
+
+```properties
+# messages.properties (default)
+welcome=Welcome
+greeting=Hello, {name}!
+app.name=Example App
+time.format=At {1,time,::jmm} on {1,date,::dMMMM}, 
+
+# messages_zh_CN.properties
+welcome=欢迎
+greeting=你好, {name}！
+app.name=示例应用
+```
+
+2. Create a class with the `@I18n` annotation:
+
+```java
+@I18n(
+    baseName = "messages",    // Base name of the properties files
+    defaultLocale = "en"      // Optional: specify default locale
+)
+public class I18nConfig {
+}
+```
+
+3. Use the generated message resource class:
+
+```java
+public class Application {
+    public static void main(String[] args) {
+        // Get messages using default locale
+        String welcome = MessageResource.getDefault().welcome();
+        String greeting = MessageResource.getDefault().greeting("John");
+        
+        // Get messages for specific locale
+        String zhWelcome = MessageResource.get(Locale.CHINESE).welcome();
+        String zhGreeting = MessageResource.get(Locale.CHINESE).greeting("张三");
+    }
+}
+```
+
+### i18n Features
+
+- **Type-safe Message Access**: All message keys are generated as methods
+- **Parameter Support**: Messages with parameters are type-checked at compile time
+- **Multiple Locale Support**: Switch between locales at runtime
+- **Default Locale Fallback**: Messages fallback to default locale if not found
+- **Resource Bundle Integration**: Uses Java's ResourceBundle under the hood
+- **ICU4J Template Support**: Full support for ICU4J message format patterns, enabling powerful localization features like plural forms, gender-based messages, and complex number/date formatting
+
 ## How It Works
 
-1. During compilation, Propify processes classes annotated with `@Propify`
-2. It reads and parses the specified configuration file
-3. Generates a Java implementation class with type-safe getters
+1. During compilation, Propify processes classes annotated with `@Propify` and `@I18n`
+2. It reads and parses the specified configuration and message files
+3. Generates Java implementation classes with type-safe getters and message accessors
 4. The generated code is compiled along with your source code
 
 ## Contributing
