@@ -1,6 +1,8 @@
 package com.vgerbot.propify.generator;
 
 import com.ibm.icu.text.MessageFormat;
+import com.ibm.icu.text.MeasureFormat;
+import com.ibm.icu.text.MessagePattern;
 import com.squareup.javapoet.*;
 import com.vgerbot.propify.common.Utils;
 import com.vgerbot.propify.i18n.Message;
@@ -8,8 +10,11 @@ import com.vgerbot.propify.i18n.PropifyI18nResourceBundle;
 import com.vgerbot.propify.i18n.ICUMessageTemplateExtension;
 
 import javax.lang.model.element.Modifier;
+import java.lang.reflect.Field;
+import java.text.Format;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.Date;
 
 public class I18nJavaPoetCodeGenerator {
     private static class SingletonHolder {
@@ -64,17 +69,32 @@ public class I18nJavaPoetCodeGenerator {
             String methodName = Utils.convertToFieldName(key);
             Object value = bundle.getObject(key);
             List<ParameterSpec> parameterSpecs;
+            Set<String> formatArgumentNames;
             if (value instanceof CharSequence) {
-                parameterSpecs = generateMethodParameters(value.toString());
+                MessageFormat messageFormat = new MessageFormat(value.toString());
+
+                formatArgumentNames = messageFormat.getArgumentNames();
+                Format[] formats = messageFormat.getFormatsByArgumentIndex();
+                parameterSpecs = new ArrayList<>(formatArgumentNames.size());
+                int index = 0;
+                for(String argName: formatArgumentNames) {
+                    Format formatType = formats[index];
+                    Class<?> argType = getArgTypeFromFormat(formatType);
+                    parameterSpecs.add(
+                        ParameterSpec.builder(argType, Utils.convertToFieldName(argName)).build()
+                    );
+                    index ++;
+                }
             } else {
                 parameterSpecs = Collections.emptyList();
+                formatArgumentNames = Collections.emptySet();
             }
 
             String[] parameterNames = parameterSpecs.stream().map(it -> it.name).toArray(String[]::new);
             String format = "{" + String.join(",", Arrays.stream(parameterNames).map(v -> "$S").toArray(String[]::new)) + "}";
             AnnotationSpec annotation = AnnotationSpec.builder(Message.class)
                     .addMember("key", CodeBlock.of("$S", key))
-                    .addMember("arguments", CodeBlock.of(format, (Object[])parameterNames))
+                    .addMember("arguments", CodeBlock.of(format, formatArgumentNames.stream().toArray()))
                     .build();
             return MethodSpec.methodBuilder(methodName)
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
@@ -110,6 +130,45 @@ public class I18nJavaPoetCodeGenerator {
                                 CodeBlock.of("return get($T.getDefault())", Locale.class)
                                 : CodeBlock.of("return get($T.forLanguageTag($S))", Locale.class, defaultLocale))
                 .build();
+    }
+
+    /**
+     * Determines the appropriate Java type based on the format type
+     * @param format The ICU Format object
+     * @return The appropriate Java class type for the parameter
+     */
+    private Class<?> getArgTypeFromFormat(Format format) {
+        if (format == null) {
+            return Object.class;
+        }
+        
+        // ICU NumberFormat and its subclasses
+        if (format instanceof com.ibm.icu.text.NumberFormat) {
+            return Number.class;
+        }
+        
+        // ICU DateFormat and its subclasses
+        if (format instanceof com.ibm.icu.text.DateFormat) {
+            return Date.class;
+        }
+
+        // MeasureFormat uses Measure objects with Number values
+        if (format instanceof com.ibm.icu.text.MeasureFormat) {
+            return Number.class;
+        }
+        
+        // Plural format typically takes numbers
+        if (format instanceof com.ibm.icu.text.PluralFormat) {
+            return Number.class;
+        }
+        
+        // Select format takes strings
+        if (format instanceof com.ibm.icu.text.SelectFormat) {
+            return String.class;
+        }
+        
+        // For any other format type
+        return Object.class;
     }
 
 }

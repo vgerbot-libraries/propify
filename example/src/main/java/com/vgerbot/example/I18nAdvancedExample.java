@@ -1,9 +1,16 @@
 package com.vgerbot.example;
 
+import java.util.Locale;
+
 import com.vgerbot.propify.i18n.I18n;
 
 @I18n(baseName = "messages", generatedClassName = "I18nMessages")
 public class I18nAdvancedExample {
+    public static void main(String[] args) {
+        I18nMessages.LocaleMessages messages = I18nMessages.get(Locale.forLanguageTag("en-US"));
+        System.out.println(messages.productPrice(13));
+        System.out.println(messages.itemCount(12));
+    }
 //    public static void main(String[] args) {
 //        I18nMessages messages = I18nMessages.getInstance();
 //
