@@ -4,6 +4,7 @@ import com.ibm.icu.text.MessageFormat;
 import com.ibm.icu.text.MeasureFormat;
 import com.ibm.icu.text.MessagePattern;
 import com.squareup.javapoet.*;
+import com.vgerbot.propify.common.MessageFormatParser;
 import com.vgerbot.propify.common.Utils;
 import com.vgerbot.propify.i18n.Message;
 import com.vgerbot.propify.i18n.PropifyI18nResourceBundle;
@@ -68,26 +69,19 @@ public class I18nJavaPoetCodeGenerator {
         return bundle.keySet().stream().map(key -> {
             String methodName = Utils.convertToFieldName(key);
             Object value = bundle.getObject(key);
-            List<ParameterSpec> parameterSpecs;
-            Set<String> formatArgumentNames;
+            List<ParameterSpec> parameterSpecs = new ArrayList<>();;
+            Set<String> formatArgumentNames = new HashSet<>();
             if (value instanceof CharSequence) {
-                MessageFormat messageFormat = new MessageFormat(value.toString());
+                List<MessageFormatParser.PlaceholderInfo> placeholders = MessageFormatParser.parsePlaceholders(value.toString());
 
-                formatArgumentNames = messageFormat.getArgumentNames();
-                Format[] formats = messageFormat.getFormatsByArgumentIndex();
-                parameterSpecs = new ArrayList<>(formatArgumentNames.size());
-                int index = 0;
-                for(String argName: formatArgumentNames) {
-                    Format formatType = formats[index];
-                    Class<?> argType = getArgTypeFromFormat(formatType);
+                placeholders.forEach(placeholder -> {
+                    Class<?> type = getArgType(placeholder.getFormatType());
+                    String argName = placeholder.getName();
+                    formatArgumentNames.add(argName);
                     parameterSpecs.add(
-                        ParameterSpec.builder(argType, Utils.convertToFieldName(argName)).build()
+                            ParameterSpec.builder(type, Utils.convertToFieldName(argName)).build()
                     );
-                    index ++;
-                }
-            } else {
-                parameterSpecs = Collections.emptyList();
-                formatArgumentNames = Collections.emptySet();
+                });
             }
 
             String[] parameterNames = parameterSpecs.stream().map(it -> it.name).toArray(String[]::new);
@@ -139,7 +133,7 @@ public class I18nJavaPoetCodeGenerator {
      */
     private Class<?> getArgTypeFromFormat(Format format) {
         if (format == null) {
-            return Object.class;
+            return String.class;
         }
         
         // ICU NumberFormat and its subclasses
@@ -170,5 +164,18 @@ public class I18nJavaPoetCodeGenerator {
         // For any other format type
         return Object.class;
     }
-
+    private Class<?> getArgType(String type) {
+        if(type == null) {
+            return String.class;
+        }
+        switch (type) {
+            case "date":
+                return Date.class;
+            case "number":
+                return Number.class;
+            case "select":
+                return String.class;
+        }
+        return Object.class;
+    }
 }

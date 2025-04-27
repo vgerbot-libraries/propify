@@ -48,11 +48,16 @@ public class I18nJavaPoetCodeGeneratorTest {
             .generateCode("com.example", "Messages", "messages", "", bundle);
 
         assertNotNull(generatedCode);
-        final String cleanedCode = generatedCode.replaceAll("\\s+", " ").trim();
-        assertTrue(cleanedCode.contains("String greeting(String name)"));
-        assertTrue(cleanedCode.contains("String welcome(String city, String name)"));
-        assertTrue(cleanedCode.contains("@Message( key = \"greeting\", arguments = {\"name\"} )"));
-        assertTrue(cleanedCode.contains("@Message( key = \"welcome\", arguments = {\"city\",\"name\"} )"));
+        assertTrue(generatedCode.contains("String greeting(String name)"));
+        assertTrue(generatedCode.contains("String welcome(String city, String name)"));
+        assertTrue(generatedCode.contains("@Message(\n" +
+                "        key = \"greeting\",\n" +
+                "        arguments = {\"name\"}\n" +
+                "    )"));
+        assertTrue(generatedCode.contains("@Message(\n" +
+                "        key = \"welcome\",\n" +
+                "        arguments = {\"city\",\"name\"}\n" +
+                "    )"));
     }
 
     @Test
