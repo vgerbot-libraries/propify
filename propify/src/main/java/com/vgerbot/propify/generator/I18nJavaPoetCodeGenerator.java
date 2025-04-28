@@ -175,6 +175,10 @@ public class I18nJavaPoetCodeGenerator {
                 return Number.class;
             case "select":
                 return String.class;
+            case "plural":
+            case "selectordinal":
+            case "choice":
+                return Number.class;
         }
         return Object.class;
     }

@@ -54,7 +54,7 @@ public class MessageFormatParserTest {
         
         Assert.assertEquals(2, placeholders.size());
         Assert.assertEquals("count", placeholders.get(0).getName());
-        Assert.assertEquals("number", placeholders.get(0).getFormatType());
+        Assert.assertEquals("choice", placeholders.get(0).getFormatType());
     }
     
     @Test
@@ -107,7 +107,7 @@ public class MessageFormatParserTest {
         
         Assert.assertEquals(5, placeholders.size());
         Assert.assertEquals("time", placeholders.get(0).getName());
-        Assert.assertEquals("number", placeholders.get(0).getFormatType());
+        Assert.assertEquals("choice", placeholders.get(0).getFormatType());
     }
     
     @Test

@@ -16,6 +16,11 @@ public class MessageFormatParser {
             Part part = msgPattern.getPart(i);
             if (part.getType() == MessagePattern.Part.Type.ARG_START) {
                 String name = null;
+                String formatType = null;
+                MessagePattern.ArgType argType = part.getArgType();
+                if (argType != MessagePattern.ArgType.NONE) {
+                    formatType = argType.name().toLowerCase();
+                }
 
                 for_inner: for (i = i + 1; i < msgPattern.countParts(); i++) {
                     final Part nextPart = msgPattern.getPart(i);
@@ -30,19 +35,19 @@ public class MessageFormatParser {
                             name = msgPattern.getSubstring(nextPart);
                             break;
                         case ARG_TYPE:
-                            final String formatType = msgPattern.getSubstring(nextPart);
-                            placeholders.add(new PlaceholderInfo(name, formatType));
+                            formatType = msgPattern.getSubstring(nextPart);
                             break for_inner;
-                        case ARG_INT:
-                            placeholders.add(new PlaceholderInfo(name, "number"));
-                            break for_inner;
-                        case ARG_SELECTOR:
-                            placeholders.add(new PlaceholderInfo(name, "select"));
-                            break for_inner;
+//                        case ARG_INT:
+//                        case ARG_DOUBLE:
+//                        case ARG_NUMBER:
+//                            formatType = "number";
+//                            break for_inner;
                         case ARG_LIMIT:
-                            placeholders.add(new PlaceholderInfo(name, null));
                             break for_inner;
                     }
+                }
+                if (name != null) {
+                    placeholders.add(new PlaceholderInfo(name, formatType));
                 }
             }
         }
