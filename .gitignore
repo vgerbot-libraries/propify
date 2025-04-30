@@ -14,6 +14,7 @@ target/
 .idea/compiler.xml
 .idea/libraries/
 .idea/sonarlint
+.idea/workspace.xml
 *.iws
 *.iml
 *.ipr
