@@ -241,6 +241,7 @@ public class Utils {
                     }).toArray(String[]::new);
                 }
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                System.err.println("access javac util list error" + e.toString());
                 throw new RuntimeException(e);
             }
         }

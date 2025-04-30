@@ -1,21 +1,18 @@
 package com.vgerbot.propify.generator;
 
-import com.ibm.icu.text.MessageFormat;
-import com.ibm.icu.text.MeasureFormat;
-import com.ibm.icu.text.MessagePattern;
 import com.squareup.javapoet.*;
-import com.vgerbot.propify.common.MessageFormatParser;
 import com.vgerbot.propify.common.Utils;
+import com.vgerbot.propify.i18n.ICUMessageTemplateExtension;
+import com.vgerbot.propify.i18n.ICUTemplateArgumentsParser;
 import com.vgerbot.propify.i18n.Message;
 import com.vgerbot.propify.i18n.PropifyI18nResourceBundle;
-import com.vgerbot.propify.i18n.ICUMessageTemplateExtension;
 
 import javax.lang.model.element.Modifier;
-import java.lang.reflect.Field;
-import java.text.Format;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import java.util.Date;
 
 public class I18nJavaPoetCodeGenerator {
     private static class SingletonHolder {
@@ -69,41 +66,26 @@ public class I18nJavaPoetCodeGenerator {
         return bundle.keySet().stream().map(key -> {
             String methodName = Utils.convertToFieldName(key);
             Object value = bundle.getObject(key);
-            List<ParameterSpec> parameterSpecs = new ArrayList<>();;
-            Set<String> formatArgumentNames = new HashSet<>();
-            if (value instanceof CharSequence) {
-                List<MessageFormatParser.PlaceholderInfo> placeholders = MessageFormatParser.parsePlaceholders(value.toString());
+            List<ICUTemplateArgumentsParser.Argument> arguments;
 
-                placeholders.forEach(placeholder -> {
-                    Class<?> type = getArgType(placeholder.getFormatType());
-                    String argName = placeholder.getName();
-                    formatArgumentNames.add(argName);
-                    parameterSpecs.add(
-                            ParameterSpec.builder(type, Utils.convertToFieldName(argName)).build()
-                    );
-                });
+            if (value instanceof CharSequence) {
+                arguments = ICUTemplateArgumentsParser.parseTemplate(value.toString());
+            } else {
+                arguments = new ArrayList<>(0);
             }
 
-            String[] parameterNames = parameterSpecs.stream().map(it -> it.name).toArray(String[]::new);
-            String format = "{" + String.join(",", Arrays.stream(parameterNames).map(v -> "$S").toArray(String[]::new)) + "}";
+            String format = "{" + arguments.stream().map(v -> "$S").collect(Collectors.joining(",")) + "}";
             AnnotationSpec annotation = AnnotationSpec.builder(Message.class)
                     .addMember("key", CodeBlock.of("$S", key))
-                    .addMember("arguments", CodeBlock.of(format, formatArgumentNames.stream().toArray()))
+                    .addMember("arguments", CodeBlock.of(format, arguments.stream().map(ICUTemplateArgumentsParser.Argument::getName).toArray()))
                     .build();
             return MethodSpec.methodBuilder(methodName)
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                     .returns(String.class)
-                    .addParameters(parameterSpecs)
+                    .addParameters(arguments.stream().map(it -> ParameterSpec.builder(it.getType(), Utils.convertToFieldName(it.getName())).build()).collect(Collectors.toList()))
                     .addAnnotation(annotation)
                     .build();
         }).collect(Collectors.toList());
-    }
-
-    private List<ParameterSpec> generateMethodParameters(String pattern) {
-        MessageFormat format = new MessageFormat(pattern);
-        Set<String> argumentNames = format.getArgumentNames();
-        return argumentNames.stream().map(argName -> ParameterSpec.builder(String.class, Utils.convertToFieldName(argName)).build())
-                .collect(Collectors.toList());
     }
 
     private MethodSpec generateGetMethod() {
@@ -124,62 +106,5 @@ public class I18nJavaPoetCodeGenerator {
                                 CodeBlock.of("return get($T.getDefault())", Locale.class)
                                 : CodeBlock.of("return get($T.forLanguageTag($S))", Locale.class, defaultLocale))
                 .build();
-    }
-
-    /**
-     * Determines the appropriate Java type based on the format type
-     * @param format The ICU Format object
-     * @return The appropriate Java class type for the parameter
-     */
-    private Class<?> getArgTypeFromFormat(Format format) {
-        if (format == null) {
-            return String.class;
-        }
-        
-        // ICU NumberFormat and its subclasses
-        if (format instanceof com.ibm.icu.text.NumberFormat) {
-            return Number.class;
-        }
-        
-        // ICU DateFormat and its subclasses
-        if (format instanceof com.ibm.icu.text.DateFormat) {
-            return Date.class;
-        }
-
-        // MeasureFormat uses Measure objects with Number values
-        if (format instanceof com.ibm.icu.text.MeasureFormat) {
-            return Number.class;
-        }
-        
-        // Plural format typically takes numbers
-        if (format instanceof com.ibm.icu.text.PluralFormat) {
-            return Number.class;
-        }
-        
-        // Select format takes strings
-        if (format instanceof com.ibm.icu.text.SelectFormat) {
-            return String.class;
-        }
-        
-        // For any other format type
-        return Object.class;
-    }
-    private Class<?> getArgType(String type) {
-        if(type == null) {
-            return String.class;
-        }
-        switch (type) {
-            case "date":
-                return Date.class;
-            case "number":
-                return Number.class;
-            case "select":
-                return String.class;
-            case "plural":
-            case "selectordinal":
-            case "choice":
-                return Number.class;
-        }
-        return Object.class;
     }
 }
