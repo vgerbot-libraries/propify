@@ -29,7 +29,7 @@ public class Utils {
     )));
 
     private Utils() {
-        throw new RuntimeException("Cannot instantiate Utils class");
+        throw new PropifyException("Cannot instantiate Utils class");
     }
 
     /**
@@ -236,13 +236,12 @@ public class Utils {
                             Object type = getValueMethod.invoke(classInfo);
                             return type.toString();
                         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                            throw new RuntimeException(e);
+                            throw new PropifyException("Failed to get class info", e);
                         }
                     }).toArray(String[]::new);
                 }
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                System.err.println("access javac util list error" + e.toString());
-                throw new RuntimeException(e);
+                throw new PropifyException("Failed to access javac util list", e);
             }
         }
         return new String[]{};

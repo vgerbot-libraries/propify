@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import com.vgerbot.propify.common.PropifyException;
 
 public class PropifyI18nResourceBundle {
     private final String baseName;
@@ -25,7 +26,7 @@ public class PropifyI18nResourceBundle {
             return Proxy.newProxyInstance(type.getClassLoader(), new Class[] { type }, (proxy, method, args) -> {
                 Message annotation = method.getAnnotation(Message.class);
                 if (annotation == null) {
-                    throw new RuntimeException(method + " is not annotated with @Message");
+                    throw new PropifyException(method + " is not annotated with @Message");
                 }
                 String keyName = annotation.key();
                 String[] arguments = annotation.arguments();

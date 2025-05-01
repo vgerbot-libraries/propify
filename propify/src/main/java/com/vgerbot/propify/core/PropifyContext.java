@@ -5,6 +5,8 @@ import com.vgerbot.propify.logger.Logger;
 import com.vgerbot.propify.lookup.PropifyLookup;
 import com.vgerbot.propify.lookup.PropifyLookupAdaptor;
 import org.apache.commons.configuration2.interpol.Lookup;
+import com.vgerbot.propify.common.PropifyException;
+import com.vgerbot.propify.common.ReflectionUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -168,12 +170,10 @@ public class PropifyContext {
         return Arrays.stream(this.lookups).map(it -> {
             try {
                 Class<PropifyLookup> cls = (Class<PropifyLookup>)Class.forName(it);
-                Constructor<PropifyLookup> constructor = cls.getDeclaredConstructor();
-                constructor.setAccessible(true);
+                Constructor<PropifyLookup> constructor = ReflectionUtils.getDeclaredConstructor(cls);
                 return constructor.newInstance();
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException |
-                     InvocationTargetException e) {
-                throw new RuntimeException(e);
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new PropifyException("Failed to instantiate lookup class", e);
             }
         }).collect(Collectors.toMap(PropifyLookup::getPrefix, PropifyLookupAdaptor::new));
     }

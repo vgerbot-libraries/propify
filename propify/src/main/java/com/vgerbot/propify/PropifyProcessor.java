@@ -9,6 +9,7 @@ import com.vgerbot.propify.i18n.I18n;
 import com.vgerbot.propify.loader.CompileTimeResourceLoaderProvider;
 import com.vgerbot.propify.logger.CompileTimeLogger;
 import org.apache.commons.configuration2.Configuration;
+import com.vgerbot.propify.common.PropifyException;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -138,7 +139,7 @@ public class PropifyProcessor extends AbstractProcessor {
                                     "Failed to process annotation: " + message, element);
                         }
                     } else {
-                        throw new RuntimeException(e);
+                        throw new PropifyException("Failed to process annotation", e);
                     }
                 }
             }

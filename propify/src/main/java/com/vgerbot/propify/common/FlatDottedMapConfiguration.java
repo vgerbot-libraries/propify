@@ -11,6 +11,8 @@ import org.apache.commons.configuration2.MapConfiguration;
 import org.apache.commons.configuration2.tree.DefaultExpressionEngine;
 import org.apache.commons.configuration2.tree.DefaultExpressionEngineSymbols;
 
+import com.vgerbot.propify.common.ReflectionUtils;
+
 /**
  * A configuration class that extends MapConfiguration to provide support for accessing
  * nested properties using dot notation and array/list indexing.
@@ -212,8 +214,7 @@ public class FlatDottedMapConfiguration extends MapConfiguration {
             return ((Map<?, ?>) container).get(propertyKey);
         } else {
             try {
-                Field field = container.getClass().getDeclaredField(propertyKey);
-                field.setAccessible(true);
+                Field field = ReflectionUtils.getDeclaredField(container.getClass(), propertyKey);
                 return field.get(container);
             } catch (Exception e) {
                 return null;

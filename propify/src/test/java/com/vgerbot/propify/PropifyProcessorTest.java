@@ -2,6 +2,7 @@ package com.vgerbot.propify;
 
 import com.vgerbot.propify.core.Propify;
 import com.vgerbot.propify.i18n.I18n;
+import com.vgerbot.propify.common.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -73,10 +74,8 @@ public class PropifyProcessorTest {
     public void testInit() throws NoSuchFieldException, IllegalAccessException {
         // Verify that the processor was initialized correctly
         assertEquals(processingEnv, PropifyProcessor.processingEnvironment);
-        Field field = processor.getClass().getDeclaredField("messager");
-        field.setAccessible(true);
-
-        assertNotNull("Messager should be initialized", field.get(processor));
+        Field field = ReflectionUtils.getDeclaredField(PropifyProcessor.class, "messager");
+        assertEquals(messager, field.get(processor));
     }
 
     @Test
