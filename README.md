@@ -1,246 +1,281 @@
-# Propify ![Build Status](https://github.com/vgerbot-libraries/propify/actions/workflows/build.yml/badge.svg) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/9d3df77c87d243a9bb68b8687a87bfeb)](https://app.codacy.com/gh/vgerbot-libraries/propify/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/9d3df77c87d243a9bb68b8687a87bfeb)](https://app.codacy.com/gh/vgerbot-libraries/propify/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
+# Propify 
 
-Propify is a lightweight Java annotation processor that generates type-safe Java code from configuration files (YAML/Properties). It helps eliminate the boilerplate of manually parsing configuration files and provides compile-time safety for accessing configuration properties.
+![Build Status](https://github.com/vgerbot-libraries/propify/actions/workflows/build.yml/badge.svg) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/9d3df77c87d243a9bb68b8687a87bfeb)](https://app.codacy.com/gh/vgerbot-libraries/propify/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/9d3df77c87d243a9bb68b8687a87bfeb)](https://app.codacy.com/gh/vgerbot-libraries/propify/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
+
+----
+
+A lightweight Java annotation processor that automatically generates **type-safe** classes for both configuration files (YAML or `.properties`) and internationalization bundles. Access every configuration key and message through Java methods—no more stringly-typed keys—and catch invalid accesses at compile time. Supports nested properties, custom lookup providers, and full ICU4J formatting.
+
+---
+
+## 📖 Table of Contents
+
+1. [Why Propify?](#why-propify)
+2. [Features](#features)
+3. [Requirements](#requirements)
+4. [Installation](#installation)
+5. [Quick Start](#quick-start)
+6. [Advanced Usage](#advanced-usage)
+7. [Internationalization (i18n)](#internationalization-i18n)
+8. [How It Works](#how-it-works)
+9. [Contributing](#contributing)
+10. [License](#license)
+11. [Acknowledgments](#acknowledgments)
+
+---
+
+## Why Propify?
+
+- **Type-Safety**: Access configuration and messages via Java methods—no more stringly-typed keys.
+- **Compile-Time Guarantees**: Prevent typos in code (incorrect keys) from compiling, so invalid property accesses are caught before runtime.
+- **Productivity**: Skip manual parsing and error-prone lookups.
+- **Extendable**: Plug in custom lookup providers for environment variables, system properties, or your own sources.
+
+---
 
 ## Features
 
-- 🔒 **Type-safe Configuration**: Access your configuration properties with compile-time type checking
-- 📝 **Multiple Format Support**: Works with both YAML and Properties files
-- 🌍 **Internationalization Support**: Built-in i18n capabilities with type-safe message access
-- 🛠 **Compile-time Code Generation**: No runtime overhead, all code is generated during compilation
-- ⚡ **Zero Runtime Dependencies**: Generated code has no dependencies on Propify itself
-- 🎯 **Simple Integration**: Just add the annotation processor to your build and start using it
+- 🔒 **Type-Safe Config**: Generates POJOs from YAML, INI, or `.properties` files
+- 🌐 **Type-Safe i18n**: Strongly-typed resource bundles with ICU4J formatting
+- 🛠 **Compile-Time Validation**: Syntax and schema checks during build
+- 📚 **Nested Keys**: Dot-notation support for hierarchical configs
+- 🔄 **Custom Lookups**: Inject dynamic values (env, system props, custom)
+- ⚡️ **Zero Runtime Overhead**: All code generated at compile time
+
+---
 
 ## Requirements
 
-- Java 8 or higher
-- Maven or Gradle build system
+- **Java**: 8 or higher
+- **Build**: Maven or Gradle
+
+---
 
 ## Installation
 
-You can obtain Propify through various build systems:
-
 ### Maven
 
-Add the following to your `pom.xml`:
+Add dependency and annotation processor:
 
 ```xml
 <dependencies>
-    <dependency>
-        <groupId>com.vgerbot</groupId>
-        <artifactId>propify</artifactId>
-        <version>1.0.0</version>
-    </dependency>
+  <dependency>
+    <groupId>com.vgerbot</groupId>
+    <artifactId>propify</artifactId>
+    <version>1.1.0</version>
+  </dependency>
 </dependencies>
 
 <build>
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.8.1</version>
-            <configuration>
-                <source>1.8</source>
-                <target>1.8</target>
-                <annotationProcessorPaths>
-                    <path>
-                        <groupId>com.vgerbot</groupId>
-                        <artifactId>propify</artifactId>
-                        <version>1.0.0</version>
-                    </path>
-                </annotationProcessorPaths>
-            </configuration>
-        </plugin>
-    </plugins>
+  <plugins>
+    <plugin>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.8.1</version>
+      <configuration>
+        <source>1.8</source>
+        <target>1.8</target>
+        <annotationProcessorPaths>
+          <path>
+            <groupId>com.vgerbot</groupId>
+            <artifactId>propify</artifactId>
+            <version>1.1.0</version>
+          </path>
+        </annotationProcessorPaths>
+      </configuration>
+    </plugin>
+  </plugins>
 </build>
 ```
 
-### Gradle
-
-For Gradle version >= 4.6:
+### Gradle (≥4.6)
 
 ```groovy
 dependencies {
-    implementation 'com.vgerbot:propify:1.0.0'
-    annotationProcessor 'com.vgerbot:propify:1.0.0'
+  implementation 'com.vgerbot:propify:1.1.0'
+  annotationProcessor 'com.vgerbot:propify:1.1.0'
 }
 ```
 
-For older Gradle versions (< 4.6):
+### Gradle (<4.6)
 
 ```groovy
 plugins {
-    id 'net.ltgt.apt' version '0.21'
+  id 'net.ltgt.apt' version '0.21'
 }
 
 dependencies {
-    compile 'com.vgerbot:propify:1.0.0'
-    apt 'com.vgerbot:propify:1.0.0'
+  compile 'com.vgerbot:propify:1.1.0'
+  apt     'com.vgerbot:propify:1.1.0'
 }
 ```
 
-### Apache Ant
+> For other tools, configure your build to include `propify` as an annotation processor.
 
-For Ant-based projects, add the following to your `build.xml`:
-
-```xml
-<javac
-    srcdir="src/main/java"
-    destdir="target/classes"
-    classpath="path/to/propify-1.0.0.jar">
-    <compilerarg line="-processorpath path/to/propify-1.0.0.jar"/>
-    <compilerarg line="-s target/generated-sources"/>
-</javac>
-```
+---
 
 ## Quick Start
 
-1. Create your configuration file (e.g., `application.yml`):
+1. **Create** `src/main/resources/application.yml`:
+   ```yaml
+   server:
+     host: localhost
+     port: 8080
+   database:
+     url: jdbc:mysql://localhost:3306/mydb
+     username: root
+     password: secret
+   ```
+2. **Annotate** an interface:
+   ```java
+   @Propify(location = "application.yml")
+   public interface AppConfig {}
+   ```
+3. **Use** the generated API:
+   ```java
+   public class Main {
+     public static void main(String[] args) {
+       AppConfigPropify cfg = new AppConfigPropify();
+       System.out.println(cfg.getServer().getHost());
+       System.out.println(cfg.getDatabase().getUrl());
+     }
+   }
+   ```
 
-```yaml
-server:
-  host: localhost
-  port: 8080
-database:
-  url: jdbc:mysql://localhost:3306/mydb
-  username: root
-  password: secret
-```
+Configuration locations can be:
+- On the classpath (e.g., `application.yml` in `src/main/resources/`)
+- Local file system (`file:///path/to/config.yml`)
+- HTTP/HTTPS URL (`https://...`)
 
-2. Create a configuration interface with the `@Propify` annotation:
+For example:
 
 ```java
-@Propify(location = "application.yml")
-public interface AppConfig {
-}
+@Propify(location = "https://example.com/config.yml")
+public interface WebConfig {}
 ```
 
-3. Use the generated configuration class:
+> ⚠️ Ensure your configuration files are reachable at build time—whether via classpath, file path, or network URL.
 
-```java
-public class Application {
-    public static void main(String[] args) {
-        AppConfigPropify config = new AppConfigPropify();
-        
-        // Type-safe access to configuration
-        String dbUrl = config.getDatabase().getUrl();
-        int serverPort = config.getServer().getPort();
-    }
-}
-```
+---
 
 ## Advanced Usage
 
-### Custom Generated Class Name
+### Custom Class Name
 
 ```java
 @Propify(
-    location = "application.yml",
-    generatedClassName = "MyCustomConfigImpl"
+  location = "application.yml",
+  generatedClassName = "CustomConfigImpl"
 )
-public interface AppConfig {
-    // ...
-}
+public interface AppConfig {}
 ```
 
-### Specifying Media Type
+### Media Types
+
+By default, Propify infers file format from the file extension (`.yml`/`.yaml` for YAML, `.ini` for INI, `.properties` for Java properties). Manual `mediaType` specification is only required when the extension is non-standard or ambiguous.
 
 ```java
 @Propify(
-    location = "application.properties",
-    mediaType = "application/x-java-properties"
+  location = "config.custom",              // non-standard extension
+  mediaType = "application/x-java-properties"
 )
-public interface AppConfig {
-    // ...
-}
+public interface AppConfig {}
 ```
+
+### Custom Lookups
+
+Propify lets you interpolate dynamic values at build time via lookup providers. Out of the box you can use placeholders in your config:
+
+- **Environment variables**: `{env:VAR_NAME}`
+- **Custom lookups**: `{lookupName:variableName}` — resolved by the corresponding lookup class
+
+**Example configuration** (`application.yml`):
+```yaml
+app:
+  tempDir: "{env:TEMP_DIR}"
+  secretKey: "{vault:db-secret}"
+```
+
+**Annotate your interface**:
+```java
+@Propify(
+  location = "application.yml",
+  lookups = {
+    CustomEnvironmentLookup.class,  // resolves {env:...}
+    VaultLookup.class              // resolves {vault:...}
+  }
+)
+public interface AppConfig {}
+```
+
+**Usage in code**:
+```java
+AppConfig cfg = new AppConfigPropify();
+String tempDir = cfg.getApp().getTempDir();    // from $TEMP_DIR
+String secret = cfg.getApp().getSecretKey();   // from vault lookup
+```  
+
+---  
+
 
 ## Internationalization (i18n)
 
-Propify provides built-in support for internationalization through the `@I18n` annotation. This allows you to manage translations in a type-safe manner.
+Generate type-safe resource bundles using ICU4J:
 
-### Setting Up i18n
+1. **Create** message files in `resources/`:
+   ```properties
+   # messages.properties (default)
+   welcome=Welcome
+   greeting=Hello, {name}!
 
-1. Create message property files for different locales:
+   # messages_zh_CN.properties
+   welcome=欢迎
+   greeting=你好, {name}！
+   ```
+2. **Annotate** a class:
+   ```java
+   @I18n(baseName = "messages", defaultLocale = "en")
+   public class Messages {}
+   ```
+3. **Access** messages:
+   ```java
+   String hi = MessageResource.getDefault().greeting("Alice");
+   String hiZh = MessageResource.get(Locale.CHINESE).greeting("张三");
+   ```
 
-```properties
-# messages.properties (default)
-welcome=Welcome
-greeting=Hello, {name}!
-app.name=Example App
-time.format=At {1,time,::jmm} on {1,date,::dMMMM}, 
+Supports pluralization, dates, numbers, and custom ICU patterns—fully validated at compile time.
 
-# messages_zh_CN.properties
-welcome=欢迎
-greeting=你好, {name}！
-app.name=示例应用
-```
-
-2. Create a class with the `@I18n` annotation:
-
-```java
-@I18n(
-    baseName = "messages",    // Base name of the properties files
-    defaultLocale = "en"      // Optional: specify default locale
-)
-public class I18nConfig {
-}
-```
-
-3. Use the generated message resource class:
-
-```java
-public class Application {
-    public static void main(String[] args) {
-        // Get messages using default locale
-        String welcome = MessageResource.getDefault().welcome();
-        String greeting = MessageResource.getDefault().greeting("John");
-        
-        // Get messages for specific locale
-        String zhWelcome = MessageResource.get(Locale.CHINESE).welcome();
-        String zhGreeting = MessageResource.get(Locale.CHINESE).greeting("张三");
-    }
-}
-```
-
-### i18n Features
-
-- **Type-safe Message Access**: All message keys are generated as methods
-- **Parameter Support**: Messages with parameters are type-checked at compile time
-- **Multiple Locale Support**: Switch between locales at runtime
-- **Default Locale Fallback**: Messages fallback to default locale if not found
-- **Resource Bundle Integration**: Uses Java's ResourceBundle under the hood
-- **ICU4J Template Support**: Full support for ICU4J message format patterns, enabling powerful localization features like plural forms, gender-based messages, and complex number/date formatting
+---
 
 ## How It Works
 
-1. During compilation, Propify processes classes annotated with `@Propify` and `@I18n`
-2. It reads and parses the specified configuration and message files
-3. Generates Java implementation classes with type-safe getters and message accessors
-4. The generated code is compiled along with your source code
+1. **Scan** for `@Propify` and `@I18n` annotations
+2. **Parse** configuration and message files
+3. **Generate** Java implementation classes
+4. **Compile** everything together—fail-fast on errors
+
+---
 
 ## Contributing
 
-Contributions are welcome! Here's how you can help:
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/xyz`)
+3. Implement and test your changes
+4. Submit a Pull Request
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Please follow the existing coding style and update tests.
 
-Please make sure to update tests as appropriate and adhere to the existing coding style.
+---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+[MIT](LICENSE) © 2024 vgerbot-libraries
 
-## Support
-
-- Create an issue on GitHub for bug reports or feature requests
-- For usage questions, please refer to the examples above or create a discussion on GitHub
+---
 
 ## Acknowledgments
 
-- [JavaPoet](https://github.com/square/javapoet) for Java code generation
-- [Jackson](https://github.com/FasterXML/jackson) for YAML parsing
+- [JavaPoet](https://github.com/square/javapoet)
+- [Jackson YAML](https://github.com/FasterXML/jackson-dataformats-text)
+- [Apache Commons Configuration](https://commons.apache.org/proper/commons-configuration/)
+- [ICU4J](https://unicode-org.github.io/icu/userguide/icu4j/)
+
