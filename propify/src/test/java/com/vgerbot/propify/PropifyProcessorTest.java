@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class PropifyProcessorTest {
@@ -39,7 +40,7 @@ public class PropifyProcessorTest {
 
     @Mock
     private TypeElement propifyAnnotation;
-    
+
     @Mock
     private TypeElement i18nAnnotation;
 
@@ -51,22 +52,22 @@ public class PropifyProcessorTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        
+        MockitoAnnotations.openMocks(this);
+
         processor = new PropifyProcessor();
-        
+
         when(processingEnv.getMessager()).thenReturn(messager);
         when(typeElement.getKind()).thenReturn(ElementKind.CLASS);
         when(typeElement.getSimpleName()).thenReturn(name);
         when(name.toString()).thenReturn("TestConfig");
-        
+
         // Mock behavior for propifyAnnotation and i18nAnnotation
         when(propifyAnnotation.getQualifiedName()).thenReturn(mock(Name.class));
         when(propifyAnnotation.getQualifiedName().toString()).thenReturn(Propify.class.getCanonicalName());
-        
+
         when(i18nAnnotation.getQualifiedName()).thenReturn(mock(Name.class));
         when(i18nAnnotation.getQualifiedName().toString()).thenReturn(I18n.class.getCanonicalName());
-        
+
         processor.init(processingEnv);
     }
 
@@ -81,17 +82,23 @@ public class PropifyProcessorTest {
     @Test
     public void testGetSupportedAnnotationTypes() {
         Set<String> types = processor.getSupportedAnnotationTypes();
-        
-        assertTrue("Should support Propify annotation", 
+
+        assertTrue("Should support Propify annotation",
                 types.contains(Propify.class.getCanonicalName()));
-        assertTrue("Should support I18n annotation", 
+        assertTrue("Should support I18n annotation",
                 types.contains(I18n.class.getCanonicalName()));
         assertEquals("Should support exactly 2 annotation types", 2, types.size());
     }
 
     @Test
     public void testGetSupportedSourceVersion() {
-        assertNotNull("Supported source version should not be null", 
+        // Check that the supported source version is not null
+        assertNotNull("Supported source version should not be null",
+                processor.getSupportedSourceVersion());
+
+        // Check that it returns the expected version (latest supported)
+        assertEquals("Should return the latest supported version",
+                javax.lang.model.SourceVersion.latest(),
                 processor.getSupportedSourceVersion());
     }
 
@@ -99,12 +106,12 @@ public class PropifyProcessorTest {
     public void testProcessWithNoAnnotatedElements() {
         Set<TypeElement> annotations = new HashSet<>();
         annotations.add(propifyAnnotation);
-        
+
         when(roundEnv.getElementsAnnotatedWith(propifyAnnotation))
                 .thenReturn(Collections.emptySet());
-        
+
         boolean result = processor.process(annotations, roundEnv);
-        
+
         assertTrue("Process should return true", result);
         verify(roundEnv).getElementsAnnotatedWith(propifyAnnotation);
         verifyNoMoreInteractions(messager);
@@ -121,7 +128,7 @@ public class PropifyProcessorTest {
         Set<Element> elements = new HashSet<>();
         elements.add(nonTypeElement);
 
-        when((Set<Element>)roundEnv.getElementsAnnotatedWith(propifyAnnotation))
+        when((Set<Element>) roundEnv.getElementsAnnotatedWith(propifyAnnotation))
                 .thenReturn(elements);
 
         boolean result = processor.process(annotations, roundEnv);
@@ -139,7 +146,7 @@ public class PropifyProcessorTest {
         Set<Element> elements = new HashSet<>();
         elements.add(typeElement);
 
-        when((Set<Element>)roundEnv.getElementsAnnotatedWith(propifyAnnotation))
+        when((Set<Element>) roundEnv.getElementsAnnotatedWith(propifyAnnotation))
                 .thenReturn(elements);
 
         // Mock a Propify annotation on the typeElement
@@ -165,7 +172,7 @@ public class PropifyProcessorTest {
         Set<Element> elements = new HashSet<>();
         elements.add(typeElement);
 
-        when((Set<Element>)roundEnv.getElementsAnnotatedWith(propifyAnnotation))
+        when((Set<Element>) roundEnv.getElementsAnnotatedWith(propifyAnnotation))
                 .thenReturn(elements);
 
         // Mock a Propify annotation on the typeElement
@@ -187,29 +194,25 @@ public class PropifyProcessorTest {
     public void testProcessWithRuntimeException() {
         Set<TypeElement> annotations = new HashSet<>();
         annotations.add(propifyAnnotation);
-        
+
         Set<Element> elements = new HashSet<>();
         elements.add(typeElement);
-        
-        when((Set<Element>)roundEnv.getElementsAnnotatedWith(propifyAnnotation))
+
+        when((Set<Element>) roundEnv.getElementsAnnotatedWith(propifyAnnotation))
                 .thenReturn(elements);
-        
+
         // Mock a Propify annotation on the typeElement
         Propify mockPropify = mock(Propify.class);
         when(typeElement.getAnnotation(Propify.class)).thenReturn(mockPropify);
-        
+
         // Simulate an error with null message to trigger RuntimeException
         RuntimeException exception = mock(RuntimeException.class);
         when(exception.getMessage()).thenReturn(null);
         when(mockPropify.location()).thenThrow(exception);
-        
-        try {
-            processor.process(annotations, roundEnv);
-            fail("Should have thrown RuntimeException");
-        } catch (RuntimeException e) {
-            // Expected
-        }
-        
+
+        assertThrows("Should have thrown RuntimeException", RuntimeException.class,
+                () -> processor.process(annotations, roundEnv));
+
         verify(roundEnv).getElementsAnnotatedWith(propifyAnnotation);
     }
-} 
+}

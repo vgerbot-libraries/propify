@@ -1,18 +1,17 @@
 package com.vgerbot.propify.common;
-import com.vgerbot.propify.common.Utils;
+
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class Utils_ConvertToFieldNameTest {
 
     @Test
     public void testConvertToFieldName_EmptyInput_ThrowsIllegalArgumentException() {
-        try {
-            Utils.convertToFieldName("");
-            assert false;
-        } catch (IllegalArgumentException e) {
-            assertEquals("Field name cannot be null or empty", e.getMessage());
-        }
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> Utils.convertToFieldName(""));
+        assertEquals("Field name cannot be null or empty", exception.getMessage());
     }
 
     @Test
@@ -78,7 +77,6 @@ public class Utils_ConvertToFieldNameTest {
         assertEquals(expected, Utils.convertToFieldName(input));
     }
 
-
     @Test
     public void testConvertToFieldName_AllSpecialChars_ReturnsUnderscore() {
         String input = "!@#$%^&*()";
@@ -88,8 +86,8 @@ public class Utils_ConvertToFieldNameTest {
 
     @Test
     public void testConvertToFieldName_MoreJavaKeywords_ReturnsWithUnderscore() {
-        String[] keywords = {"if", "for", "while", "do", "break", "continue", "return", 
-                           "void", "int", "boolean", "double", "float", "long"};
+        String[] keywords = { "if", "for", "while", "do", "break", "continue", "return",
+                "void", "int", "boolean", "double", "float", "long" };
         for (String keyword : keywords) {
             assertEquals(keyword + "_", Utils.convertToFieldName(keyword));
         }
