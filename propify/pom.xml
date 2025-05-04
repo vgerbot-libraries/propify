@@ -32,7 +32,7 @@
 
     <artifactId>propify</artifactId>
     <name>Propify Annotation Processor</name>
-    <description>Java annotation processor for generating type-safe configuration classes</description>
+    <description>A powerful, lightweight Java annotation processor that generates type-safe classes from configuration files (YAML, INI, or .properties) and internationalization bundles.</description>
     <url>https://github.com/vgerbot-libraries/propify</url>
 
     <properties>
