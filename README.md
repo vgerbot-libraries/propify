@@ -68,7 +68,7 @@ Add dependency and annotation processor:
   <dependency>
     <groupId>com.vgerbot</groupId>
     <artifactId>propify</artifactId>
-    <version>1.1.0</version>
+    <version>2.0.0</version>
   </dependency>
 </dependencies>
 
@@ -84,7 +84,7 @@ Add dependency and annotation processor:
           <path>
             <groupId>com.vgerbot</groupId>
             <artifactId>propify</artifactId>
-            <version>1.1.0</version>
+            <version>2.0.0</version>
           </path>
         </annotationProcessorPaths>
       </configuration>
@@ -97,8 +97,8 @@ Add dependency and annotation processor:
 
 ```groovy
 dependencies {
-  implementation 'com.vgerbot:propify:1.1.0'
-  annotationProcessor 'com.vgerbot:propify:1.1.0'
+  implementation 'com.vgerbot:propify:2.0.0'
+  annotationProcessor 'com.vgerbot:propify:2.0.0'
 }
 ```
 
@@ -110,8 +110,8 @@ plugins {
 }
 
 dependencies {
-  compile 'com.vgerbot:propify:1.1.0'
-  apt     'com.vgerbot:propify:1.1.0'
+  compile 'com.vgerbot:propify:2.0.0'
+  apt     'com.vgerbot:propify:2.0.0'
 }
 ```
 
