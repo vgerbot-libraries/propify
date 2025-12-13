@@ -4,10 +4,7 @@ import javax.lang.model.element.AnnotationValue;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.IntStream;
 
 /**
@@ -224,25 +221,11 @@ public class Utils {
         Object value = annotationValue.getValue();
         Class<?> cls = value.getClass();
         if ("com.sun.tools.javac.util.List".equals(cls.getName())) {
-            try {
-                Method getMethod = cls.getDeclaredMethod("get", int.class);
-                Method sizeMethod = cls.getDeclaredMethod("size");
-                Integer size = (Integer)sizeMethod.invoke(value);
-                if(size >= 0) {
-                    return IntStream.range(0, size).mapToObj(index -> {
-                        try {
-                            Object classInfo = getMethod.invoke(value, index);
-                            Method getValueMethod = classInfo.getClass().getMethod("getValue");
-                            Object type = getValueMethod.invoke(classInfo);
-                            return type.toString();
-                        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                            throw new PropifyException("Failed to get class info", e);
-                        }
-                    }).toArray(String[]::new);
-                }
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                throw new PropifyException("Failed to access javac util list", e);
-            }
+            List<? extends AnnotationValue> values = (List<? extends AnnotationValue>) value;
+            return values.stream().map(item -> {
+                Object type = item.getValue();
+                return type.toString();
+            }).toArray(String[]::new);
         }
         return new String[]{};
     }
