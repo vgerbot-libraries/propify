@@ -19,7 +19,7 @@ class CustomLookup implements PropifyLookup {
 @Propify(location = "classpath:advanced-config.yml", generatedClassName = "AdvancedConfig", lookups = { CustomLookup.class })
 public class AdvancedConfigExample {
     public static void main(String[] args) {
-        AdvancedConfig config = AdvancedConfig.getInstance();
-        System.out.println(config.getAws().getAccessKeyId());
+//        AdvancedConfig config = AdvancedConfig.getInstance();
+//        System.out.println(config.getAws().getAccessKeyId());
     }
 }

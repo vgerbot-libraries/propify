@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User",
+  "type": "object",
+  "description": "User entity schema",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "User ID"
+    },
+    "username": {
+      "type": "string",
+      "description": "Username for login",
+      "minLength": 3,
+      "maxLength": 50
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "User email address"
+    },
+    "age": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 150,
+      "description": "User age"
+    },
+    "active": {
+      "type": "boolean",
+      "description": "Whether the user is active"
+    },
+    "roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "User roles"
+    },
+    "profile": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string",
+          "maxLength": 500
+        }
+      },
+      "required": ["firstName", "lastName"]
+    }
+  },
+  "required": ["username", "email"]
+}
+
