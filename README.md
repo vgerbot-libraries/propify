@@ -4,11 +4,11 @@
 
 ----
 
-**Propify** is a powerful, lightweight Java annotation processor that eliminates configuration errors by generating **type-safe** classes from your configuration files (YAML, INI, or `.properties`) and internationalization bundles.
+**Propify** is a powerful, lightweight Java annotation processor that eliminates configuration errors by generating **type-safe** classes from your configuration files (YAML, INI, or `.properties`), internationalization bundles, and schema definitions (JSON Schema, OpenAPI).
 
 > **Say goodbye to "stringly-typed" keys and runtime errors!** Access every configuration value and message through strongly-typed Java methods, catching invalid accesses at compile time instead of runtime.
 
-Propify seamlessly supports nested properties, custom lookup providers, and full ICU4J formatting while adding zero runtime dependencies to your application.
+Propify seamlessly supports nested properties, custom lookup providers, full ICU4J formatting, and schema-based POJO generation while adding zero runtime dependencies to your application.
 
 ----
 
@@ -21,12 +21,13 @@ Propify seamlessly supports nested properties, custom lookup providers, and full
 5. [Quick Start](#-quick-start)
 6. [Advanced Usage](#-advanced-usage)
 7. [Internationalization (i18n)](#-internationalization-i18n)
-8. [How It Works](#️-how-it-works)
-9. [Examples](#-examples)
-10. [Getting Help](#-getting-help)
-11. [Contributing](#-contributing)
-12. [License](#-license)
-13. [Acknowledgments](#-acknowledgments)
+8. [Schema-Based Generation (NEW!)](#-schema-based-generation-new)
+9. [How It Works](#️-how-it-works)
+10. [Examples](#-examples)
+11. [Getting Help](#-getting-help)
+12. [Contributing](#-contributing)
+13. [License](#-license)
+14. [Acknowledgments](#-acknowledgments)
 
 ----
 
@@ -43,6 +44,7 @@ Propify seamlessly supports nested properties, custom lookup providers, and full
 
 - 🔒 **Type-Safe Config**: Generates POJOs from YAML, INI, or `.properties` files
 - 🌐 **Type-Safe i18n**: Strongly-typed resource bundles with ICU4J formatting
+- 🎯 **Schema-Based POJOs**: Generate mutable DTOs from JSON Schema or OpenAPI specs
 - 🛠 **Compile-Time Validation**: Syntax and schema checks during build
 - 📚 **Nested Keys**: Dot-notation support for hierarchical configs
 - 🔄 **Custom Lookups**: Inject dynamic values (env, system props, custom)
@@ -265,11 +267,83 @@ Supports pluralization, dates, numbers, and custom ICU patterns—fully validate
 
 ----
 
+## 🎯 Schema-Based Generation (NEW!)
+
+Generate mutable POJO/DTO classes from schema definitions for REST APIs and data modeling:
+
+### JSON Schema Example
+
+1. **Create** a JSON Schema (`resources/schemas/user.schema.json`):
+
+   ```json
+   {
+     "$schema": "http://json-schema.org/draft-07/schema#",
+     "title": "User",
+     "type": "object",
+     "properties": {
+       "id": { "type": "integer" },
+       "username": { "type": "string", "minLength": 3 },
+       "email": { "type": "string", "format": "email" }
+     },
+     "required": ["username", "email"]
+   }
+   ```
+
+2. **Annotate** an interface:
+
+   ```java
+   @SchemaGen(location = "schemas/user.schema.json")
+   public interface UserSchema {}
+   ```
+
+3. **Use** the generated POJO:
+
+   ```java
+   // Builder pattern
+   User user = User.builder()
+       .username("johndoe")
+       .email("john@example.com")
+       .build();
+   
+   // Jackson serialization
+   ObjectMapper mapper = new ObjectMapper();
+   String json = mapper.writeValueAsString(user);
+   User user = mapper.readValue(json, User.class);
+   ```
+
+### OpenAPI Example
+
+```java
+@SchemaGen(
+    location = "openapi/api.yaml",
+    type = SchemaType.OPENAPI,
+    schemaRef = "Pet"
+)
+public interface PetSchema {}
+
+// Generated class with validation, Jackson support, builder, etc.
+Pet pet = Pet.builder()
+    .name("Fluffy")
+    .status("available")
+    .build();
+```
+
+**Key Features:**
+- ✅ Mutable POJOs with getters/setters
+- ✅ Builder pattern for fluent construction
+- ✅ Jackson annotations for JSON serialization
+- ✅ Bean Validation (@NotNull, @Email, @Size, etc.)
+- ✅ Support for JSON Schema and OpenAPI 3.x
+
+📖 **[Full SchemaGen Documentation](SCHEMAGEN.md)**
+
+----
+
 ## ⚙️ How It Works
 
-1. **Scan** for `@Propify` and `@I18n` annotations
-2. **Parse** configuration and message files
-3. **Generate** Java implementation classes
+1. **Scan** for `@Propify`, `@I18n`, and `@SchemaGen` annotations
+2. **Parse** configuration files, message bundles, and schema definitions
+3. **Generate** Java implementation classes and POJOs
 4. **Compile** everything together—fail-fast on errors
 
 ----
