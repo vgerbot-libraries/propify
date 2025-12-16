@@ -2,7 +2,9 @@
 
 ## Overview
 
-The **SchemaGen** feature is a powerful addition to Propify that generates Java POJO/DTO classes from schema definitions (JSON Schema, OpenAPI, etc.). Unlike `@Propify` which generates read-only configuration classes with embedded data, `@SchemaGen` generates mutable data classes suitable for runtime data binding with JSON/XML.
+The **SchemaGen** feature generates Java model classes (POJOs/DTOs) from schema definitions such as JSON Schema and OpenAPI. Use it when you want types that are populated at runtime (for example via Jackson).
+
+This is intentionally different from `@Propify`: `@Propify` generates read-only configuration accessors with compile-time embedded data, while `@SchemaGen` generates mutable data classes designed for binding and serialization.
 
 ## Key Differences
 
@@ -18,14 +20,14 @@ The **SchemaGen** feature is a powerful addition to Propify that generates Java 
 
 ## Features
 
-- ✅ **Mutable POJOs** - Full getters and setters
-- ✅ **Builder Pattern** - Fluent object construction
-- ✅ **Jackson Annotations** - Automatic JSON serialization/deserialization
-- ✅ **Bean Validation** - Constraint annotations (@NotNull, @Email, @Size, etc.)
-- ✅ **Multiple Schema Types** - JSON Schema, OpenAPI 3.x support
-- ✅ **Nested Objects** - Automatic handling of complex types
-- ✅ **Type-Safe** - Compile-time validation
-- ✅ **Zero Runtime Dependencies** - Generated code is standalone
+- **Mutable POJOs**: getters and setters.
+- **Builder support**: fluent construction for generated models.
+- **Jackson annotations (optional)**: JSON serialization/deserialization support in generated code.
+- **Bean Validation annotations (optional)**: constraints such as `@NotNull`, `@Email`, `@Size`.
+- **Multiple schema inputs**: JSON Schema and OpenAPI 3.x.
+- **Nested object support**: complex/nested types are generated as nested models.
+- **Compile-time generation**: invalid inputs fail the build.
+- **Standalone output**: generated code does not require SchemaGen at runtime.
 
 ## Quick Start
 
@@ -368,16 +370,15 @@ public interface ProductSchema {}
 ## Comparison with Alternatives
 
 ### vs. jsonschema2pojo
-- ✅ Integrated with Propify ecosystem
-- ✅ Compile-time generation (no separate build step)
-- ✅ Builder pattern built-in
-- ✅ Consistent with @Propify usage
+- Integrated with the rest of Propify.
+- Compile-time generation (no separate generator step in your build).
+- Builder pattern support out of the box.
+- Annotation-driven workflow consistent with `@Propify`.
 
 ### vs. OpenAPI Generator
-- ✅ Simpler annotation-based approach
-- ✅ No external tools needed
-- ✅ Lightweight generated code
-- ✅ Better IDE integration
+- Annotation-based approach (no external generator CLI).
+- Lightweight generated code intended to be edited/read in an IDE.
+- Fits naturally into a standard Java compile/test cycle.
 
 ## Limitations
 

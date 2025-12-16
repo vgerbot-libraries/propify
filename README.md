@@ -1,65 +1,68 @@
-# 🔧 Propify
+# Propify
 
 ![Build Status](https://github.com/vgerbot-libraries/propify/actions/workflows/build.yml/badge.svg) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/9d3df77c87d243a9bb68b8687a87bfeb)](https://app.codacy.com/gh/vgerbot-libraries/propify/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/9d3df77c87d243a9bb68b8687a87bfeb)](https://app.codacy.com/gh/vgerbot-libraries/propify/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 
 ----
 
-**Propify** is a powerful, lightweight Java annotation processor that eliminates configuration errors by generating **type-safe** classes from your configuration files (YAML, INI, or `.properties`), internationalization bundles, and schema definitions (JSON Schema, OpenAPI).
+**Propify** is a Java annotation processor that generates **typed** APIs from configuration files (YAML, INI, `.properties`), i18n bundles, and schema definitions (JSON Schema, OpenAPI).
 
-> **Say goodbye to "stringly-typed" keys and runtime errors!** Access every configuration value and message through strongly-typed Java methods, catching invalid accesses at compile time instead of runtime.
+If a config key, message key, or schema shape changes, the generated API changes with it and mismatches show up during compilation rather than as runtime lookups.
 
-Propify seamlessly supports nested properties, custom lookup providers, full ICU4J formatting, and schema-based POJO generation while adding zero runtime dependencies to your application.
-
-----
-
-## 📖 Table of Contents
-
-1. [Why Propify?](#-why-propify)
-2. [Features](#-features)
-3. [Requirements](#-requirements)
-4. [Installation](#-installation)
-5. [Quick Start](#-quick-start)
-6. [Advanced Usage](#-advanced-usage)
-7. [Internationalization (i18n)](#-internationalization-i18n)
-8. [Schema-Based Generation (NEW!)](#-schema-based-generation-new)
-9. [How It Works](#️-how-it-works)
-10. [Examples](#-examples)
-11. [Getting Help](#-getting-help)
-12. [Contributing](#-contributing)
-13. [License](#-license)
-14. [Acknowledgments](#-acknowledgments)
+It supports nested properties, custom lookup providers (env/system/custom), ICU4J message formatting, and schema-based POJO generation. Generated code is regular Java; you call it from your application code.
 
 ----
 
-## 🤔 Why Propify?
+## Table of Contents
 
-- **Type-Safety**: Access configuration and messages via Java methods—no more stringly-typed keys.
-- **Compile-Time Guarantees**: Prevent typos in code (incorrect keys) from compiling, so invalid property accesses are caught before runtime.
-- **Productivity**: Skip manual parsing and error-prone lookups.
-- **Extendable**: Plug in custom lookup providers for environment variables, system properties, or your own sources.
+1. [Why Propify?](#why-propify)
+2. [Features](#features)
+3. [Requirements](#requirements)
+4. [Installation](#installation)
+5. [Quick Start](#quick-start)
+6. [Internationalization (i18n)](#internationalization-i18n)
+7. [Schema-Based Generation](#schema-based-generation)
+8. [How It Works](#how-it-works)
+9. [Examples](#examples)
+10. Documentation
+    - 📖 [**@Propify Guide**](docs/PROPIFY.md) - Complete guide to type-safe configuration
+    - 📖 [**@I18n Guide**](docs/I18N.md) - Comprehensive internationalization guide
+    - 📖 [**@SchemaGen Guide**](docs/SCHEMAGEN.md) - Schema-based POJO generation guide
+11. [Getting Help](#getting-help)
+12. [Contributing](#contributing)
+13. [License](#license)
+14. [Acknowledgments](#acknowledgments)
 
 ----
 
-## ✨ Features
+## Why Propify?
 
-- 🔒 **Type-Safe Config**: Generates POJOs from YAML, INI, or `.properties` files
-- 🌐 **Type-Safe i18n**: Strongly-typed resource bundles with ICU4J formatting
-- 🎯 **Schema-Based POJOs**: Generate mutable DTOs from JSON Schema or OpenAPI specs
-- 🛠 **Compile-Time Validation**: Syntax and schema checks during build
-- 📚 **Nested Keys**: Dot-notation support for hierarchical configs
-- 🔄 **Custom Lookups**: Inject dynamic values (env, system props, custom)
-- ⚡️ **Zero Runtime Overhead**: All code generated at compile time
+- **Typed access**: use generated getters/methods instead of `config.get("a.b.c")`-style lookups.
+- **Earlier failures**: missing keys and invalid formats fail the build, not production.
+- **Less glue code**: no hand-written parsing/mapping for common cases.
+- **Extensible resolution**: plug in custom lookup providers for env vars, system properties, or your own sources.
 
 ----
 
-## 📋 Requirements
+## Features
+
+- **Type-safe config**: generate APIs from YAML, INI, or `.properties`.
+- **Type-safe i18n**: generate resource bundle accessors; ICU4J MessageFormat support.
+- **Schema-based POJOs**: generate mutable DTOs from JSON Schema or OpenAPI specs.
+- **Compile-time validation**: syntax and schema checks happen during the build.
+- **Nested keys**: hierarchical configs map to nested types.
+- **Custom lookups**: resolve values from env/system/custom providers.
+- **Compile-time generation**: no runtime parsing step required for the generated accessors.
+
+----
+
+## Requirements
 
 - **Java**: 8 or higher
 - **Build**: Maven or Gradle
 
 ----
 
-## 📥 Installation
+## Installation
 
 ### Maven
 
@@ -70,7 +73,7 @@ Add dependency and annotation processor:
   <dependency>
     <groupId>com.vgerbot</groupId>
     <artifactId>propify</artifactId>
-    <version>2.0.0</version>
+    <version>3.0.0</version>
   </dependency>
 </dependencies>
 
@@ -86,7 +89,7 @@ Add dependency and annotation processor:
           <path>
             <groupId>com.vgerbot</groupId>
             <artifactId>propify</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.0</version>
           </path>
         </annotationProcessorPaths>
       </configuration>
@@ -99,8 +102,8 @@ Add dependency and annotation processor:
 
 ```groovy
 dependencies {
-  implementation 'com.vgerbot:propify:2.0.0'
-  annotationProcessor 'com.vgerbot:propify:2.0.0'
+  implementation 'com.vgerbot:propify:3.0.0'
+  annotationProcessor 'com.vgerbot:propify:3.0.0'
 }
 ```
 
@@ -112,8 +115,8 @@ plugins {
 }
 
 dependencies {
-  compile 'com.vgerbot:propify:2.0.0'
-  apt     'com.vgerbot:propify:2.0.0'
+  compile 'com.vgerbot:propify:3.0.0'
+  apt     'com.vgerbot:propify:3.0.0'
 }
 ```
 
@@ -121,7 +124,7 @@ dependencies {
 
 ----
 
-## 🚀 Quick Start
+## Quick Start
 
 1. **Create** `src/main/resources/application.yml`:
 
@@ -147,93 +150,18 @@ dependencies {
    ```java
    public class Main {
      public static void main(String[] args) {
-       AppConfigPropify cfg = new AppConfigPropify();
+       AppConfigPropify cfg = AppConfigPropify.getInstance();
        System.out.println(cfg.getServer().getHost());
        System.out.println(cfg.getDatabase().getUrl());
      }
    }
    ```
 
-Configuration locations can be:
-
-- On the classpath (e.g., `application.yml` in `src/main/resources/`)
-- Local file system (`file:///path/to/config.yml`)
-- HTTP/HTTPS URL (`https://...`)
-
-For example:
-
-```java
-@Propify(location = "https://example.com/config.yml")
-public interface WebConfig {}
-```
-
-> ⚠️ Ensure your configuration files are reachable at build time—whether via classpath, file path, or network URL.
+> 📖 **[Full @Propify Documentation](docs/PROPIFY.md)** - Learn about custom lookups, media types, advanced configuration options, and more.
 
 ----
 
-## 🔧 Advanced Usage
-
-### Custom Class Name
-
-```java
-@Propify(
-  location = "application.yml",
-  generatedClassName = "CustomConfigImpl"
-)
-public interface AppConfig {}
-```
-
-### Media Types
-
-By default, Propify infers file format from the file extension (`.yml`/`.yaml` for YAML, `.ini` for INI, `.properties` for Java properties). Manual `mediaType` specification is only required when the extension is non-standard or ambiguous.
-
-```java
-@Propify(
-  location = "config.custom",              // non-standard extension
-  mediaType = "application/x-java-properties"
-)
-public interface AppConfig {}
-```
-
-### Custom Lookups
-
-Propify lets you interpolate dynamic values at build time via lookup providers. Out of the box you can use placeholders in your config:
-
-- **Environment variables**: `{env:VAR_NAME}`
-- **Custom lookups**: `{lookupName:variableName}` — resolved by the corresponding lookup class
-
-**Example configuration** (`application.yml`):
-
-```yaml
-app:
-  tempDir: "{env:TEMP_DIR}"
-  secretKey: "{vault:db-secret}"
-```
-
-**Annotate your interface**:
-
-```java
-@Propify(
-  location = "application.yml",
-  lookups = {
-    CustomEnvironmentLookup.class,  // resolves {env:...}
-    VaultLookup.class              // resolves {vault:...}
-  }
-)
-public interface AppConfig {}
-```
-
-**Usage in code**:
-
-```java
-AppConfig cfg = new AppConfigPropify();
-String tempDir = cfg.getApp().getTempDir();    // from $TEMP_DIR
-String secret = cfg.getApp().getSecretKey();   // from vault lookup
-```
-
-----
-
-## 🌐 Internationalization (i18n)
+## Internationalization (i18n)
 
 Generate type-safe resource bundles using ICU4J:
 
@@ -242,11 +170,11 @@ Generate type-safe resource bundles using ICU4J:
    ```properties
    # messages.properties (default)
    welcome=Welcome
-   greeting=Hello, {name}!
+   greeting=Hello, {0}!
 
    # messages_zh_CN.properties
    welcome=欢迎
-   greeting=你好, {name}！
+   greeting=你好, {0}！
    ```
 
 2. **Annotate** a class:
@@ -263,83 +191,46 @@ Generate type-safe resource bundles using ICU4J:
    String hiZh = MessageResource.get(Locale.CHINESE).greeting("张三");
    ```
 
-Supports pluralization, dates, numbers, and custom ICU patterns—fully validated at compile time.
+> 📖 **[Full @I18n Documentation](docs/I18N.md)** - Explore ICU MessageFormat, pluralization, date/time formatting, and multi-locale support.
 
 ----
 
-## 🎯 Schema-Based Generation (NEW!)
+## Schema-Based Generation
 
 Generate mutable POJO/DTO classes from schema definitions for REST APIs and data modeling:
 
-### JSON Schema Example
-
-1. **Create** a JSON Schema (`resources/schemas/user.schema.json`):
-
-   ```json
-   {
-     "$schema": "http://json-schema.org/draft-07/schema#",
-     "title": "User",
-     "type": "object",
-     "properties": {
-       "id": { "type": "integer" },
-       "username": { "type": "string", "minLength": 3 },
-       "email": { "type": "string", "format": "email" }
-     },
-     "required": ["username", "email"]
-   }
-   ```
-
-2. **Annotate** an interface:
-
-   ```java
-   @SchemaGen(location = "schemas/user.schema.json")
-   public interface UserSchema {}
-   ```
-
-3. **Use** the generated POJO:
-
-   ```java
-   // Builder pattern
-   User user = User.builder()
-       .username("johndoe")
-       .email("john@example.com")
-       .build();
-   
-   // Jackson serialization
-   ObjectMapper mapper = new ObjectMapper();
-   String json = mapper.writeValueAsString(user);
-   User user = mapper.readValue(json, User.class);
-   ```
-
-### OpenAPI Example
+### Quick Example
 
 ```java
-@SchemaGen(
-    location = "openapi/api.yaml",
-    type = SchemaType.OPENAPI,
-    schemaRef = "Pet"
-)
-public interface PetSchema {}
+// 1. Create a JSON Schema or OpenAPI spec
+@SchemaGen(location = "schemas/user.schema.json")
+public interface UserSchema {}
 
-// Generated class with validation, Jackson support, builder, etc.
-Pet pet = Pet.builder()
-    .name("Fluffy")
-    .status("available")
+// 2. Use the generated POJO
+User user = User.builder()
+    .username("johndoe")
+    .email("john@example.com")
     .build();
+
+// 3. Serialize/deserialize with Jackson
+ObjectMapper mapper = new ObjectMapper();
+String json = mapper.writeValueAsString(user);
+User user = mapper.readValue(json, User.class);
 ```
 
-**Key Features:**
-- ✅ Mutable POJOs with getters/setters
-- ✅ Builder pattern for fluent construction
-- ✅ Jackson annotations for JSON serialization
-- ✅ Bean Validation (@NotNull, @Email, @Size, etc.)
-- ✅ Support for JSON Schema and OpenAPI 3.x
+Key points:
 
-📖 **[Full SchemaGen Documentation](SCHEMAGEN.md)**
+- Mutable POJOs with getters/setters
+- Builder pattern for fluent construction
+- Optional Jackson annotations for JSON serialization
+- Optional Bean Validation annotations (`@NotNull`, `@Email`, `@Size`, etc.)
+- JSON Schema and OpenAPI 3.x inputs
+
+> 📖 **[Full @SchemaGen Documentation](docs/SCHEMAGEN.md)** - Learn about OpenAPI support, type mapping, validation annotations, and more.
 
 ----
 
-## ⚙️ How It Works
+## How It Works
 
 1. **Scan** for `@Propify`, `@I18n`, and `@SchemaGen` annotations
 2. **Parse** configuration files, message bundles, and schema definitions
@@ -348,48 +239,19 @@ Pet pet = Pet.builder()
 
 ----
 
-## 📝 Examples
+## Examples
 
-Here are some practical examples of how to use Propify in common scenarios:
+Check the [`example/`](example/) directory for complete working examples:
 
-### Nested Configuration
-
-```java
-// application.yml
-// server:
-//   http:
-//     port: 8080
-//   https:
-//     port: 8443
-//     keystore: /path/to/keystore
-
-@Propify(location = "application.yml")
-public interface ServerConfig {}
-
-// Usage
-ServerConfigPropify config = new ServerConfigPropify();
-int httpPort = config.getServer().getHttp().getPort();  // 8080
-String keystore = config.getServer().getHttps().getKeystore();  // /path/to/keystore
-```
-
-### Environment-Specific Configuration
-
-```java
-// Using environment variables in your config
-// app.yml
-// database:
-//   url: "jdbc:mysql://{env:DB_HOST}:{env:DB_PORT}/{env:DB_NAME}"
-
-@Propify(
-  location = "app.yml",
-  lookups = { EnvironmentLookup.class }
-)
-public interface AppConfig {}
-```
+- **[Basic Configuration](example/src/main/java/com/vgerbot/example/AppConfig.java)** - Simple YAML/Properties configuration
+- **[Advanced Configuration](example/src/main/java/com/vgerbot/example/AdvancedConfigExample.java)** - Custom lookups and nested structures
+- **[INI Configuration](example/src/main/java/com/vgerbot/example/IniExample.java)** - INI format support
+- **[Internationalization](example/src/main/java/com/vgerbot/example/I18nAdvancedExample.java)** - Multi-locale messages with ICU formatting
+- **[Schema Generation](example/src/main/java/com/vgerbot/example/SchemaGenExample.java)** - JSON Schema and OpenAPI POJO generation
 
 ----
 
-## 🙋 Getting Help
+## Getting Help
 
 If you encounter any issues or have questions about using Propify:
 
@@ -399,7 +261,7 @@ If you encounter any issues or have questions about using Propify:
 
 ----
 
-## 👥 Contributing
+## Contributing
 
 1. Fork the repo
 2. Create a feature branch (`git checkout -b feature/xyz`)
@@ -410,13 +272,13 @@ Please follow the existing coding style and update tests.
 
 ----
 
-## 📄 License
+## License
 
 [MIT](LICENSE) © 2024 vgerbot-libraries
 
 ----
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [JavaPoet](https://github.com/square/javapoet) - Java source file generation
 - [Jackson YAML](https://github.com/FasterXML/jackson-dataformats-text) - YAML parsing
