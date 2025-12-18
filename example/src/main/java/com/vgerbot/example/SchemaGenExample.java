@@ -1,5 +1,7 @@
 package com.vgerbot.example;
 
+import java.time.LocalDate;
+
 /**
  * Example demonstrating the usage of schema-generated classes.
  * 
@@ -47,12 +49,12 @@ public class SchemaGenExample {
         System.out.println("\n--- OpenAPI Example: Pet ---");
         
         // Example 2: Using OpenAPI generated Pet class
-        /*
+
         Pet pet = Pet.builder()
             .id(123L)
             .name("Fluffy")
             .tag("cat")
-            .status("available")
+            .status(Pet.Status.AVAILABLE)
             .birthDate(LocalDate.of(2020, 5, 15))
             .price(299.99)
             .build();
@@ -62,18 +64,18 @@ public class SchemaGenExample {
         System.out.println("Status: " + pet.getStatus());
         
         // Modify using setters
-        pet.setStatus("sold");
+        pet.setStatus(Pet.Status.SOLD);
         pet.setPrice(249.99);
         System.out.println("Updated pet: " + pet);
         
-        // Use with REST clients
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Pet> response = restTemplate.getForEntity(
-            "https://api.example.com/pets/" + pet.getId(),
-            Pet.class
-        );
-        Pet retrievedPet = response.getBody();
-        */
+//        // Use with REST clients
+//        RestTemplate restTemplate = new RestTemplate();
+//        ResponseEntity<Pet> response = restTemplate.getForEntity(
+//            "https://api.example.com/pets/" + pet.getId(),
+//            Pet.class
+//        );
+//        Pet retrievedPet = response.getBody();
+
         
         System.out.println("\nNote: Uncomment the code above after running Maven compile");
         System.out.println("The classes will be generated during annotation processing");

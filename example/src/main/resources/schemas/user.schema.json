@@ -25,6 +25,17 @@
       "maximum": 150,
       "description": "User age"
     },
+    "status": {
+      "type": "string",
+      "enum": ["active", "inactive", "suspended", "deleted"],
+      "description": "User account status"
+    },
+    "accountType": {
+      "type": "string",
+      "enum": ["free", "premium", "enterprise"],
+      "default": "free",
+      "description": "User account type"
+    },
     "active": {
       "type": "boolean",
       "description": "Whether the user is active"

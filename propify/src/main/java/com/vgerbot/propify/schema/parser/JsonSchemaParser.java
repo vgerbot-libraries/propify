@@ -7,7 +7,9 @@ import com.vgerbot.propify.schema.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -123,6 +125,18 @@ public class JsonSchemaParser implements SchemaParser {
         }
         if (node.has("exclusiveMaximum")) {
             property.setExclusiveMaximum(node.get("exclusiveMaximum").asBoolean());
+        }
+        
+        // Enum values
+        if (node.has("enum")) {
+            JsonNode enumNode = node.get("enum");
+            if (enumNode.isArray()) {
+                List<Object> enumValues = new ArrayList<>();
+                for (JsonNode enumValue : enumNode) {
+                    enumValues.add(extractValue(enumValue));
+                }
+                property.setEnumValues(enumValues);
+            }
         }
         
         // Array items

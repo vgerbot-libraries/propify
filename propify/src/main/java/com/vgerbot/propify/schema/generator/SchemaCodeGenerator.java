@@ -74,7 +74,17 @@ public class SchemaCodeGenerator {
             );
         }
         
-        // Generate nested classes first
+        // Generate enum classes for properties with enum values
+        for (Map.Entry<String, PropertyDefinition> entry : schema.getProperties().entrySet()) {
+            PropertyDefinition property = entry.getValue();
+            if (property.hasEnumValues()) {
+                String enumName = Utils.convertToClassName(entry.getKey());
+                TypeSpec enumClass = generateEnumClass(enumName, property);
+                classBuilder.addType(enumClass);
+            }
+        }
+        
+        // Generate nested classes
         for (Map.Entry<String, SchemaDefinition> nested : schema.getNestedSchemas().entrySet()) {
             TypeSpec nestedClass = generateClass(nested.getKey(), context, nested.getValue());
             classBuilder.addType(nestedClass.toBuilder().addModifiers(Modifier.STATIC).build());
@@ -397,7 +407,133 @@ public class SchemaCodeGenerator {
         return toStringBuilder.build();
     }
 
+    private TypeSpec generateEnumClass(String enumName, PropertyDefinition property) {
+        TypeSpec.Builder enumBuilder = TypeSpec.enumBuilder(enumName)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+        
+        // Add javadoc
+        if (property.getDescription() != null && !property.getDescription().isEmpty()) {
+            enumBuilder.addJavadoc(property.getDescription() + "\n");
+        }
+        enumBuilder.addJavadoc("\nGenerated enum from schema");
+        
+        List<Object> enumValues = property.getEnumValues();
+        
+        // Determine the value type (String, Integer, etc.)
+        Class<?> valueType = determineEnumValueType(enumValues);
+        
+        // Add value field
+        TypeName valueTypeName = getTypeNameForClass(valueType);
+        enumBuilder.addField(valueTypeName, "value", Modifier.PRIVATE, Modifier.FINAL);
+        
+        // Add constructor
+        enumBuilder.addMethod(
+                MethodSpec.constructorBuilder()
+                        .addParameter(valueTypeName, "value")
+                        .addStatement("this.value = value")
+                        .build()
+        );
+        
+        // Add getValue method
+        enumBuilder.addMethod(
+                MethodSpec.methodBuilder("getValue")
+                        .addModifiers(Modifier.PUBLIC)
+                        .returns(valueTypeName)
+                        .addStatement("return value")
+                        .build()
+        );
+        
+        // Add fromValue method
+        enumBuilder.addMethod(
+                MethodSpec.methodBuilder("fromValue")
+                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                        .addParameter(valueTypeName, "value")
+                        .returns(ClassName.bestGuess(enumName))
+                        .beginControlFlow("for ($T e : values())", ClassName.bestGuess(enumName))
+                        .beginControlFlow("if (e.value.equals(value))")
+                        .addStatement("return e")
+                        .endControlFlow()
+                        .endControlFlow()
+                        .addStatement("throw new $T($S + value)", IllegalArgumentException.class, "Unknown enum value: ")
+                        .build()
+        );
+        
+        // Add toString override
+        enumBuilder.addMethod(
+                MethodSpec.methodBuilder("toString")
+                        .addAnnotation(Override.class)
+                        .addModifiers(Modifier.PUBLIC)
+                        .returns(String.class)
+                        .addStatement("return $T.valueOf(value)", String.class)
+                        .build()
+        );
+        
+        // Add enum constants
+        for (Object enumValue : enumValues) {
+            String constantName = generateEnumConstantName(enumValue);
+            String valueInit = formatEnumValue(enumValue, valueType);
+            enumBuilder.addEnumConstant(constantName,
+                    TypeSpec.anonymousClassBuilder("$L", valueInit).build()
+            );
+        }
+        
+        return enumBuilder.build();
+    }
+    
+    private Class<?> determineEnumValueType(List<Object> enumValues) {
+        if (enumValues == null || enumValues.isEmpty()) {
+            return String.class;
+        }
+        
+        Object first = enumValues.get(0);
+        if (first instanceof Integer) {
+            return Integer.class;
+        } else if (first instanceof Long) {
+            return Long.class;
+        } else if (first instanceof Double) {
+            return Double.class;
+        } else if (first instanceof Float) {
+            return Float.class;
+        } else if (first instanceof Boolean) {
+            return Boolean.class;
+        }
+        return String.class;
+    }
+    
+    private TypeName getTypeNameForClass(Class<?> clazz) {
+        return ClassName.get(clazz);
+    }
+    
+    private String generateEnumConstantName(Object value) {
+        String strValue = String.valueOf(value);
+        // Convert to valid Java enum constant name (uppercase with underscores)
+        return strValue
+                .toUpperCase()
+                .replaceAll("[^A-Z0-9_]", "_")
+                .replaceAll("^([0-9])", "VALUE_$1") // Prefix if starts with number
+                .replaceAll("_+", "_"); // Remove duplicate underscores
+    }
+    
+    private String formatEnumValue(Object value, Class<?> valueType) {
+        if (valueType == String.class) {
+            return "\"" + value.toString() + "\"";
+        } else if (valueType == Long.class) {
+            return value.toString() + "L";
+        } else if (valueType == Float.class) {
+            return value.toString() + "F";
+        } else if (valueType == Double.class) {
+            return value.toString() + "D";
+        }
+        return value.toString();
+    }
+
     private TypeName getJavaType(PropertyDefinition property) {
+        // Handle enum types
+        if (property.hasEnumValues()) {
+            String enumName = Utils.convertToClassName(property.getName());
+            return ClassName.bestGuess(enumName);
+        }
+        
         // Handle reference types
         if (property.getRefType() != null) {
             return ClassName.bestGuess(property.getRefType());

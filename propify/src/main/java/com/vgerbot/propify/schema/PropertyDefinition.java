@@ -1,5 +1,7 @@
 package com.vgerbot.propify.schema;
 
+import java.util.List;
+
 /**
  * Represents a property definition within a schema.
  *
@@ -21,6 +23,9 @@ public class PropertyDefinition {
     private Number maximum;
     private Boolean exclusiveMinimum;
     private Boolean exclusiveMaximum;
+    
+    // Enum values
+    private List<Object> enumValues;
     
     // For arrays
     private PropertyDefinition items;
@@ -183,8 +188,20 @@ public class PropertyDefinition {
         this.refType = refType;
     }
 
+    public List<Object> getEnumValues() {
+        return enumValues;
+    }
+
+    public void setEnumValues(List<Object> enumValues) {
+        this.enumValues = enumValues;
+    }
+
     public boolean hasPattern() {
         return pattern != null && !pattern.isEmpty();
+    }
+
+    public boolean hasEnumValues() {
+        return enumValues != null && !enumValues.isEmpty();
     }
 
     public boolean isArray() {
