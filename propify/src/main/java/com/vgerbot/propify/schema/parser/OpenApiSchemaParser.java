@@ -3,8 +3,13 @@ package com.vgerbot.propify.schema.parser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.vgerbot.example.schema.*;
 import com.vgerbot.propify.common.Utils;
-import com.vgerbot.propify.schema.*;
+import com.vgerbot.propify.schema.PropertyDefinition;
+import com.vgerbot.propify.schema.SchemaContext;
+import com.vgerbot.propify.schema.SchemaDefinition;
+import com.vgerbot.propify.schema.SchemaParser;
+import com.vgerbot.propify.schema.SchemaType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +24,7 @@ import java.util.Map;
  * @since 2.1.0
  */
 public class OpenApiSchemaParser implements SchemaParser {
-    
+
     private final ObjectMapper jsonMapper;
     private final ObjectMapper yamlMapper;
 
@@ -33,26 +38,26 @@ public class OpenApiSchemaParser implements SchemaParser {
         // Determine if it's YAML or JSON based on location
         ObjectMapper mapper = context.getLocation().endsWith(".yaml") || context.getLocation().endsWith(".yml")
                 ? yamlMapper : jsonMapper;
-        
+
         JsonNode rootNode = mapper.readTree(inputStream);
-        
+
         // Validate it's an OpenAPI document
         if (!rootNode.has("openapi") && !rootNode.has("swagger")) {
             throw new IllegalArgumentException("Not a valid OpenAPI specification");
         }
-        
+
         // Get schemas from components/schemas (OpenAPI 3.x)
         JsonNode schemasNode = null;
         if (rootNode.has("components") && rootNode.get("components").has("schemas")) {
             schemasNode = rootNode.get("components").get("schemas");
         }
-        
+
         if (schemasNode == null) {
             throw new IllegalArgumentException("No schemas found in OpenAPI specification");
         }
-        
+
         String schemaRef = context.getSchemaRef();
-        
+
         if (schemaRef != null && !schemaRef.isEmpty()) {
             // Parse specific schema
             String schemaName = extractSchemaName(schemaRef);
@@ -82,25 +87,25 @@ public class OpenApiSchemaParser implements SchemaParser {
 
     private SchemaDefinition parseSchema(String name, JsonNode schemaNode, JsonNode allSchemasNode) {
         SchemaDefinition schema = new SchemaDefinition(name);
-        
+
         // Title
         if (schemaNode.has("title")) {
             schema.setTitle(schemaNode.get("title").asText());
         } else {
             schema.setTitle(name);
         }
-        
+
         // Description
         if (schemaNode.has("description")) {
             schema.setDescription(schemaNode.get("description").asText());
         }
-        
+
         // Properties
         if (schemaNode.has("properties")) {
             JsonNode propertiesNode = schemaNode.get("properties");
             parseProperties(propertiesNode, schema, allSchemasNode);
         }
-        
+
         // Required fields
         if (schemaNode.has("required")) {
             JsonNode requiredNode = schemaNode.get("required");
@@ -110,12 +115,12 @@ public class OpenApiSchemaParser implements SchemaParser {
                 }
             }
         }
-        
+
         // Update required flag on properties
         for (Map.Entry<String, PropertyDefinition> entry : schema.getProperties().entrySet()) {
             entry.getValue().setRequired(schema.isRequired(entry.getKey()));
         }
-        
+
         return schema;
     }
 
@@ -125,7 +130,7 @@ public class OpenApiSchemaParser implements SchemaParser {
             Map.Entry<String, JsonNode> field = fields.next();
             String propertyName = field.getKey();
             JsonNode propertyNode = field.getValue();
-            
+
             PropertyDefinition property = parseProperty(propertyName, propertyNode, schema, allSchemasNode);
             schema.addProperty(propertyName, property);
         }
@@ -133,7 +138,7 @@ public class OpenApiSchemaParser implements SchemaParser {
 
     private PropertyDefinition parseProperty(String name, JsonNode node, SchemaDefinition parentSchema, JsonNode allSchemasNode) {
         PropertyDefinition property = new PropertyDefinition(name, "string");
-        
+
         // Handle $ref
         if (node.has("$ref")) {
             String ref = node.get("$ref").asText();
@@ -141,27 +146,27 @@ public class OpenApiSchemaParser implements SchemaParser {
             property.setType("object");
             return property;
         }
-        
+
         // Type
         if (node.has("type")) {
             property.setType(node.get("type").asText());
         }
-        
+
         // Format
         if (node.has("format")) {
             property.setFormat(node.get("format").asText());
         }
-        
+
         // Description
         if (node.has("description")) {
             property.setDescription(node.get("description").asText());
         }
-        
+
         // Default value
         if (node.has("default")) {
             property.setDefaultValue(extractValue(node.get("default")));
         }
-        
+
         // String constraints
         if (node.has("pattern")) {
             property.setPattern(node.get("pattern").asText());
@@ -172,7 +177,7 @@ public class OpenApiSchemaParser implements SchemaParser {
         if (node.has("maxLength")) {
             property.setMaxLength(node.get("maxLength").asInt());
         }
-        
+
         // Numeric constraints
         if (node.has("minimum")) {
             property.setMinimum(node.get("minimum").numberValue());
@@ -192,7 +197,7 @@ public class OpenApiSchemaParser implements SchemaParser {
                 property.setExclusiveMaximum(exMax.asBoolean());
             }
         }
-        
+
         // Enum values
         if (node.has("enum")) {
             JsonNode enumNode = node.get("enum");
@@ -204,13 +209,13 @@ public class OpenApiSchemaParser implements SchemaParser {
                 property.setEnumValues(enumValues);
             }
         }
-        
+
         // Array items
         if (property.isArray() && node.has("items")) {
             JsonNode itemsNode = node.get("items");
             PropertyDefinition items = parseProperty(name + "Item", itemsNode, parentSchema, allSchemasNode);
             property.setItems(items);
-            
+
             if (node.has("minItems")) {
                 property.setMinItems(node.get("minItems").asInt());
             }
@@ -218,18 +223,18 @@ public class OpenApiSchemaParser implements SchemaParser {
                 property.setMaxItems(node.get("maxItems").asInt());
             }
         }
-        
+
         // Object (nested schema)
         if (property.isObject() && node.has("properties")) {
             String nestedName = Utils.convertToClassName(name);
             SchemaDefinition nestedSchema = new SchemaDefinition(nestedName);
-            
+
             if (node.has("description")) {
                 nestedSchema.setDescription(node.get("description").asText());
             }
-            
+
             parseProperties(node.get("properties"), nestedSchema, allSchemasNode);
-            
+
             if (node.has("required")) {
                 JsonNode requiredNode = node.get("required");
                 if (requiredNode.isArray()) {
@@ -238,16 +243,16 @@ public class OpenApiSchemaParser implements SchemaParser {
                     }
                 }
             }
-            
+
             // Update required flag on nested properties
             for (Map.Entry<String, PropertyDefinition> entry : nestedSchema.getProperties().entrySet()) {
                 entry.getValue().setRequired(nestedSchema.isRequired(entry.getKey()));
             }
-            
+
             property.setNestedSchema(nestedSchema);
             parentSchema.addNestedSchema(nestedName, nestedSchema);
         }
-        
+
         return property;
     }
 

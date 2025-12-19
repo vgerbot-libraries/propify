@@ -1,9 +1,12 @@
-package com.vgerbot.propify.schema.parser;
+package com.vgerbot.example.schema.parser;
 
 import com.vgerbot.propify.schema.PropertyDefinition;
 import com.vgerbot.propify.schema.SchemaContext;
 import com.vgerbot.propify.schema.SchemaDefinition;
 import com.vgerbot.propify.schema.SchemaType;
+import com.vgerbot.propify.schema.parser.JsonSchemaParser;
+import com.vgerbot.propify.schema.parser.OpenApiSchemaParser;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayInputStream;
@@ -19,7 +22,7 @@ public class EnumSupportDemo {
 
     public static void main(String[] args) {
         System.out.println("=== Enum Support Demo ===\n");
-        
+
         testJsonSchemaEnum();
         System.out.println();
         testOpenApiSchemaEnum();
@@ -28,7 +31,7 @@ public class EnumSupportDemo {
     private static void testJsonSchemaEnum() {
         System.out.println("1. Testing JSON Schema with Enum:");
         System.out.println(StringUtils.repeat('-', 50));
-        
+
         String jsonSchema = "{\n" +
             "  \"title\": \"User\",\n" +
             "  \"type\": \"object\",\n" +
@@ -81,7 +84,7 @@ public class EnumSupportDemo {
     private static void testOpenApiSchemaEnum() {
         System.out.println("\n2. Testing OpenAPI Schema with Enum:");
         System.out.println(StringUtils.repeat('-', 50));
-        
+
         String openApiSchema = "openapi: 3.0.0\n" +
             "info:\n" +
             "  title: Pet Store API\n" +
@@ -111,7 +114,7 @@ public class EnumSupportDemo {
         try {
             OpenApiSchemaParser parser = new OpenApiSchemaParser();
             InputStream inputStream = new ByteArrayInputStream(openApiSchema.getBytes(StandardCharsets.UTF_8));
-            
+
             // Create a minimal SchemaContext
             SchemaContext context = new SchemaContext(
                 "test.yaml",
@@ -121,7 +124,7 @@ public class EnumSupportDemo {
                 false, false, false, false, false, false,
                 null, null
             );
-            
+
             SchemaDefinition schema = parser.parse(context, inputStream);
 
             System.out.println("Schema: " + schema.getName());
@@ -150,7 +153,7 @@ public class EnumSupportDemo {
         System.out.println("Property: " + prop.getName());
         System.out.println("  Type: " + prop.getType());
         System.out.println("  Description: " + prop.getDescription());
-        
+
         if (prop.hasEnumValues()) {
             List<Object> enumValues = prop.getEnumValues();
             System.out.println("  Enum Values: " + enumValues);
@@ -158,11 +161,11 @@ public class EnumSupportDemo {
         } else {
             System.out.println("  Enum Values: None");
         }
-        
+
         if (prop.getDefaultValue() != null) {
             System.out.println("  Default: " + prop.getDefaultValue());
         }
-        
+
         System.out.println();
     }
 }

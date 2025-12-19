@@ -1,9 +1,12 @@
-package com.vgerbot.propify.schema.parser;
+package com.vgerbot.example.schema.parser;
 
 import com.vgerbot.propify.schema.PropertyDefinition;
 import com.vgerbot.propify.schema.SchemaContext;
 import com.vgerbot.propify.schema.SchemaDefinition;
 import com.vgerbot.propify.schema.SchemaType;
+import com.vgerbot.propify.schema.parser.JsonSchemaParser;
+import com.vgerbot.propify.schema.parser.OpenApiSchemaParser;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
@@ -19,10 +22,10 @@ public class ExampleFilesDemo {
 
     public static void main(String[] args) {
         System.out.println("=== Example Files Enum Demo ===\n");
-        
+
         String projectRoot = findProjectRoot();
         System.out.println("Project root: " + projectRoot + "\n");
-        
+
         testUserSchema(projectRoot);
         System.out.println();
         testPetStoreSchema(projectRoot);
@@ -42,9 +45,9 @@ public class ExampleFilesDemo {
     private static void testUserSchema(String projectRoot) {
         System.out.println("1. Testing user.schema.json:");
         System.out.println(StringUtils.repeat('-', 60));
-        
+
         String schemaPath = projectRoot + "/example/src/main/resources/schemas/user.schema.json";
-        
+
         try {
             JsonSchemaParser parser = new JsonSchemaParser();
             InputStream inputStream = new FileInputStream(schemaPath);
@@ -71,13 +74,13 @@ public class ExampleFilesDemo {
     private static void testPetStoreSchema(String projectRoot) {
         System.out.println("\n2. Testing petstore.yaml:");
         System.out.println(StringUtils.repeat('-', 60));
-        
+
         String schemaPath = projectRoot + "/example/src/main/resources/schemas/petstore.yaml";
-        
+
         try {
             OpenApiSchemaParser parser = new OpenApiSchemaParser();
             InputStream inputStream = new FileInputStream(schemaPath);
-            
+
             SchemaContext context = new SchemaContext(
                 "petstore.yaml",
                 SchemaType.OPENAPI,
@@ -86,7 +89,7 @@ public class ExampleFilesDemo {
                 false, false, false, false, false, false,
                 null, null
             );
-            
+
             SchemaDefinition schema = parser.parse(context, inputStream);
 
             System.out.println("Schema: " + schema.getName());
@@ -113,17 +116,17 @@ public class ExampleFilesDemo {
         if (prop.getDescription() != null) {
             System.out.println("    Description: " + prop.getDescription());
         }
-        
+
         if (prop.hasEnumValues()) {
             List<Object> enumValues = prop.getEnumValues();
             System.out.println("    Enum Values: " + enumValues);
             System.out.println("    Enum Count: " + enumValues.size());
         }
-        
+
         if (prop.getDefaultValue() != null) {
             System.out.println("    Default: " + prop.getDefaultValue());
         }
-        
+
         System.out.println();
     }
 }
