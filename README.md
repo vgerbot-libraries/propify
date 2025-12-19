@@ -215,7 +215,7 @@ User user = User.builder()
 // 3. Serialize/deserialize with Jackson
 ObjectMapper mapper = new ObjectMapper();
 String json = mapper.writeValueAsString(user);
-User user = mapper.readValue(json, User.class);
+User deserializedUser = mapper.readValue(json, User.class);
 ```
 
 Key points:
@@ -257,7 +257,7 @@ If you encounter any issues or have questions about using Propify:
 
 - **GitHub Issues**: Submit a [new issue](https://github.com/vgerbot-libraries/propify/issues) on our GitHub repository
 - **Documentation**: Check the [Wiki](https://github.com/vgerbot-libraries/propify/wiki) for detailed documentation
-- **Examples**: Browse the [examples directory](https://github.com/vgerbot-libraries/propify/tree/main/examples) for sample projects
+- **Examples**: Browse the [example directory](https://github.com/vgerbot-libraries/propify/tree/main/example) for sample projects
 
 ----
 
