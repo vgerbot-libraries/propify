@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.vgerbot</groupId>
         <artifactId>propify-parent</artifactId>
-        <version>3.0.0</version>
+        <version>${revision}</version>
     </parent>
 
     <licenses>
@@ -169,10 +169,6 @@
                     <tokenEnabled>true</tokenEnabled>
                     <autoPublish>true</autoPublish>
                     <waitUntil>published</waitUntil>
-                    <signingConfiguration>
-                        <enabled>true</enabled>
-                        <useGpgCmd>true</useGpgCmd>
-                    </signingConfiguration>
                 </configuration>
             </plugin>
             <plugin>
@@ -214,6 +210,12 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.vgerbot</groupId>
         <artifactId>propify-parent</artifactId>
-        <version>3.0.0</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>example</artifactId>
