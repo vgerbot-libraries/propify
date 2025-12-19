@@ -8,6 +8,10 @@ import com.vgerbot.propify.i18n.CompileTimePropifyResourceBundleControl;
 import com.vgerbot.propify.i18n.I18n;
 import com.vgerbot.propify.loader.CompileTimeResourceLoaderProvider;
 import com.vgerbot.propify.logger.CompileTimeLogger;
+import com.vgerbot.propify.schema.*;
+import com.vgerbot.propify.schema.generator.SchemaCodeGenerator;
+import com.vgerbot.propify.schema.parser.JsonSchemaParser;
+import com.vgerbot.propify.schema.parser.OpenApiSchemaParser;
 import org.apache.commons.configuration2.Configuration;
 import com.vgerbot.propify.common.PropifyException;
 
@@ -25,15 +29,15 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
- * Annotation processor that handles {@link Propify} and {@link I18n} annotations.
+ * Annotation processor that handles {@link Propify}, {@link I18n}, and {@link SchemaGen} annotations.
  *
- * <p>This processor generates strongly-typed configuration classes from external configuration
- * files and internationalization resource bundles during the compilation phase. It supports:
+ * <p>This processor generates strongly-typed classes from various sources during the compilation phase:
  * <ul>
  *   <li>Configuration property class generation from various formats (properties, YAML)</li>
  *   <li>Internationalization (i18n) support through resource bundles</li>
+ *   <li>POJO/DTO generation from schema definitions (JSON Schema, OpenAPI)</li>
  *   <li>Automatic type conversion for configuration values</li>
- *   <li>Compile-time validation of configuration resources</li>
+ *   <li>Compile-time validation of configuration resources and schemas</li>
  * </ul>
  *
  * <p>The processor is registered through the Java Service Provider Interface (SPI) mechanism
@@ -42,9 +46,14 @@ import java.util.Set;
  *
  * @see Propify The annotation for configuration property generation
  * @see I18n The annotation for internationalization support
+ * @see SchemaGen The annotation for schema-based POJO generation
  * @since 1.0.0
  */
-@SupportedAnnotationTypes({"com.vgerbot.propify.core.Propify", "com.vgerbot.propify.PropifyI18n"})
+@SupportedAnnotationTypes({
+    "com.vgerbot.propify.core.Propify",
+    "com.vgerbot.propify.i18n.I18n",
+    "com.vgerbot.propify.schema.SchemaGen"
+})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PropifyProcessor extends AbstractProcessor {
     public static ProcessingEnvironment processingEnvironment;
@@ -77,6 +86,7 @@ public class PropifyProcessor extends AbstractProcessor {
         final Set<String> set = new HashSet<>();
         set.add(Propify.class.getCanonicalName());
         set.add(I18n.class.getCanonicalName());
+        set.add(SchemaGen.class.getCanonicalName());
         return set;
     }
 
@@ -94,11 +104,12 @@ public class PropifyProcessor extends AbstractProcessor {
      * Processes annotations found in the source code.
      *
      * <p>This method is called by the compiler for each round of annotation processing.
-     * It handles both {@link Propify} and {@link I18n} annotations by:
+     * It handles {@link Propify}, {@link I18n}, and {@link SchemaGen} annotations by:
      * <ul>
      *   <li>Loading and parsing configuration files</li>
      *   <li>Generating type-safe configuration classes</li>
      *   <li>Creating i18n resource bundle wrappers</li>
+     *   <li>Parsing schema definitions and generating POJOs</li>
      *   <li>Reporting any errors encountered during processing</li>
      * </ul>
      *
@@ -124,6 +135,10 @@ public class PropifyProcessor extends AbstractProcessor {
                     I18n i18nAnnotation = element.getAnnotation(I18n.class);
                     if (i18nAnnotation != null) {
                         processI18nAnnotation(i18nAnnotation, (TypeElement) element);
+                    }
+                    SchemaGen schemaGenAnnotation = element.getAnnotation(SchemaGen.class);
+                    if (schemaGenAnnotation != null) {
+                        processSchemaGenAnnotation(schemaGenAnnotation, (TypeElement) element);
                     }
                 } catch (Exception e) {
                     String message = e.getMessage();
@@ -280,5 +295,134 @@ public class PropifyProcessor extends AbstractProcessor {
             }
         }
         return null;
+    }
+
+    /**
+     * Processes a {@link SchemaGen} annotation to generate POJO/DTO classes from schema definitions.
+     *
+     * <p>This method:
+     * <ul>
+     *   <li>Creates a schema context</li>
+     *   <li>Loads and parses the schema file (JSON Schema, OpenAPI, etc.)</li>
+     *   <li>Generates a mutable POJO class with getters, setters, and optional builder</li>
+     *   <li>Adds Jackson and Bean Validation annotations as configured</li>
+     * </ul>
+     *
+     * @param schemaGenAnnotation the SchemaGen annotation to process
+     * @param element             the annotated type element
+     * @throws IOException if there are errors reading resources or writing generated code
+     */
+    private void processSchemaGenAnnotation(final SchemaGen schemaGenAnnotation, final TypeElement element) throws IOException {
+        // Create schema context
+        final SchemaContext context = new SchemaContext(
+                schemaGenAnnotation.location(),
+                schemaGenAnnotation.type(),
+                schemaGenAnnotation.schemaRef(),
+                schemaGenAnnotation.generatedClassName(),
+                schemaGenAnnotation.builder(),
+                schemaGenAnnotation.jacksonAnnotations(),
+                schemaGenAnnotation.jaxbAnnotations(),
+                schemaGenAnnotation.validationAnnotations(),
+                schemaGenAnnotation.serializable(),
+                schemaGenAnnotation.generateHelperMethods(),
+                new CompileTimeResourceLoaderProvider(processingEnv),
+                new CompileTimeLogger(processingEnv)
+        );
+
+        // Determine schema type
+        SchemaType schemaType = context.getType();
+        if (schemaType == SchemaType.AUTO) {
+            schemaType = detectSchemaType(context.getLocation());
+        }
+
+        // Select appropriate parser
+        SchemaParser parser = null;
+        if (schemaType == SchemaType.JSON_SCHEMA) {
+            parser = new JsonSchemaParser();
+        } else if (schemaType == SchemaType.OPENAPI) {
+            parser = new OpenApiSchemaParser();
+        }
+
+        if (parser == null) {
+            messager.printMessage(
+                    Diagnostic.Kind.ERROR,
+                    "Unsupported schema type: " + schemaType,
+                    element
+            );
+            return;
+        }
+
+        // Parse schema
+        SchemaDefinition schema;
+        try (InputStream stream = context.loadResource()) {
+            schema = parser.parse(context, stream);
+        }
+
+        // Generate class name
+        final String packageName = processingEnv.getElementUtils()
+                .getPackageOf(element)
+                .getQualifiedName()
+                .toString();
+
+        String generatedClassName = context.getGeneratedClassName();
+        if (generatedClassName.contains("$$")) {
+            generatedClassName = generatedClassName.replace("$$", element.getSimpleName().toString());
+        } else if (generatedClassName.equals("$$")) {
+            generatedClassName = element.getSimpleName().toString();
+        }
+
+        // If schema has a name from the definition, use it
+        if (schema.getName() == null || schema.getName().isEmpty()) {
+            schema.setName(generatedClassName);
+        } else if (generatedClassName.equals(element.getSimpleName().toString())) {
+            // Use the schema's name if we're using the default
+            generatedClassName = schema.getName();
+        }
+
+        // Generate code
+        final String code = SchemaCodeGenerator.getInstance()
+                .generateCode(packageName, generatedClassName, context, schema);
+
+        // Write generated file
+        final JavaFileObject file = processingEnv.getFiler()
+                .createSourceFile(packageName + "." + generatedClassName);
+
+        try (Writer writer = file.openWriter()) {
+            writer.write(code);
+        }
+
+        messager.printMessage(
+                Diagnostic.Kind.NOTE,
+                "Generated " + generatedClassName + " from schema " + schemaGenAnnotation.location(),
+                element
+        );
+    }
+
+    /**
+     * Auto-detect schema type from file location/extension.
+     */
+    private SchemaType detectSchemaType(String location) {
+        String lowerLocation = location.toLowerCase();
+        
+        if (lowerLocation.contains("openapi") || lowerLocation.contains("swagger")) {
+            return SchemaType.OPENAPI;
+        }
+        
+        if (lowerLocation.endsWith(".json") || lowerLocation.endsWith(".schema.json")) {
+            return SchemaType.JSON_SCHEMA;
+        }
+        
+        if (lowerLocation.endsWith(".yaml") || lowerLocation.endsWith(".yml")) {
+            // Could be either OpenAPI or JSON Schema in YAML format
+            // Default to OpenAPI for .yaml/.yml
+            return SchemaType.OPENAPI;
+        }
+        
+        if (lowerLocation.endsWith(".xsd")) {
+            return SchemaType.XML_SCHEMA;
+        }
+        
+        // Default to JSON Schema
+        return SchemaType.JSON_SCHEMA;
     }
 }

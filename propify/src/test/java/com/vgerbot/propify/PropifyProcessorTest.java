@@ -3,6 +3,7 @@ package com.vgerbot.propify;
 import com.vgerbot.propify.core.Propify;
 import com.vgerbot.propify.i18n.I18n;
 import com.vgerbot.propify.common.ReflectionUtils;
+import com.vgerbot.propify.schema.SchemaGen;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -87,7 +88,8 @@ public class PropifyProcessorTest {
                 types.contains(Propify.class.getCanonicalName()));
         assertTrue("Should support I18n annotation",
                 types.contains(I18n.class.getCanonicalName()));
-        assertEquals("Should support exactly 2 annotation types", 2, types.size());
+        assertTrue("Should support SchemaGen annotation", types.contains(SchemaGen.class.getCanonicalName()));
+        assertEquals("Should support exactly 3 annotation types", 3, types.size());
     }
 
     @Test
