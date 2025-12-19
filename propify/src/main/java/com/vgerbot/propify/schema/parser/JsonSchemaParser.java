@@ -2,7 +2,6 @@ package com.vgerbot.propify.schema.parser;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vgerbot.example.schema.*;
 import com.vgerbot.propify.common.Utils;
 import com.vgerbot.propify.schema.PropertyDefinition;
 import com.vgerbot.propify.schema.SchemaContext;

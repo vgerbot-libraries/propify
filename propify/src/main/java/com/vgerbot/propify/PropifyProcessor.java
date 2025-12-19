@@ -18,7 +18,6 @@ import com.vgerbot.propify.schema.parser.JsonSchemaParser;
 import com.vgerbot.propify.schema.parser.OpenApiSchemaParser;
 import org.apache.commons.configuration2.Configuration;
 
-import com.vgerbot.example.schema.*;
 import com.vgerbot.propify.common.PropifyException;
 
 import javax.annotation.processing.*;

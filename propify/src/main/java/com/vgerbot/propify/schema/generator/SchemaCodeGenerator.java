@@ -1,7 +1,6 @@
 package com.vgerbot.propify.schema.generator;
 
 import com.squareup.javapoet.*;
-import com.vgerbot.example.schema.*;
 import com.vgerbot.propify.common.Utils;
 import com.vgerbot.propify.schema.PropertyDefinition;
 import com.vgerbot.propify.schema.SchemaContext;
