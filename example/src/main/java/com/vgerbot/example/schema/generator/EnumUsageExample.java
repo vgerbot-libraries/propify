@@ -1,17 +1,17 @@
-package com.vgerbot.propify.schema.generator;
+package com.vgerbot.example.schema.generator;
 
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * Example showing how to use generated enum classes.
- * 
+ *
  * This demonstrates the enum classes that would be generated from schema definitions.
  */
 public class EnumUsageExample {
 
     public static void main(String[] args) {
         System.out.println("=== Generated Enum Usage Example ===\n");
-        
+
         demonstrateStringEnum();
         System.out.println();
         demonstrateIntegerEnum();
@@ -23,20 +23,20 @@ public class EnumUsageExample {
     private static void demonstrateStringEnum() {
         System.out.println("1. String-based Enum Usage:");
         System.out.println(StringUtils.repeat("-", 80));
-        
+
         // The generated enum would look like this:
         // public enum Status {
         //     ACTIVE("active"),
         //     INACTIVE("inactive"),
         //     SUSPENDED("suspended"),
         //     DELETED("deleted");
-        //     
+        //
         //     private final String value;
         //     Status(String value) { this.value = value; }
         //     public String getValue() { return value; }
         //     public static Status fromValue(String value) { ... }
         // }
-        
+
         System.out.println("Example usage in your code:");
         System.out.println("  // Setting enum value");
         System.out.println("  user.setStatus(User.Status.ACTIVE);");
@@ -67,7 +67,7 @@ public class EnumUsageExample {
     private static void demonstrateIntegerEnum() {
         System.out.println("2. Integer-based Enum Usage:");
         System.out.println(StringUtils.repeat("-", 80));
-        
+
         // The generated enum would look like this:
         // public enum Priority {
         //     VALUE_1(1),
@@ -75,13 +75,13 @@ public class EnumUsageExample {
         //     VALUE_3(3),
         //     VALUE_4(4),
         //     VALUE_5(5);
-        //     
+        //
         //     private final Integer value;
         //     Priority(Integer value) { this.value = value; }
         //     public Integer getValue() { return value; }
         //     public static Priority fromValue(Integer value) { ... }
         // }
-        
+
         System.out.println("Example usage in your code:");
         System.out.println("  // Setting enum value");
         System.out.println("  user.setPriority(User.Priority.VALUE_5);");
@@ -98,7 +98,7 @@ public class EnumUsageExample {
         System.out.println("      System.out.println(\"High priority user\");");
         System.out.println("  }");
         System.out.println();
-        
+
         System.out.println("\n" + StringUtils.repeat("=", 50));
         System.out.println("Key Features of Generated Enums:");
         System.out.println(StringUtils.repeat("=", 80));

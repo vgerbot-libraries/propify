@@ -1,8 +1,11 @@
 package com.vgerbot.propify.schema.generator;
 
 import com.squareup.javapoet.*;
+import com.vgerbot.example.schema.*;
 import com.vgerbot.propify.common.Utils;
-import com.vgerbot.propify.schema.*;
+import com.vgerbot.propify.schema.PropertyDefinition;
+import com.vgerbot.propify.schema.SchemaContext;
+import com.vgerbot.propify.schema.SchemaDefinition;
 
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
@@ -15,13 +18,13 @@ import java.util.*;
  * @since 2.1.0
  */
 public class SchemaCodeGenerator {
-    
+
     private static final SchemaCodeGenerator INSTANCE = new SchemaCodeGenerator();
-    
+
     public static SchemaCodeGenerator getInstance() {
         return INSTANCE;
     }
-    
+
     private SchemaCodeGenerator() {
     }
 
@@ -36,12 +39,12 @@ public class SchemaCodeGenerator {
      */
     public String generateCode(String packageName, String className, SchemaContext context, SchemaDefinition schema) {
         TypeSpec typeSpec = generateClass(className, context, schema);
-        
+
         JavaFile javaFile = JavaFile.builder(packageName, typeSpec)
                 .addFileComment("Generated from schema - do not modify")
                 .indent("    ")
                 .build();
-        
+
         StringBuilder sb = new StringBuilder();
         try {
             javaFile.writeTo(sb);
@@ -54,7 +57,7 @@ public class SchemaCodeGenerator {
     private TypeSpec generateClass(String className, SchemaContext context, SchemaDefinition schema) {
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className)
                 .addModifiers(Modifier.PUBLIC);
-        
+
         // Add javadoc
         if (schema.getDescription() != null && !schema.getDescription().isEmpty()) {
             classBuilder.addJavadoc(schema.getDescription() + "\n\n");
@@ -63,7 +66,7 @@ public class SchemaCodeGenerator {
         if (schema.getTitle() != null) {
             classBuilder.addJavadoc("Title: $L\n", schema.getTitle());
         }
-        
+
         // Implement Serializable if requested
         if (context.isSerializable()) {
             classBuilder.addSuperinterface(Serializable.class);
@@ -73,7 +76,7 @@ public class SchemaCodeGenerator {
                             .build()
             );
         }
-        
+
         // Generate enum classes for properties with enum values
         for (Map.Entry<String, PropertyDefinition> entry : schema.getProperties().entrySet()) {
             PropertyDefinition property = entry.getValue();
@@ -83,66 +86,66 @@ public class SchemaCodeGenerator {
                 classBuilder.addType(enumClass);
             }
         }
-        
+
         // Generate nested classes
         for (Map.Entry<String, SchemaDefinition> nested : schema.getNestedSchemas().entrySet()) {
             TypeSpec nestedClass = generateClass(nested.getKey(), context, nested.getValue());
             classBuilder.addType(nestedClass.toBuilder().addModifiers(Modifier.STATIC).build());
         }
-        
+
         // Generate fields
         for (Map.Entry<String, PropertyDefinition> entry : schema.getProperties().entrySet()) {
             FieldSpec field = generateField(entry.getKey(), entry.getValue(), context);
             classBuilder.addField(field);
         }
-        
+
         // Generate default constructor
         classBuilder.addMethod(
                 MethodSpec.constructorBuilder()
                         .addModifiers(Modifier.PUBLIC)
                         .build()
         );
-        
+
         // Generate getters and setters
         for (Map.Entry<String, PropertyDefinition> entry : schema.getProperties().entrySet()) {
             String propertyName = entry.getKey();
             PropertyDefinition property = entry.getValue();
-            
+
             classBuilder.addMethod(generateGetter(propertyName, property, context));
             classBuilder.addMethod(generateSetter(propertyName, property, context, className));
         }
-        
+
         // Generate builder if requested
         if (context.isBuilder()) {
             TypeSpec builderClass = generateBuilder(className, schema, context);
             classBuilder.addType(builderClass);
             classBuilder.addMethod(generateBuilderMethod(className));
         }
-        
+
         // Generate equals, hashCode, toString if requested
         if (context.isGenerateHelperMethods()) {
             classBuilder.addMethod(generateEquals(className, schema));
             classBuilder.addMethod(generateHashCode(schema));
             classBuilder.addMethod(generateToString(className, schema));
         }
-        
+
         return classBuilder.build();
     }
 
     private FieldSpec generateField(String name, PropertyDefinition property, SchemaContext context) {
         TypeName fieldType = getJavaType(property);
         FieldSpec.Builder fieldBuilder = FieldSpec.builder(fieldType, name, Modifier.PRIVATE);
-        
+
         // Add Jackson annotations
         if (context.isJacksonAnnotations()) {
             addJacksonAnnotations(fieldBuilder, name, property);
         }
-        
+
         // Add Bean Validation annotations
         if (context.isValidationAnnotations()) {
             addValidationAnnotations(fieldBuilder, property);
         }
-        
+
         return fieldBuilder.build();
     }
 
@@ -154,7 +157,7 @@ public class SchemaCodeGenerator {
                             .addMember("value", "$S", name)
                             .build()
             );
-            
+
             // Add JsonFormat for date-time
             if ("date-time".equals(property.getFormat()) || "date".equals(property.getFormat())) {
                 Class<?> jsonFormatClass = Class.forName("com.fasterxml.jackson.annotation.JsonFormat");
@@ -177,7 +180,7 @@ public class SchemaCodeGenerator {
                 Class<?> notNullClass = Class.forName("javax.validation.constraints.NotNull");
                 fieldBuilder.addAnnotation(ClassName.get(notNullClass));
             }
-            
+
             // @Size for string length
             if (property.isString() && (property.getMinLength() != null || property.getMaxLength() != null)) {
                 Class<?> sizeClass = Class.forName("javax.validation.constraints.Size");
@@ -190,7 +193,7 @@ public class SchemaCodeGenerator {
                 }
                 fieldBuilder.addAnnotation(sizeBuilder.build());
             }
-            
+
             // @Min/@Max for numbers
             if ((property.isInteger() || property.isNumber()) && property.getMinimum() != null) {
                 Class<?> minClass = Class.forName("javax.validation.constraints.Min");
@@ -208,7 +211,7 @@ public class SchemaCodeGenerator {
                                 .build()
                 );
             }
-            
+
             // @Pattern for regex
             if (property.hasPattern()) {
                 Class<?> patternClass = Class.forName("javax.validation.constraints.Pattern");
@@ -218,7 +221,7 @@ public class SchemaCodeGenerator {
                                 .build()
                 );
             }
-            
+
             // @Email for email format
             if ("email".equals(property.getFormat())) {
                 Class<?> emailClass = Class.forName("javax.validation.constraints.Email");
@@ -232,38 +235,38 @@ public class SchemaCodeGenerator {
     private MethodSpec generateGetter(String propertyName, PropertyDefinition property, SchemaContext context) {
         TypeName returnType = getJavaType(property);
         String methodName = Utils.convertToGetterName(propertyName, property.isBoolean());
-        
+
         MethodSpec.Builder getterBuilder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(returnType)
                 .addStatement("return $L", propertyName);
-        
+
         if (property.getDescription() != null && !property.getDescription().isEmpty()) {
             getterBuilder.addJavadoc(property.getDescription() + "\n");
         }
-        
+
         return getterBuilder.build();
     }
 
     private MethodSpec generateSetter(String propertyName, PropertyDefinition property, SchemaContext context, String className) {
         TypeName paramType = getJavaType(property);
         String methodName = "set" + Utils.convertToClassName(propertyName);
-        
+
         MethodSpec.Builder setterBuilder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(paramType, propertyName)
                 .addStatement("this.$L = $L", propertyName, propertyName);
-        
+
         if (property.getDescription() != null && !property.getDescription().isEmpty()) {
             setterBuilder.addJavadoc(property.getDescription() + "\n");
         }
-        
+
         return setterBuilder.build();
     }
 
     private TypeSpec generateBuilder(String className, SchemaDefinition schema, SchemaContext context) {
         ClassName outerClass = ClassName.bestGuess(className);
-        
+
         TypeSpec.Builder builderBuilder = TypeSpec.classBuilder("Builder")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addField(outerClass, "instance", Modifier.PRIVATE)
@@ -273,13 +276,13 @@ public class SchemaCodeGenerator {
                                 .addStatement("this.instance = new $T()", outerClass)
                                 .build()
                 );
-        
+
         // Generate builder methods for each property
         for (Map.Entry<String, PropertyDefinition> entry : schema.getProperties().entrySet()) {
             String propertyName = entry.getKey();
             PropertyDefinition property = entry.getValue();
             TypeName propertyType = getJavaType(property);
-            
+
             builderBuilder.addMethod(
                     MethodSpec.methodBuilder(propertyName)
                             .addModifiers(Modifier.PUBLIC)
@@ -290,7 +293,7 @@ public class SchemaCodeGenerator {
                             .build()
             );
         }
-        
+
         // Generate build() method
         builderBuilder.addMethod(
                 MethodSpec.methodBuilder("build")
@@ -299,7 +302,7 @@ public class SchemaCodeGenerator {
                         .addStatement("return instance")
                         .build()
         );
-        
+
         return builderBuilder.build();
     }
 
@@ -320,24 +323,24 @@ public class SchemaCodeGenerator {
                 .addStatement("if (this == o) return true")
                 .addStatement("if (!(o instanceof $L)) return false", className)
                 .addStatement("$L that = ($L) o", className, className);
-        
+
         if (schema.getProperties().isEmpty()) {
             equalsBuilder.addStatement("return true");
         } else {
             CodeBlock.Builder codeBuilder = CodeBlock.builder();
             codeBuilder.add("return ");
-            
+
             Iterator<String> iter = schema.getProperties().keySet().iterator();
             while (iter.hasNext()) {
                 String propName = iter.next();
                 PropertyDefinition prop = schema.getProperties().get(propName);
-                
+
                 if (prop.isInteger() || prop.isNumber() || prop.isBoolean()) {
                     codeBuilder.add("$L == that.$L", propName, propName);
                 } else {
                     codeBuilder.add("$T.equals($L, that.$L)", Objects.class, propName, propName);
                 }
-                
+
                 if (iter.hasNext()) {
                     codeBuilder.add(" &&\n");
                 }
@@ -345,7 +348,7 @@ public class SchemaCodeGenerator {
             codeBuilder.add(";");
             equalsBuilder.addCode(codeBuilder.build());
         }
-        
+
         return equalsBuilder.build();
     }
 
@@ -354,13 +357,13 @@ public class SchemaCodeGenerator {
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(int.class);
-        
+
         if (schema.getProperties().isEmpty()) {
             hashCodeBuilder.addStatement("return 0");
         } else {
             CodeBlock.Builder codeBuilder = CodeBlock.builder();
             codeBuilder.add("return $T.hash(", Objects.class);
-            
+
             Iterator<String> iter = schema.getProperties().keySet().iterator();
             while (iter.hasNext()) {
                 codeBuilder.add("$L", iter.next());
@@ -371,7 +374,7 @@ public class SchemaCodeGenerator {
             codeBuilder.add(")");
             hashCodeBuilder.addStatement(codeBuilder.build());
         }
-        
+
         return hashCodeBuilder.build();
     }
 
@@ -380,52 +383,52 @@ public class SchemaCodeGenerator {
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(String.class);
-        
+
         CodeBlock.Builder codeBuilder = CodeBlock.builder();
         codeBuilder.add("return \"$L{\" +\n", className);
-        
+
         Iterator<Map.Entry<String, PropertyDefinition>> iter = schema.getProperties().entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<String, PropertyDefinition> entry = iter.next();
             String propName = entry.getKey();
             PropertyDefinition prop = entry.getValue();
-            
+
             if (prop.isString()) {
                 codeBuilder.add("\"$L='\" + $L + '\\'' +\n", propName, propName);
             } else {
                 codeBuilder.add("\"$L=\" + $L +\n", propName, propName);
             }
-            
+
             if (iter.hasNext()) {
                 codeBuilder.add("\", \" +\n");
             }
         }
-        
+
         codeBuilder.add("\"}\"");
         toStringBuilder.addStatement(codeBuilder.build());
-        
+
         return toStringBuilder.build();
     }
 
     private TypeSpec generateEnumClass(String enumName, PropertyDefinition property) {
         TypeSpec.Builder enumBuilder = TypeSpec.enumBuilder(enumName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
-        
+
         // Add javadoc
         if (property.getDescription() != null && !property.getDescription().isEmpty()) {
             enumBuilder.addJavadoc(property.getDescription() + "\n");
         }
         enumBuilder.addJavadoc("\nGenerated enum from schema");
-        
+
         List<Object> enumValues = property.getEnumValues();
-        
+
         // Determine the value type (String, Integer, etc.)
         Class<?> valueType = determineEnumValueType(enumValues);
-        
+
         // Add value field
         TypeName valueTypeName = getTypeNameForClass(valueType);
         enumBuilder.addField(valueTypeName, "value", Modifier.PRIVATE, Modifier.FINAL);
-        
+
         // Add constructor
         enumBuilder.addMethod(
                 MethodSpec.constructorBuilder()
@@ -433,7 +436,7 @@ public class SchemaCodeGenerator {
                         .addStatement("this.value = value")
                         .build()
         );
-        
+
         // Add getValue method
         enumBuilder.addMethod(
                 MethodSpec.methodBuilder("getValue")
@@ -442,7 +445,7 @@ public class SchemaCodeGenerator {
                         .addStatement("return value")
                         .build()
         );
-        
+
         // Add fromValue method
         enumBuilder.addMethod(
                 MethodSpec.methodBuilder("fromValue")
@@ -457,7 +460,7 @@ public class SchemaCodeGenerator {
                         .addStatement("throw new $T($S + value)", IllegalArgumentException.class, "Unknown enum value: ")
                         .build()
         );
-        
+
         // Add toString override
         enumBuilder.addMethod(
                 MethodSpec.methodBuilder("toString")
@@ -467,7 +470,7 @@ public class SchemaCodeGenerator {
                         .addStatement("return $T.valueOf(value)", String.class)
                         .build()
         );
-        
+
         // Add enum constants
         for (Object enumValue : enumValues) {
             String constantName = generateEnumConstantName(enumValue);
@@ -476,15 +479,15 @@ public class SchemaCodeGenerator {
                     TypeSpec.anonymousClassBuilder("$L", valueInit).build()
             );
         }
-        
+
         return enumBuilder.build();
     }
-    
+
     private Class<?> determineEnumValueType(List<Object> enumValues) {
         if (enumValues == null || enumValues.isEmpty()) {
             return String.class;
         }
-        
+
         Object first = enumValues.get(0);
         if (first instanceof Integer) {
             return Integer.class;
@@ -499,11 +502,11 @@ public class SchemaCodeGenerator {
         }
         return String.class;
     }
-    
+
     private TypeName getTypeNameForClass(Class<?> clazz) {
         return ClassName.get(clazz);
     }
-    
+
     private String generateEnumConstantName(Object value) {
         String strValue = String.valueOf(value);
         // Convert to valid Java enum constant name (uppercase with underscores)
@@ -513,7 +516,7 @@ public class SchemaCodeGenerator {
                 .replaceAll("^([0-9])", "VALUE_$1") // Prefix if starts with number
                 .replaceAll("_+", "_"); // Remove duplicate underscores
     }
-    
+
     private String formatEnumValue(Object value, Class<?> valueType) {
         if (valueType == String.class) {
             return "\"" + value.toString() + "\"";
@@ -533,17 +536,17 @@ public class SchemaCodeGenerator {
             String enumName = Utils.convertToClassName(property.getName());
             return ClassName.bestGuess(enumName);
         }
-        
+
         // Handle reference types
         if (property.getRefType() != null) {
             return ClassName.bestGuess(property.getRefType());
         }
-        
+
         // Handle nested objects
         if (property.getNestedSchema() != null) {
             return ClassName.bestGuess(property.getNestedSchema().getName());
         }
-        
+
         // Handle arrays
         if (property.isArray()) {
             if (property.getItems() != null) {
@@ -552,11 +555,11 @@ public class SchemaCodeGenerator {
             }
             return ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(Object.class));
         }
-        
+
         // Handle primitives and basic types
         String type = property.getType();
         String format = property.getFormat();
-        
+
         if ("string".equals(type)) {
             if ("date-time".equals(format)) {
                 return ClassName.get("java.time", "LocalDateTime");
@@ -581,7 +584,7 @@ public class SchemaCodeGenerator {
         } else if ("object".equals(type)) {
             return ClassName.get(Map.class);
         }
-        
+
         // Default to String
         return ClassName.get(String.class);
     }

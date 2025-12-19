@@ -8,11 +8,17 @@ import com.vgerbot.propify.i18n.CompileTimePropifyResourceBundleControl;
 import com.vgerbot.propify.i18n.I18n;
 import com.vgerbot.propify.loader.CompileTimeResourceLoaderProvider;
 import com.vgerbot.propify.logger.CompileTimeLogger;
-import com.vgerbot.propify.schema.*;
+import com.vgerbot.propify.schema.SchemaContext;
+import com.vgerbot.propify.schema.SchemaDefinition;
+import com.vgerbot.propify.schema.SchemaGen;
+import com.vgerbot.propify.schema.SchemaParser;
+import com.vgerbot.propify.schema.SchemaType;
 import com.vgerbot.propify.schema.generator.SchemaCodeGenerator;
 import com.vgerbot.propify.schema.parser.JsonSchemaParser;
 import com.vgerbot.propify.schema.parser.OpenApiSchemaParser;
 import org.apache.commons.configuration2.Configuration;
+
+import com.vgerbot.example.schema.*;
 import com.vgerbot.propify.common.PropifyException;
 
 import javax.annotation.processing.*;
@@ -403,25 +409,25 @@ public class PropifyProcessor extends AbstractProcessor {
      */
     private SchemaType detectSchemaType(String location) {
         String lowerLocation = location.toLowerCase();
-        
+
         if (lowerLocation.contains("openapi") || lowerLocation.contains("swagger")) {
             return SchemaType.OPENAPI;
         }
-        
+
         if (lowerLocation.endsWith(".json") || lowerLocation.endsWith(".schema.json")) {
             return SchemaType.JSON_SCHEMA;
         }
-        
+
         if (lowerLocation.endsWith(".yaml") || lowerLocation.endsWith(".yml")) {
             // Could be either OpenAPI or JSON Schema in YAML format
             // Default to OpenAPI for .yaml/.yml
             return SchemaType.OPENAPI;
         }
-        
+
         if (lowerLocation.endsWith(".xsd")) {
             return SchemaType.XML_SCHEMA;
         }
-        
+
         // Default to JSON Schema
         return SchemaType.JSON_SCHEMA;
     }

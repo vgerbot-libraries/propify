@@ -1,9 +1,10 @@
-package com.vgerbot.propify.schema.generator;
+package com.vgerbot.example.schema.generator;
 
 import com.vgerbot.propify.schema.PropertyDefinition;
 import com.vgerbot.propify.schema.SchemaContext;
 import com.vgerbot.propify.schema.SchemaDefinition;
 import com.vgerbot.propify.schema.SchemaType;
+import com.vgerbot.propify.schema.generator.SchemaCodeGenerator;
 import com.vgerbot.propify.schema.parser.JsonSchemaParser;
 import com.vgerbot.propify.schema.parser.OpenApiSchemaParser;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +20,7 @@ public class EnumCodeGeneratorDemo {
 
     public static void main(String[] args) {
         System.out.println("=== Enum Code Generation Demo ===\n");
-        
+
         try {
             demonstrateJsonSchemaEnum();
             System.out.println("\n" + StringUtils.repeat("=", 80) + "\n");
@@ -32,7 +33,7 @@ public class EnumCodeGeneratorDemo {
     private static void demonstrateJsonSchemaEnum() throws Exception {
         System.out.println("1. JSON Schema with Enum - Code Generation");
         System.out.println(StringUtils.repeat("-", 80));
-        
+
         String jsonSchema = "{\n" +
             "  \"title\": \"User\",\n" +
             "  \"type\": \"object\",\n" +
@@ -97,7 +98,7 @@ public class EnumCodeGeneratorDemo {
     private static void demonstrateOpenApiSchemaEnum() throws Exception {
         System.out.println("2. OpenAPI Schema with Enum - Code Generation");
         System.out.println(StringUtils.repeat("-", 80));
-        
+
         String openApiSchema = "openapi: 3.0.0\n" +
             "info:\n" +
             "  title: Pet Store API\n" +
@@ -139,7 +140,7 @@ public class EnumCodeGeneratorDemo {
 
         OpenApiSchemaParser parser = new OpenApiSchemaParser();
         InputStream inputStream = new ByteArrayInputStream(openApiSchema.getBytes(StandardCharsets.UTF_8));
-        
+
         SchemaContext context = new SchemaContext(
             "test.yaml",
             SchemaType.OPENAPI,

@@ -1,9 +1,12 @@
-package com.vgerbot.propify.schema.parser;
+package com.vgerbot.example.schema.parser;
 
 import com.vgerbot.propify.schema.PropertyDefinition;
 import com.vgerbot.propify.schema.SchemaContext;
 import com.vgerbot.propify.schema.SchemaDefinition;
 import com.vgerbot.propify.schema.SchemaType;
+import com.vgerbot.propify.schema.parser.JsonSchemaParser;
+import com.vgerbot.propify.schema.parser.OpenApiSchemaParser;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayInputStream;
@@ -18,7 +21,7 @@ public class EnumExample {
 
     public static void main(String[] args) {
         System.out.println("=== Enum Support Example ===\n");
-        
+
         try {
             testJsonSchemaEnum();
             System.out.println();
@@ -31,7 +34,7 @@ public class EnumExample {
     private static void testJsonSchemaEnum() throws Exception {
         System.out.println("1. Testing JSON Schema with Enum:");
         System.out.println(StringUtils.repeat('-', 50));
-        
+
         String jsonSchema = "{\n" +
             "  \"title\": \"User\",\n" +
             "  \"type\": \"object\",\n" +
@@ -61,7 +64,7 @@ public class EnumExample {
 
         System.out.println("Schema Title: " + schema.getTitle());
         System.out.println("\nProperties:");
-        
+
         // Print status property with enum
         PropertyDefinition statusProp = schema.getProperties().get("status");
         System.out.println("\n  - status:");
@@ -93,7 +96,7 @@ public class EnumExample {
     private static void testOpenApiSchemaEnum() throws Exception {
         System.out.println("2. Testing OpenAPI Schema with Enum:");
         System.out.println(StringUtils.repeat('-', 50));
-        
+
         String openApiSchema = "openapi: 3.0.0\n" +
             "info:\n" +
             "  title: Pet Store API\n" +
@@ -141,12 +144,12 @@ public class EnumExample {
             null,  // resourceLoaderProvider
             null   // logger
         );
-        
+
         SchemaDefinition schema = parser.parse(context, inputStream);
 
         System.out.println("Schema Name: " + schema.getName());
         System.out.println("\nProperties:");
-        
+
         // Print status property with enum
         PropertyDefinition statusProp = schema.getProperties().get("status");
         System.out.println("\n  - status:");
